@@ -25,13 +25,11 @@ SOURCES += main.cpp\
     mdLabel/qmdlabel.cpp \
     qmytablewidget.cpp \
     patfileform.cpp \
-    QMdPlainTextEdit/qmdplaintextedit.cpp \
     paramform.cpp \
     headtestform.cpp \
     qsyslog.cpp \
     syslogform.cpp \
     updateromform.cpp \
-    frame.cpp \
     systest.cpp \
     pattern.cpp \
     inputpanel.cpp \
@@ -68,7 +66,6 @@ HEADERS  += \
     mdLabel/qmdlabel.h \
     qmytablewidget.h \
     patfileform.h \
-    QMdPlainTextEdit/qmdplaintextedit.h \
     paramform.h \
     headtestform.h \
     main.h \
@@ -76,7 +73,6 @@ HEADERS  += \
     qsyslog.h \
     syslogform.h \
     updateromform.h \
-    frame.h \
     systest.h \
     pattern.h \
     namespace.h \
@@ -111,7 +107,6 @@ FORMS    += \
     headtestform.ui \
     syslogform.ui \
     updateromform.ui \
-    frame.ui \
     inputpanel.ui \
     calibrationtestwidget.ui \
     qshazuikbform.ui \

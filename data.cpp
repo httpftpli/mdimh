@@ -15,6 +15,8 @@
 #include<QFileInfoList>
 #include "pattern.h"
 #include "qparam.h"
+#include<QApplication>
+#include<QFileSystemModel>
 
 
 const unsigned char  ProgramEncrypt::EncryptTable[256]={0xD5,0xFD,0xC3,0xB6,0xBE,0xD9,0x55,0x53,

@@ -3,6 +3,9 @@
 #include "qmdmessagebox.h"
 #include "globaldata.h"
 #include "data.h"
+#include <QTimerEvent>
+#include <QProcess>
+
 
 QHMIData::QHMIData(QSend *send,QObject *parent):QObject(parent),psend(send){
 

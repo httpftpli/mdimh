@@ -7,7 +7,6 @@
 #include "patfileform.h"
 #include "headtestform.h"
 #include "updateromform.h"
-#include "frame.h"
 #include "syslogform.h"
 #include <QEvent>
 #include "calibrationtestwidget.h"

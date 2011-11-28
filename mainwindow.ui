@@ -120,7 +120,7 @@ QTabBar::tab:!selected{
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <property name="iconSize">
      <size>
@@ -158,7 +158,7 @@ QTabBar::tab:!selected{
          <string>复位</string>
         </property>
         <property name="icon">
-         <iconset resource="resouce.qrc">
+         <iconset>
           <normaloff>:/image/resouce/F1-2.bmp</normaloff>
           <normalon>:/image/resouce/F1-1.bmp</normalon>:/image/resouce/F1-2.bmp</iconset>
         </property>
@@ -191,7 +191,7 @@ QTabBar::tab:!selected{
          <string>锁行</string>
         </property>
         <property name="icon">
-         <iconset resource="resouce.qrc">
+         <iconset>
           <normaloff>:/image/resouce/F2-2.bmp</normaloff>
           <normalon>:/image/resouce/F2-1.bmp</normalon>:/image/resouce/F2-2.bmp</iconset>
         </property>
@@ -224,7 +224,7 @@ QTabBar::tab:!selected{
          <string>速度限制</string>
         </property>
         <property name="icon">
-         <iconset resource="resouce.qrc">
+         <iconset>
           <normaloff>:/image/resouce/F3-2.bmp</normaloff>
           <normalon>:/image/resouce/F3-1.bmp</normalon>:/image/resouce/F3-2.bmp</iconset>
         </property>
@@ -257,7 +257,7 @@ QTabBar::tab:!selected{
          <string>单片停车</string>
         </property>
         <property name="icon">
-         <iconset resource="resouce.qrc">
+         <iconset>
           <normaloff>:/image/resouce/F4-1.bmp</normaloff>
           <normalon>:/image/resouce/F4-2.bmp</normalon>:/image/resouce/F4-1.bmp</iconset>
         </property>
@@ -290,7 +290,7 @@ QTabBar::tab:!selected{
          <string>报警限制</string>
         </property>
         <property name="icon">
-         <iconset resource="resouce.qrc">
+         <iconset>
           <normaloff>:/image/resouce/F5-2.bmp</normaloff>
           <normalon>:/image/resouce/F5-1.bmp</normalon>:/image/resouce/F5-2.bmp</iconset>
         </property>
@@ -329,7 +329,7 @@ QTabBar::tab:!selected{
          <string>沙嘴</string>
         </property>
         <property name="icon">
-         <iconset resource="resouce.qrc">
+         <iconset>
           <normaloff>:/image/resouce/F6-2.bmp</normaloff>
           <normalon>:/image/resouce/F6-1.bmp</normalon>:/image/resouce/F6-2.bmp</iconset>
         </property>
@@ -1064,7 +1064,7 @@ QTabBar::tab:!selected{
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="resouce.qrc">:/image/resouce/F4-2.bmp</pixmap>
+        <pixmap>:/image/resouce/F4-2.bmp</pixmap>
        </property>
       </widget>
      </item>
@@ -1259,7 +1259,7 @@ QTabBar::tab:!selected{
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="resouce.qrc">:/image/resouce/F1-1.bmp</pixmap>
+        <pixmap>:/image/resouce/F1-1.bmp</pixmap>
        </property>
       </widget>
      </item>
@@ -2556,7 +2556,7 @@ QTabBar::tab:!selected{
   </widget>
   <action name="action_quit">
    <property name="icon">
-    <iconset resource="resouce.qrc">
+    <iconset>
      <normaloff>:/image/resouce/F1-1.bmp</normaloff>:/image/resouce/F1-1.bmp</iconset>
    </property>
    <property name="text">
@@ -2565,7 +2565,7 @@ QTabBar::tab:!selected{
   </action>
   <action name="action_ProgramEdit">
    <property name="icon">
-    <iconset resource="resouce.qrc">
+    <iconset>
      <normaloff>:/image/resouce/F5-1.bmp</normaloff>:/image/resouce/F5-1.bmp</iconset>
    </property>
    <property name="text">
@@ -2588,7 +2588,7 @@ QTabBar::tab:!selected{
   </action>
   <action name="action_6">
    <property name="icon">
-    <iconset resource="resouce.qrc">
+    <iconset>
      <normaloff>:/image/resouce/7-2花样编辑.bmp</normaloff>:/image/resouce/7-2花样编辑.bmp</iconset>
    </property>
    <property name="text">
@@ -2600,7 +2600,7 @@ QTabBar::tab:!selected{
   </action>
   <action name="action_ClearPattern">
    <property name="icon">
-    <iconset resource="resouce.qrc">
+    <iconset>
      <normaloff>:/image/resouce/7-2花样编辑.bmp</normaloff>:/image/resouce/7-2花样编辑.bmp</iconset>
    </property>
    <property name="text">
@@ -2619,7 +2619,7 @@ QTabBar::tab:!selected{
   </action>
   <action name="action_MachiParam">
    <property name="icon">
-    <iconset resource="resouce.qrc">
+    <iconset>
      <normaloff>:/image/resouce/7-5总清花样.bmp</normaloff>:/image/resouce/7-5总清花样.bmp</iconset>
    </property>
    <property name="text">
@@ -2628,7 +2628,7 @@ QTabBar::tab:!selected{
   </action>
   <action name="action_MachiMakeup">
    <property name="icon">
-    <iconset resource="resouce.qrc">
+    <iconset>
      <normaloff>:/image/resouce/锁屏-1.bmp</normaloff>:/image/resouce/锁屏-1.bmp</iconset>
    </property>
    <property name="text">
@@ -2637,7 +2637,7 @@ QTabBar::tab:!selected{
   </action>
   <action name="action_SysMakeup">
    <property name="icon">
-    <iconset resource="resouce.qrc">
+    <iconset>
      <normaloff>:/image/resouce/WiFi.png</normaloff>:/image/resouce/WiFi.png</iconset>
    </property>
    <property name="text">
@@ -2646,7 +2646,7 @@ QTabBar::tab:!selected{
   </action>
   <action name="action_MachiTest">
    <property name="icon">
-    <iconset resource="resouce.qrc">
+    <iconset>
      <normaloff>:/image/resouce/7-5总清花样.bmp</normaloff>:/image/resouce/7-5总清花样.bmp</iconset>
    </property>
    <property name="text">
@@ -2670,7 +2670,7 @@ QTabBar::tab:!selected{
   </action>
   <action name="action_FileManage">
    <property name="icon">
-    <iconset resource="resouce.qrc">
+    <iconset>
      <normaloff>:/image/resouce/7-2花样编辑.bmp</normaloff>:/image/resouce/7-2花样编辑.bmp</iconset>
    </property>
    <property name="text">
@@ -2705,8 +2705,6 @@ QTabBar::tab:!selected{
    <header>mdPushbutton/qmdpushbutton.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="resouce.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

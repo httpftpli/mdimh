@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>resouce/1.png</file>
+        <file>resouce/7-1程序编辑.bmp</file>
+        <file>resouce/7-2花样编辑.bmp</file>
+        <file>resouce/7-3循环编辑.bmp</file>
+        <file>resouce/7-4纱嘴捆绑.bmp</file>
+        <file>resouce/7-5总清花样.bmp</file>
+        <file>resouce/F1-1.bmp</file>
+        <file>resouce/F1-2.bmp</file>
+        <file>resouce/F2-1.bmp</file>
+        <file>resouce/F2-2.bmp</file>
+        <file>resouce/F3-1.bmp</file>
+        <file>resouce/F3-2.bmp</file>
+        <file>resouce/F4-1.bmp</file>
+        <file>resouce/F4-2.bmp</file>
+        <file>resouce/F5-1.bmp</file>
+        <file>resouce/F5-2.bmp</file>
+        <file>resouce/F6-1.bmp</file>
+        <file>resouce/F6-2.bmp</file>
+        <file>resouce/mainwindow.png</file>
+        <file>resouce/WiFi.png</file>
+        <file>resouce/锁屏-1.bmp</file>
+        <file>resouce/锁屏-2.bmp</file>
+        <file>resouce/matlab.png</file>
+        <file>resouce/green.png</file>
+        <file>resouce/locked.png</file>
+        <file>resouce/unlocked.png</file>
+    </qresource>
+</RCC>

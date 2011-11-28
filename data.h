@@ -13,16 +13,19 @@
 #include<QPixmap>
 #include<QSettings>
 #include"communicat.h"
-#include"frame.h"
 #include"QSortFilterProxyModel"
 #include<pattern.h>
 #include<QVariant>
 #include<namespace.h>
 #include<QIntValidator>
+#include<QLineEdit>
+#include<QPointer>
+#include<QDateTime>
 //#include<QApplication>
 
 
 class QParam;
+
 
 #define ADDR_ParaXiTong_BASE 0
 #define ADDR_ParaXiTong ADDR_ParaXiTong_BASE+0           //Bag4 //共24个:系统参数起始地址(有密码)

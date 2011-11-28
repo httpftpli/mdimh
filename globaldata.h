@@ -27,7 +27,7 @@ extern QProgressIndicator *ProgressIndiForm;
 #define INFORMLOG(A) sysLog.informLog(A)
 #define ERRORLOG(A) sysLog.errorLog(A)
 
-extern Md::InitResult sysInit(const QString &filename);
+extern Md::InitResult sysInit();
 extern QString secondToString(int sec);
 
 #endif // GLOBALDATA_H

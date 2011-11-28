@@ -21,18 +21,19 @@ QSysLog sysLog;
 QProgressIndicator *ProgressIndiForm;
 
 
-Md::InitResult sysInit(const QString &filename){
+Md::InitResult sysInit(){
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     QObject::connect(&qRcv,SIGNAL(DataChanged(unsigned short,QVariant)),&hmiData,
                      SLOT(On_DataChanged_FromCtrl(unsigned short,QVariant)));
     QObject::connect(&qSend,SIGNAL(NotifyRcver(unsigned char,bool)),&qRcv,
                      SLOT(On_NotifyRcver(unsigned char,bool)));
     QObject::connect(&hmiData,SIGNAL(hmi_finishCount(int)),&hmiData,
-                     SLOT(on_clothFinish()));
-    INFORMLOG(QObject::tr("开机，系统初始化开始"));
+                     SLOT(on_clothFinish()));    
     QObject::connect(&patternData,SIGNAL(patternChanged(const QString &,const QString &,const QString &,const QString &,const QString &)),
             &hmiData,SLOT(on_patternChange(const QString &,const QString &,const QString &,const QString &,const QString &)));
-    hmiData.loadParam(filename);
+    hmiData.loadParam("./sysconfig.conf");
+    INFORMLOG(QObject::tr("开机，系统初始化开始"));
+    sysLog.setFile(hmiData.sysLogFilePath);
     QPatternData::Result r;
     r = patternData.setFile(hmiData.cntFilePath,hmiData.patFilePath,hmiData.wrkFilePath,hmiData.sazFilePath);
     if(r!=QPatternData::OK){
@@ -46,7 +47,7 @@ Md::InitResult sysInit(const QString &filename){
     splash->show();
     QSend::SendResult commResult;
     /////poll valible rom////////////////
-    commResult  = qSend.IsInBoot(NULL);
+    commResult  = qSend.IsInBoot();
     QMdMessageBox box;
     if(commResult == QSend::InBootState){
         box.setText(QObject::tr("初始化"));
@@ -107,7 +108,7 @@ Md::InitResult sysInit(const QString &filename){
 
     splash->showMessage(QObject::tr("正在下载参数"),Qt::AlignBottom);
     QFile wrkfile(hmiData.wrkFilePath);
-    QFile spafile("./param/SYST_000.SPA");
+    QFile spafile(hmiData.spaFilePath);
     commResult = qSend.SendParama(wrkfile,spafile,0xff);
     if(commResult == QSend::CommucationError){
         splash->showMessage(QObject::tr("通讯错误,参数未成功下载"),Qt::AlignBottom);

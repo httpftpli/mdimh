@@ -166,6 +166,7 @@ void QHMIData::loadParam(const QString &inifilepath){
     loopFilePath = sysset.value("pattern/loopFileName").toString();
     spaFilePath = sysset.value("param/spaFileName").toString();
     udiskDirPath = sysset.value("system/udiskFilePath").toString();
+    sysLogFilePath = sysset.value("system/syslogfile").toString();
     stopTimeHistory = sysset.value("history/stoptime").toLongLong();
     runTimeHistory = sysset.value("history/runtime").toLongLong();
     stopTime = sysset.value("run/stoptime").toLongLong();

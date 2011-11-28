@@ -54,8 +54,6 @@ void MainWindow::setup(){
             SLOT(runDirectionChange(Md::DIRECTION)));
     connect(&hmiData,SIGNAL(hmi_jitouxiangduizhengshu(int)),label_zwz,SLOT(setNum(int)));
 
-
-
     pcheckBoxArray[0] = checkBox_1;
     pcheckBoxArray[1] = checkBox_2;
     pcheckBoxArray[2] = checkBox_3;
@@ -341,7 +339,7 @@ void MainWindow::on_pushButton_9_clicked()
     box.setDefaultButton(QMessageBox::Yes);
     box.setIcon(QMessageBox::Question);
     if(box.exec()==QMessageBox::Yes){
-        hmiData.setclothSetCount(0);
+        hmiData.setclothFinishCount(0);
         hmiData.downloadParam();
     }
 }

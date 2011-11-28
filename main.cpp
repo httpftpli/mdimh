@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
 #ifdef  Q_WS_QWS
     QMdInputContext inputcontext;
     a.setInputContext(&inputcontext);
-
     QWSServer::setCursorVisible(FALSE);
 #endif
     QTextCodec *textcode = QTextCodec::codecForName("UTF-8");
@@ -32,11 +31,10 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForTr(textcode);
     QTextCodec::setCodecForLocale(textcode);
     QTextCodec::setCodecForCStrings(textcode);
-    a.setMouseClickSound("resource/sound/click.wav");
-    sysLog.setFile("./syslog.log");
-    qRcv.start();
+    a.setMouseClickSound("resource/sound/click.wav");    
     MainWindow w;
-    Md::InitResult r= sysInit("./sysconfig.ini");
+    qRcv.start();
+    Md::InitResult r= sysInit();
     if(r!=Md::OK){
         QMdMessageBox box;
         box.exec(QObject::tr("控制板初始化"),QObject::tr("初始化错误"),QMessageBox::Critical,

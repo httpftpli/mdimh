@@ -801,7 +801,7 @@ QSend::SendResult  QSend::SendFile(QFile &file,unsigned short fileid, bool sameh
 }
 
 
-QSend::SendResult QSend::IsInBoot(QWidget *parent){
+QSend::SendResult QSend::IsInBoot(){
     *(unsigned short *)d_send = htons(07);
     *(unsigned char *)(d_send+2) = 0xc1;      //fun code pat file
     *(unsigned char *)(d_send+3) = 0x55;
@@ -812,8 +812,6 @@ QSend::SendResult QSend::IsInBoot(QWidget *parent){
         else
             return InUserState;
     }else{
-        if(parent!=NULL)
-            QMessageBox::warning(parent,tr("查询主板状态"),tr("通信错误"));
         return CommucationError;
     }
 }
@@ -833,7 +831,7 @@ QSend::SendResult QSend::SendBin(QFile &binfile,QWidget *parent){
      int j=0;
      for(j=0;j<3;j++){
         SendResult r;
-        r = IsInBoot(NULL);
+        r = IsInBoot();
         if(r==InBootState)
             break;
         else if(r==InUserState)

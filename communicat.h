@@ -116,7 +116,7 @@ public:
                     unsigned char OneStop,unsigned char alarmLimit,unsigned char DanKouLock);
    SendResult SendFile(QFile &file,unsigned short fileid,bool samehint,QWidget *parent);
    SendResult SendParama(  QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
-   SendResult IsInBoot(QWidget *parent=NULL);
+   SendResult IsInBoot();
    SendResult SendBin(QFile &binfile,QWidget *parent=NULL);
    SendResult SendBag(QString &bagfilename,QWidget *parent = NULL);
    SendResult checkCustomerId(unsigned short id);

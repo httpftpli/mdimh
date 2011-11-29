@@ -52,7 +52,8 @@ SOURCES += main.cpp\
     qmdapplication.cpp \
     qmdsplashscreen.cpp \
     qhmidata.cpp \
-    dialogsetfinishcount.cpp
+    dialogsetfinishcount.cpp \
+    dialogtingche.cpp
 
 HEADERS  += \
     mdPushbutton/qmdpushbutton.h \
@@ -96,7 +97,8 @@ HEADERS  += \
     qmdapplication.h \
     qmdsplashscreen.h \
     qhmidata.h \
-    dialogsetfinishcount.h
+    dialogsetfinishcount.h \
+    dialogtingche.h
 
 FORMS    += \
     qformfile.ui \
@@ -116,7 +118,8 @@ FORMS    += \
     formmovie.ui \
     formjqgzcs.ui \
     formxtcs.ui \
-    dialogsetfinishcount.ui
+    dialogsetfinishcount.ui \
+    dialogtingche.ui
 
 OTHER_FILES +=
 

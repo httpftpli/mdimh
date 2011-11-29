@@ -146,7 +146,7 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
             WARNLOG(tr("沙嘴捆绑文件格式错误，文件大小不等于512字节,没有加载沙嘴捆绑数据"));
     }
     emit patternChanged(patternName,cntfilepath,patfilepath,wrkfilepath,sazfilepath);
-    return OK;
+    return Ok;
 }
 
 
@@ -201,8 +201,24 @@ void QPatternData::patSetData(unsigned short row,unsigned short column,unsigned 
     }
 }
 
-void QPatternData::cntSetData(unsigned short row,unsigned char index,unsigned short data){
-
+void QPatternData::cntSetData(unsigned short row,unsigned char index,unsigned short data,unsigned char len){
+    if(!cntbuf)
+        return;
+    if(len==1)
+        cntbuf[row*128+index]=(char)data;
+    else if(len==2)
+        *(short*)(cntbuf+row*128+index) = data;
+    char buf[128];
+    cntfile->open(QIODevice::ReadOnly);
+    cntfile->seek((row+1)*128);
+    cntfile->read(buf,128);
+    int dif = memcmp(buf,&cntbuf[row*128],128);
+    if(dif)
+        cntModifiedRow.insert(row);
+    else
+        cntModifiedRow.remove(row);
+    emit cntDirty(!patModifiedRow.isEmpty());
+    cntfile->close();
 }
 
 
@@ -332,6 +348,22 @@ void QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag)
             }
             wrkModifiedHandle.clear();
             emit wrkDirty(FALSE);
+        }
+    }
+    if(saveflag&Md::HAVECNT){
+        if(!cntModifiedRow.isEmpty()){
+            cntfile->open(QIODevice::ReadWrite);
+            foreach(unsigned short row,cntModifiedRow){
+                patfile->seek((row+1)*128);
+                patfile->write((char *)&(cntbuf[row*128]),128);
+                if(downloadflag&Md::HAVECNT){
+                     qSend.cntUpdate(row+1,&cntbuf[128*row]); //download to mainboard
+                }
+            }
+            cntfile->flush();
+            cntfile->close();
+            cntModifiedRow.clear();
+            emit cntDirty(FALSE);
         }
     }
     return;

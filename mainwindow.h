@@ -22,6 +22,9 @@ public slots:
     void Timeout1s();
 
 private slots:
+    void on_pushButton_7_clicked();
+    void on_qMdPushButton_5_clicked();
+    void on_qMdPushButton_8_clicked(bool checked);
     void on_pushButton_10_clicked();
     void on_pushButton_8_clicked();
     void on_pushButton_9_clicked();
@@ -36,8 +39,6 @@ private slots:
     void on_qMdPushButton_17_clicked();
     void on_qMdPushButton_23_clicked();
     void on_qMdPushButton_21_clicked();
-    void on_qMdPushButton_5_clicked();
-    void on_qMdPushButton_5_toggled(bool checked);
     void on_qMdPushButton_11_clicked(bool checked);
     void on_qMdPushButton_5_clicked(bool checked);
     void on_qMdPushButton_6_clicked(bool checked);
@@ -52,6 +53,8 @@ private slots:
     void on_qMdPushButton_3_clicked();
     void on_qMdPushButton_clicked();
     void on_qMdPushButton_12_clicked();
+
+    void onXtGuiling(unsigned char val);
 
 private:
     QCheckBox *pcheckBoxArray[8];

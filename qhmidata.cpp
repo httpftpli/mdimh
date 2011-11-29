@@ -60,41 +60,41 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
         unsigned char derection,stat;
 
         stream >> tatalloop;
-        if(tatalloop!=dataBuf[RUN_LOOP_TOTAL].Val){
-            dataBuf[RUN_LOOP_TOTAL].Val = tatalloop;
+        if(tatalloop!=dataBuf[RUN_LOOP_TOTAL]){
+            dataBuf[RUN_LOOP_TOTAL] = tatalloop;
             emit hmi_loopTatal(tatalloop);
         }
         stream >> cntnumber;
         cntnumber--;                            //上发的行号以一为起点，所以减去1
-        dataBuf[RUN_CNT_NUMBER].Val = cntnumber;
+        dataBuf[RUN_CNT_NUMBER] = cntnumber;
         emit hmi_cntNumber(cntnumber);
         stream >> leftloop;
-        if(leftloop!=dataBuf[RUN_LOOP_LEFT].Val){
-           dataBuf[RUN_LOOP_LEFT].Val = leftloop;
+        if(leftloop!=dataBuf[RUN_LOOP_LEFT]){
+           dataBuf[RUN_LOOP_LEFT] = leftloop;
            emit hmi_loopleft(leftloop);
         }
          stream >> derection;
-        if(derection!=dataBuf[RUN_DERECTION].Val){
-           dataBuf[RUN_DERECTION].Val = derection;
+        if(derection!=dataBuf[RUN_DERECTION]){
+           dataBuf[RUN_DERECTION] = derection;
            emit hmi_direction(derection?Md::LEFT:Md::RIGHT);
         }
         stream >> loopstart;
-        if(loopstart!=dataBuf[RUN_LOOP_STARTNO].Val){
-           dataBuf[RUN_LOOP_STARTNO].Val = loopstart;
+        if(loopstart!=dataBuf[RUN_LOOP_STARTNO]){
+           dataBuf[RUN_LOOP_STARTNO] = loopstart;
            emit hmi_loopStart(loopstart);
         }
         stream >> loopend;
-        if(loopend!=dataBuf[RUN_LOOP_ENDNO].Val){
-           dataBuf[RUN_LOOP_ENDNO].Val = loopend;
+        if(loopend!=dataBuf[RUN_LOOP_ENDNO]){
+           dataBuf[RUN_LOOP_ENDNO] = loopend;
            emit hmi_loopend(loopend);
         }
         stream >> stat;
-        if(stat!=dataBuf[RUN_JUMPORNOT].Val){
-           dataBuf[RUN_JUMPORNOT].Val = stat; //0:正常运行，1:跳行
+        if(stat!=dataBuf[RUN_JUMPORNOT]){
+           dataBuf[RUN_JUMPORNOT] = stat; //0:正常运行，1:跳行
         }
         stream >> finishcount;
-        if(finishcount!=dataBuf[RUN_COUNT_FINISH].Val){
-           dataBuf[RUN_COUNT_FINISH].Val = finishcount;
+        if(finishcount!=dataBuf[RUN_COUNT_FINISH]){
+           dataBuf[RUN_COUNT_FINISH] = finishcount;
            emit hmi_finishCount(finishcount);
         }
 
@@ -105,7 +105,7 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
         //收到数据01表示停止，停车检查定时器(600ms)重新启动
         //运行定时器关，停车定时器开
         //JTZTtimer.start();
-        dataBuf[JTDZZT].Val=0; //标记为停车
+        dataBuf[JTDZZT]=0; //标记为停车
         break;
     case QHMIData::CWBJXX:{//报警信息
         unsigned int i = Val.toInt();
@@ -115,12 +115,12 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
         break;
     }
     case QHMIData::JTXDZS:{//机头相对针数，显示在主界面上
-        dataBuf[JTXDZS].Val= Val.toInt();
-        emit hmi_jitouxiangduizhengshu(dataBuf[JTXDZS].Val);
+        dataBuf[JTXDZS]= Val.toInt();
+        emit hmi_jitouxiangduizhengshu(dataBuf[JTXDZS]);
         break;
     }
     case QHMIData::GLWC:{
-            emit hmi_xtguilingwc(Val.toInt());
+            emit xtGuiling(Val.toInt());
         }
     default:
         emit DataChanged_ToHMI(index,Val);
@@ -130,11 +130,11 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
 }
 
 void QHMIData::setJitouTingChi(){  //停车检查定时器溢出
-    dataBuf[JTDZZT].Val=1; //标记为运行
+    dataBuf[JTDZZT]=1; //标记为运行
 }
 
 bool QHMIData::isRun(){
-    return (bool)dataBuf[JTDZZT].Val;
+    return (bool)dataBuf[JTDZZT];
 }
 
 void QHMIData::RequireData(unsigned short index){
@@ -173,7 +173,7 @@ void QHMIData::loadParam(const QString &inifilepath){
     runTime = sysset.value("run/runtime").toLongLong();
 }
 
-Md::InitResult  QHMIData::errorCode(){
+Md::Result  QHMIData::errorCode(){
     return errorcode;
 }
 
@@ -219,6 +219,10 @@ void QHMIData::saveSysCfgFile(){
     qDebug()<<"QProcess::executer"<<r;
 }
 
+int QHMIData::setSpeedLimit(bool limit){
+    return psend->sendParamaInRun(clothSetCount,clothFinishCount,limit,
+                           stopPerOne,alarmLimit,dankouLock);
+}
 
 void QHMIData::setclothSetCount(unsigned short val){
     if(val!=clothSetCount){
@@ -228,10 +232,8 @@ void QHMIData::setclothSetCount(unsigned short val){
 }
 
 void QHMIData::setclothFinishCount(unsigned short val){
-    if(val!=clothFinishCount){
         clothFinishCount = val;
         emit clothFinishCountChanged(val);
-    }
 }
 
 void QHMIData::downloadParam(){
@@ -242,11 +244,15 @@ void QHMIData::downloadParam(){
 
 void QHMIData::on_patternChange(const QString &patternname,const QString &cntfilepath, const QString &patfilepath,
                               const QString &wrkfilepath , const QString &sazfilepath){
-    Q_UNUSED(patternname);
+    partternName = patternname;
     cntFilePath = cntfilepath;
     patFilePath = patfilepath;
     wrkFilePath = wrkfilepath;
     sazFilePath = sazfilepath;
+    setclothFinishCount(0);
+    psend->sendParamaInRun(clothSetCount,clothFinishCount,
+                           speedLimit,stopPerOne,alarmLimit,
+                           dankouLock);
 }
 
 void QHMIData::on_clothFinish( ){

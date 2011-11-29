@@ -1267,6 +1267,137 @@ bool QSzkbModel::checkdatavalid(){
 }
 
 
+////////////////停车编辑//////////////////
+
+QTingcheModel::QTingcheModel(QPatternData *pattern ,QObject * parent):QAbstractTableModel(parent),
+             patterndata(pattern){
+    if(!patterndata->cntfile)
+        return;
+    if(patterndata->cntbuf)
+        for(int i=0;i<patterndata->tatalrow;i++){
+            if(patterndata->cntbuf[128*i+CNT_TingCe]==1)
+                cntrows.append(i);
+        }
+    else{
+        bool open = patterndata->cntfile->isOpen();
+        if(!open)
+            patterndata->cntfile->open(QIODevice::ReadOnly);
+        for(int i=0;i<patterndata->tatalrow;i++){
+            patterndata->cntfile->seek(128*(i+1)+CNT_TingCe);
+            char stop;
+            patterndata->cntfile->read(&stop,1);
+            if(stop==1)
+                cntrows.append(i);
+        }
+        if(!open)
+            patterndata->cntfile->close();
+    }
+}
+
+
+int QTingcheModel::rowCount(const QModelIndex &parent) const{
+    Q_UNUSED(parent)
+    return cntrows.size();
+}
+int QTingcheModel::columnCount(const QModelIndex &parent) const{
+    Q_UNUSED(parent)
+    return 1;
+}
+QVariant QTingcheModel::headerData(int section, Qt::Orientation orientation, int role) const{
+    if(role != Qt::DisplayRole)
+        return QVariant();
+    if(orientation==Qt::Horizontal){
+        return tr("CNT行号");
+    }else{
+        return section+1;
+    }
+    return QVariant();
+}
+
+QVariant QTingcheModel::data(const QModelIndex &index, int role) const{
+    if(role!=Qt::DisplayRole)
+        return QVariant();
+    int row = index.row();
+    return this->cntrows.at(row)+1;
+}
+
+bool QTingcheModel::setData(const QModelIndex &index, const QVariant &value, int role){
+    if(role!=Qt::EditRole)
+        return false;
+    if(!index.isValid())
+        return false;
+    int row = index.row();
+    unsigned short cntrow = (unsigned short)value.toString().toInt()-1;
+    cntrows[row]=cntrow;
+    emit datasValid(checkdatavalid());
+    return TRUE;
+}
+
+Qt::ItemFlags QTingcheModel::flags(const QModelIndex &index) const{
+    return QAbstractTableModel::flags(index)|Qt::ItemIsEditable;
+}
+
+bool QTingcheModel::insertRows(int row,int count, const QModelIndex &parent){
+    Q_UNUSED(parent)
+    beginInsertRows(QModelIndex(),row,row+count-1);
+    for(int i=0;i<count;i++){
+       cntrows.append(0);
+    }
+    endInsertRows();
+    emit datasValid(checkdatavalid());
+    return TRUE;
+}
+
+bool QTingcheModel::removeRows(int row,int count, const QModelIndex &parent){
+    Q_UNUSED(parent);
+    beginRemoveRows(QModelIndex(),row,row+count-1);
+    for(int i=0;i<count;i++)
+        cntrows.removeAt(row);
+    endRemoveRows();
+    emit datasValid(checkdatavalid());
+    return TRUE;
+}
+
+void QTingcheModel::saveToFile(){
+    if(!patterndata->cntfile)
+        return;
+    if(patterndata->cntbuf){
+        for(int i=0;i<patterndata->tatalrow;i++){
+            patterndata->cntbuf[i*128+CNT_TingCe]=0;
+        }
+        for(int i=0;i<cntrows.size();i++){
+            int cntrow = cntrows.at(i);
+            patterndata->cntbuf[cntrow*128+CNT_TingCe]=1;
+        }
+    }
+    bool open = patterndata->cntfile->isOpen();
+    if(!open)
+        patterndata->cntfile->open(QIODevice::ReadWrite);
+    for(int i=0;i<patterndata->tatalrow;i++){
+        patterndata->cntfile->seek((i+1)*128+CNT_TingCe);
+        char tingche =0;
+        patterndata->cntfile->write(&tingche,1);
+    }
+    for(int i=0;i<cntrows.size();i++){
+        int cntrow = cntrows.at(i);
+        char tingche =1;
+        patterndata->cntfile->seek((cntrow+1)*128+CNT_TingCe);
+        patterndata->cntfile->write(&tingche,1);
+    }
+    patterndata->cntfile->flush();
+    if(!open)
+        patterndata->cntfile->close();
+}
+
+
+bool QTingcheModel::checkdatavalid(){
+    foreach(int cntrow,cntrows){
+        if(cntrow>patterndata->tatalrow)
+            return FALSE;
+    }
+    return TRUE;
+}
+
 ///////////////////QDMBCModel/////////////////////////////////////////
 
 int QDMBCModel::rowCount(const QModelIndex &parent) const{

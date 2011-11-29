@@ -21,6 +21,7 @@
 #include "qparam.h"
 #include "qmdstyle.h"
 #include "dialogsetfinishcount.h"
+#include "dialogtingche.h"
 
 
 
@@ -32,6 +33,18 @@ MainWindow::MainWindow(QWidget *parent) :
     setup();
 }
 
+void MainWindow::onXtGuiling(unsigned char val){
+    if(0xaa==val)//系统归零完成
+        qMdPushButton_5->setChecked(TRUE);
+    else if(0xbb==val){//系统归零错误
+        qMdPushButton_5->setChecked(FALSE);
+        QMdMessageBox box;
+        box.exec(tr("系统复位"),tr("归零错误"),
+                 QMessageBox::Warning,
+                 QMessageBox::Cancel,
+                 QMessageBox::Cancel);
+    }
+}
 
 
 void MainWindow::setup(){
@@ -53,6 +66,7 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(hmi_direction(Md::DIRECTION)),this,
             SLOT(runDirectionChange(Md::DIRECTION)));
     connect(&hmiData,SIGNAL(hmi_jitouxiangduizhengshu(int)),label_zwz,SLOT(setNum(int)));
+    connect(&hmiData,SIGNAL(xtGuiling(unsigned char)),SLOT(onXtGuiling(unsigned char)));
 
     pcheckBoxArray[0] = checkBox_1;
     pcheckBoxArray[1] = checkBox_2;
@@ -126,16 +140,17 @@ void MainWindow::runPatternRowChange(unsigned short cntnumber){
     for(int i=0;i<8;i++)
         pcheckBoxArray[i]->setChecked(sz1&1<<i);
     ///////////////////度目值/////////////////////////
-    if(cntnumber%2){//偶数数行
+    if(cntnumber%2){//偶数数行        
+        label_dmz_hz->setNum(paramaData.duMu_BuGongZuo(QParam::BackLeft));
+        label_dmz_qz->setNum(paramaData.duMu_BuGongZuo(QParam::FrontLeft));
+        label_dmz_hy->setNum(patternData.duMuZhi(TRUE,cntnumber));
+        label_dmz_qy->setNum(patternData.duMuZhi(FALSE,cntnumber));
+
+    }else{//奇数行
         label_dmz_hz->setNum(patternData.duMuZhi(TRUE,cntnumber));
         label_dmz_qz->setNum(patternData.duMuZhi(FALSE,cntnumber));
         label_dmz_hy->setNum(paramaData.duMu_BuGongZuo(QParam::BackRight));
         label_dmz_qy->setNum(paramaData.duMu_BuGongZuo(QParam::FrontRight));
-    }else{//奇数行
-        label_dmz_hy->setNum(patternData.duMuZhi(TRUE,cntnumber));
-        label_dmz_qy->setNum(patternData.duMuZhi(FALSE,cntnumber));
-        label_dmz_hz->setNum(paramaData.duMu_BuGongZuo(QParam::BackLeft));
-        label_dmz_qz->setNum(paramaData.duMu_BuGongZuo(QParam::FrontLeft));
     }
 }
 
@@ -190,11 +205,11 @@ void MainWindow::on_qMdPushButton_7_clicked()
 
     //qMdPushButton_7->setShowBusySpin(TRUE);
     //qMdPushButton_7->startSpin();
-   //PatFileForm *patFileForm = new PatFileForm(NULL,&patternData);
-   //patFileForm->show();
-   //qMdPushButton_7->endSpin();
-   //qMdPushButton_7->setCursor(QCursor(Qt::BusyCursor));
-    FormMovie *formmovie = new FormMovie;
+    PatFileForm *patFileForm = new PatFileForm(NULL,&patternData);
+    patFileForm->show();
+    //qMdPushButton_7->endSpin();
+    //qMdPushButton_7->setCursor(QCursor(Qt::BusyCursor));
+    // FormMovie *formmovie = new FormMovie;
 
 }
 
@@ -221,12 +236,16 @@ void MainWindow::on_qMdPushButton_14_clicked()
     pupdateRomForm->exec();
 }
 
+void MainWindow::on_qMdPushButton_5_clicked(bool checked)
+{
+
+}
 
 void MainWindow::on_qMdPushButton_6_clicked(bool checked)
 {
     qMdPushButton_6->setChecked(!checked);
-    QSend::SendResult r = qSend.firstLineLoop(checked);
-    if(r==QSend::SendOk)
+    int r = qSend.firstLineLoop(checked);
+    if(r==Md::Ok)
         qMdPushButton_6->setChecked(checked);
     else
         qMdPushButton_6->setChecked(!checked);
@@ -234,23 +253,15 @@ void MainWindow::on_qMdPushButton_6_clicked(bool checked)
 
 void MainWindow::on_qMdPushButton_11_clicked(bool checked)
 {
-
+    qMdPushButton_11->setChecked(!checked);
+    int r = qSend.sazuiDownUp(checked);
+    if(r==Md::Ok)
+        qMdPushButton_11->setChecked(checked);
+    else
+        qMdPushButton_11->setChecked(!checked);
 }
 
-void MainWindow::on_qMdPushButton_5_clicked(bool checked)
-{
 
-}
-
-void MainWindow::on_qMdPushButton_5_toggled(bool checked)
-{
-
-}
-
-void MainWindow::on_qMdPushButton_5_clicked()
-{
-
-}
 
 
 void MainWindow::on_qMdPushButton_21_clicked()
@@ -332,6 +343,8 @@ void MainWindow::on_pushButton_4_clicked()
 
 void MainWindow::on_pushButton_9_clicked()
 {
+    if(hmiData.clothFinishCount==0)
+        return;
     QMdMessageBox box;
     box.setText(tr("完成件数清零"));
     box.setInformativeText(tr("是否清零?"));
@@ -360,4 +373,26 @@ void MainWindow::on_pushButton_8_clicked()
 void MainWindow::on_pushButton_10_clicked()
 {
     on_qMdPushButton_23_clicked();
+}
+
+
+void MainWindow::on_qMdPushButton_8_clicked(bool checked)
+{
+
+}
+
+void MainWindow::on_qMdPushButton_5_clicked()
+{
+
+}
+
+
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    DialogTingche *dialog = new DialogTingche(&patternData);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setWindowTitle(tr("停车编辑"));
+    dialog->move((width()-dialog->width())/2,100);
+    dialog->exec();
 }

@@ -22,7 +22,7 @@ void updateRomForm::on_qMdPushButton_7_clicked()
 void updateRomForm::on_qMdPushButton_17_clicked()
 {
     QString str = lineEdit_2->text();
-        QSend::SendResult result;
+        int result;
         if(!str.isEmpty()){
             result = qSend.SendBag(str,this);
         }
@@ -30,27 +30,27 @@ void updateRomForm::on_qMdPushButton_17_clicked()
         box.setText(tr("下载固件"));
         box.setIcon(QMessageBox::Warning);
         box.setStandardButtons(QMessageBox::Cancel);
-        if(result == QSend::FileNotExist){
+        if(result == Md::FileNotExist){
             box.setInformativeText(tr("文件不存在"));
             box.exec();
         }
-        if(result == QSend::FileOpenFail){
+        if(result == Md::FileOpenFail){
             box.setInformativeText(tr("文件打开错误"));
             box.exec();
         }
-        if(result == QSend::CommucationError){
+        if(result == Md::CommError){
             box.setInformativeText(tr("通信出错"));
             box.exec();
         }
-        if(result == QSend::EraseError){
+        if(result == Md::EraseError){
             box.setInformativeText(tr("擦除错误"));
             box.exec();
         }
-        if(result == QSend::BurnError){
+        if(result == Md::BurnError){
             box.setInformativeText(tr("烧写错误"));
             box.exec();
         }
-        if(result == QSend::BurnOK){
+        if(result == Md::BurnOK){
             box.setIcon(QMessageBox::Information);
             box.setStandardButtons(QMessageBox::Ok);
             box.setDefaultButton(QMessageBox::Ok);
@@ -63,7 +63,7 @@ void updateRomForm::on_qMdPushButton_17_clicked()
 void updateRomForm::on_qMdPushButton_8_clicked()
 {
     QString str = lineEdit->text();
-        QSend::SendResult result;
+        int result;
         if(!str.isEmpty()){
             QFile file(str);
             result = qSend.SendBin(file,this);
@@ -72,19 +72,19 @@ void updateRomForm::on_qMdPushButton_8_clicked()
         box.setText(tr("下载固件"));
         box.setStandardButtons(QMessageBox::Cancel);
         box.setIcon(QMessageBox::Warning);
-        if(result == QSend::CommucationError){
+        if(result == Md::CommError){
             box.setInformativeText(tr("通信出错"));
             box.exec();
         }
-        if(result == QSend::EraseError){
+        if(result == Md::EraseError){
             box.setInformativeText(tr("擦除错误"));
             box.exec();
         }
-        if(result == QSend::BurnError){
+        if(result == Md::BurnError){
             box.setInformativeText(tr("烧写错误"));
             box.exec();
         }
-        if(result == QSend::BurnOK){
+        if(result == Md::Ok){
             box.setInformativeText(tr("下载成功"));
             box.setIcon(QMessageBox::Information);
             box.setStandardButtons(QMessageBox::Ok);

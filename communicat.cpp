@@ -261,72 +261,72 @@ bool QSend::__ProgramSend(unsigned short &ackval){  //此函数是针对升级�
 }
 
 
-QSend::SendResult QSend::firstLineLoop(bool loop){
+int QSend::firstLineLoop(bool loop){
     *(unsigned short *)d_send = htons(8); //len
     *(unsigned char *)(d_send+2) = (0x46);//fun code
     *(unsigned short *)(d_send+3) = htons((unsigned short)loop);
     if(ProgramSend())
-        return SendOk;
-    return CommucationError;
+        return Md::Ok;
+    return Md::CommError;
 }
 
-QSend::SendResult QSend::goToLine(unsigned short line){
+int QSend::goToLine(unsigned short line){
     *(unsigned short *)d_send = htons(8); //len
     *(unsigned char *)(d_send+2) = (0x47);//fun code
     *(unsigned short *)(d_send+3) = htons(line);
     if(ProgramSend())
-        return SendOk;
-    return CommucationError;
+        return Md::Ok;
+    return Md::CommError;
 }
-QSend::SendResult QSend::sazuiDownUp(bool up){
+int QSend::sazuiDownUp(bool up){
     *(unsigned short *)d_send = htons(7); //len
     *(unsigned char *)(d_send+2) = (0x48);//fun code
     *(unsigned char *)(d_send+3) = (unsigned char)up;
     if(ProgramSend())
-        return SendOk;
-    return CommucationError;
+        return Md::Ok;
+    return Md::CommError;
 }
-QSend::SendResult QSend::sazuiReplaceSwap(bool replaceorswap,unsigned char leftsazui,unsigned char rightsazui){
+int QSend::sazuiReplaceSwap(bool replaceorswap,unsigned char leftsazui,unsigned char rightsazui){
     *(unsigned short *)d_send = htons(9); //len
     *(unsigned char *)(d_send+2) = (0x49);//fun code
     *(unsigned char *)(d_send+3) = (unsigned char)replaceorswap;
     *(unsigned char *)(d_send+4) = (unsigned char)leftsazui;
     *(unsigned char *)(d_send+5) = (unsigned char)rightsazui;
     if(ProgramSend())
-        return SendOk;
-    return CommucationError;
+        return Md::Ok;
+    return Md::CommError;
 }
 
-QSend::SendResult QSend::cntUpdate(unsigned short line,unsigned char *buf){
+int QSend::cntUpdate(unsigned short line,unsigned char *buf){
     *(unsigned short *)d_send = htons(136); //len
     *(unsigned char *)(d_send+2) = (0x4a);//fun code
     *(unsigned short *)(d_send+3) = htons(line);
     memcpy(d_send+5,buf,128);
     if(ProgramSend())
-        return SendOk;
-    return CommucationError;
+        return Md::Ok;
+    return Md::CommError;
 }
 
-QSend::SendResult QSend::patUpdate(unsigned short line,unsigned char *buf,unsigned short patlinelen){
+int QSend::patUpdate(unsigned short line,unsigned char *buf,unsigned short patlinelen){
     *(unsigned short *)d_send = htons(patlinelen+8); //len
     *(unsigned char *)(d_send+2) = (0x4b);//fun code
     *(unsigned short *)(d_send+3) = htons(line);
     memcpy(d_send+5,buf,patlinelen);
     if(ProgramSend())
-        return SendOk;
-    return CommucationError;
+        return Md::Ok;
+    return Md::CommError;
 }
 
-QSend::SendResult QSend::headStopAside(){
+int QSend::headStopAside(){
     *(unsigned short *)d_send = htons(7); //len
     *(unsigned char *)(d_send+2) = (0x4d);//fun code
     *(unsigned char *)(d_send+3) = 0x55;
     if(ProgramSend())
-        return SendOk;
-    return CommucationError;
+        return Md::Ok;
+    return Md::CommError;
 }
 
-QSend::SendResult QSend::pollSysVersion(QString &mainbordVersion,QString &bagVersion){
+int QSend::pollSysVersion(QString &mainbordVersion,QString &bagVersion){
     *(unsigned short *)d_send = htons(7); //len
     *(unsigned char *)(d_send+2) = (0x53);//fun code
     *(unsigned char *)(d_send+3) = 0x55;
@@ -341,9 +341,9 @@ QSend::SendResult QSend::pollSysVersion(QString &mainbordVersion,QString &bagVer
         if((lenofmain+lenofbag)>240)
             bagVersion = "";
         bagVersion = QString::fromAscii(buf+4+lenofmain,lenofbag);
-        return SendOk;
+        return Md::Ok;
     }
-    return CommucationError;
+    return Md::CommError;
 }
 
 void  QSend::MainMotorTest(unsigned char direction,unsigned char speedpercent){
@@ -389,7 +389,7 @@ void QSend::trigoneMagneticTest(unsigned long trigoneMag,unsigned long stat){
     ProgramSend();
 }
 
-QSend::SendResult QSend::sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,
+int QSend::sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,
                         unsigned char OneStop,unsigned char alarmLimit,unsigned char DanKouLock){
     *(unsigned short *)d_send = htons(14);       //len
     *(unsigned char *)(d_send+2) = (0x52);      //fun code
@@ -400,9 +400,9 @@ QSend::SendResult QSend::sendParamaInRun(unsigned short setcount,unsigned short 
     *(unsigned char  *)(d_send+9) = alarmLimit;
     *(unsigned char  *)(d_send+10) = DanKouLock;
     if(ProgramSend())
-        return SendOk;
+        return Md::Ok;
     else
-        return CommucationError;
+        return Md::CommError;
 }
 
 
@@ -473,79 +473,79 @@ void QSend::RightMuslin(unsigned char force,bool clockwise){
     ProgramSend();
 }
 
-QSend::SendResult QSend::ShoutDownSystem(){
+int QSend::ShoutDownSystem(){
     *(unsigned short *)d_send = htons(7);       //len
     *(unsigned char *)(d_send+2) = (0x42);      //fun code
     *(unsigned char *)(d_send+3) = 0x55;
     unsigned short ack;
     if(!ProgramSend(ack))
-        return CommucationError;
+        return Md::CommError;
     if(0x55==ack)
-        return WaitingForShoutDown;
-    return  CommucationError;
+        return Md::WaitingForShoutDown;
+    return  Md::CommError;
 }
 
 
-QSend::SendResult QSend::ReadAbsoluteNoOfPin(unsigned short &val){
+int QSend::ReadAbsoluteNoOfPin(unsigned short &val){
     *(unsigned short *)d_send = htons(7);       //len
     *(unsigned char *)(d_send+2) = (0x23);      //fun code
     *(unsigned char *)(d_send+3) = 0x55;
     unsigned short ackval;
     if(ProgramSend(ackval)){
         val = ackval;
-        return SendOk;
+        return Md::Ok;
     }
-    return CommucationError;
+    return Md::CommError;
 }
 
-QSend::SendResult QSend::ReadEncoder(unsigned short &val){
+int QSend::ReadEncoder(unsigned short &val){
     *(unsigned short *)d_send = htons(7);       //len
     *(unsigned char *)(d_send+2) = (0x22);      //fun code
     *(unsigned char *)(d_send+3) = 0x55;
     unsigned short ackval;
     if(ProgramSend(ackval)){
         val = ackval;
-        return SendOk;
+        return Md::Ok;
     }
-    return CommucationError;
+    return Md::CommError;
 }
 
 
 
-QSend::SendResult QSend::ReadHead(){
+int QSend::ReadHead(){
     *(unsigned short *)d_send = htons(7);       //len
     *(unsigned char *)(d_send+2) = (0x24);      //fun code
     *(unsigned char *)(d_send+3) = 0x55;
     ProgramSend();
-    return SendOk;
+    return Md::Ok;
 }
 
-QSend::SendResult QSend::TogSysStat(unsigned char stat){
+int QSend::TogSysStat(unsigned char stat){
     *(unsigned short *)d_send = htons(7);       //len
     *(unsigned char *)(d_send+2) = (0x40);      //fun code
     *(unsigned char *)(d_send+3) = stat;
     unsigned short ackval;
     if(ProgramSend(ackval)){
         if(ackval==0x55)
-            return QSend::SendOk;
+            return Md::Ok;
     }
     else
-        return CommucationError;
+        return Md::CommError;
 }
 
 //////////////checkCustomerId//////////////////////
-QSend::SendResult QSend::checkCustomerId(unsigned short id){
+int QSend::checkCustomerId(unsigned short id){
     *(unsigned short *)d_send = htons(8);       //len
     *(unsigned char *)(d_send+2) = (0x54);      //fun code
     *(unsigned short *)(d_send+3) = id;         //和其他协议相反，小端对其
     unsigned short ackval;
     if(ProgramSend(ackval)){
         if(ackval == 0x55)
-            return CustomerIdPass;
+            return Md::Ok;
         else
-            return CustomerIdNotPass;
+            return Md::CustomerIdNotPass;
     }else
-        return CommucationError;
+        return Md::CommError;
 }
 
 
@@ -567,14 +567,14 @@ void QSend::readshorts(QDataStream &stream,unsigned char * buf,int count){
 }
 
 
-QSend::SendResult QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent){
+int QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent){
     if(!wrkfile.open(QIODevice::ReadOnly)){
         qDebug()<<"in communicat.cpp  QSend::SendParama wrkfile open fail";
-        return QSend::FileOpenFail;
+        return Md::FileOpenFail;
     }
     if(!spafile.open(QIODevice::ReadOnly)){
         qDebug()<<"in communicat.cpp  QSend::SendParama spafile open fail";
-        return QSend::FileOpenFail;
+        return Md::FileOpenFail;
     }
     QDataStream wrkstream(&wrkfile),spastream(&spafile);
     wrkstream.setByteOrder(QDataStream::LittleEndian);
@@ -686,19 +686,19 @@ QSend::SendResult QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,Q
     if((packet&0x3f)==result){
         if(parent!=NULL)
             QMessageBox::information(parent,tr("参数下载"),tr("下载成功"));
-        return QSend::SendFileOk;
+        return Md::Ok;
     }
     else{
         if(parent!=NULL)
             QMessageBox::warning(parent,tr("参数下载"),tr("通信出错"));
-        return QSend::CommucationError;
+        return Md::CommError;
     }
 }
 
 
-QSend::SendResult  QSend::SendFile(QFile &file,unsigned short fileid, bool samehint, QWidget *parent){
+int  QSend::SendFile(QFile &file,unsigned short fileid, bool samehint, QWidget *parent){
     if(!file.exists()){
-        return FileNotExist;
+        return Md::FileNotExist;
     }
     unsigned char infofuncode,datafuncode;
     QFileInfo fileinfo(file);
@@ -714,7 +714,7 @@ QSend::SendResult  QSend::SendFile(QFile &file,unsigned short fileid, bool sameh
         infofuncode = 0x00;
         datafuncode = 0x84;
     }else{
-        return NotPatCntSaz;
+        return Md::NotPatCntSaz;
     }
     QByteArray filename = fname.left(fname.size()-4).toLatin1();
     int size = filename.size();
@@ -753,10 +753,10 @@ QSend::SendResult  QSend::SendFile(QFile &file,unsigned short fileid, bool sameh
             if(result ==0){
                 if(QMessageBox::warning(parent,tr("花型发送"),fileinfo.suffix()+tr("文件已存在,是否覆盖"),
                                         QMessageBox::Yes|QMessageBox::No)== QMessageBox::No)
-                    return FileSame;
+                    return Md::FileSame;
             }
         }else{
-            return CommucationError;
+            return Md::CommError;
         }
     }
     file.open(QIODevice::ReadOnly);
@@ -777,10 +777,10 @@ QSend::SendResult  QSend::SendFile(QFile &file,unsigned short fileid, bool sameh
        *(unsigned char *)(d_send+3) =i+1;
        stream.readRawData((char *)&d_send[4],512);
        if(!ProgramSend(result)){
-           return CommucationError;
+           return Md::CommError;
        }
        if(result!=0x55){
-           return CommucationError;
+           return Md::CommError;
        }
    }else{
        for(int i=0;i<packet;i++){
@@ -789,56 +789,56 @@ QSend::SendResult  QSend::SendFile(QFile &file,unsigned short fileid, bool sameh
            *(unsigned char *)(d_send+2) = datafuncode;
            *(unsigned short *)(d_send+3) =htons(i);
            if(!ProgramSend(result)){
-               return CommucationError;
+               return Md::CommError;
            }
            if(result!=i){
-               return CommucationError;
+               return Md::CommError;
            }
            emit commPercent((i+1)*100/packet);
        }
    }
-   return SendFileOk;
+   return Md::Ok;
 }
 
 
-QSend::SendResult QSend::IsInBoot(){
+int QSend::IsInBoot(){
     *(unsigned short *)d_send = htons(07);
     *(unsigned char *)(d_send+2) = 0xc1;      //fun code pat file
     *(unsigned char *)(d_send+3) = 0x55;
     unsigned short ackval;
     if(ProgramSend(ackval)){
         if(ackval==0x55)
-            return InBootState;
+            return Md::InBootState;
         else
-            return InUserState;
+            return Md::InUserState;
     }else{
-        return CommucationError;
+        return Md::CommError;
     }
 }
 
 
-QSend::SendResult QSend::SendBin(QFile &binfile,QWidget *parent){
+int QSend::SendBin(QFile &binfile,QWidget *parent){
+     //send ox55 0xaa entern to boot status
      *(unsigned short *)d_send = htons(07);
      *(unsigned char *)(d_send+2) = 0xc0;
      *(unsigned char *)(d_send+3) = 0x55;
      if(!ProgramSend())
-          return CommucationError;
+          return Md::CommError;
      *(unsigned char *)(d_send+3) = 0xaa;
      if(!ProgramSend())
-          return CommucationError;
-
+          return Md::CommError;
     //poll for inboot
      int j=0;
      for(j=0;j<3;j++){
-        SendResult r;
+        int r;
         r = IsInBoot();
-        if(r==InBootState)
+        if(r&Md::InBootState)
             break;
-        else if(r==InUserState)
-            return InUserState;
+        else if(r&Md::InUserState)
+            return Md::InUserState;
      }
      if(3==j)
-         return CommucationError;
+         return Md::CommError;
     ///////erase////////////////////////////
      unsigned short comack;
      QProgressDialog progressdialog(parent);
@@ -846,9 +846,9 @@ QSend::SendResult QSend::SendBin(QFile &binfile,QWidget *parent){
     *(unsigned char *)(d_send+2) = 0xc2;
     *(unsigned char *)(d_send+3) = 0x55;
     if(!ProgramSend(comack))
-            return CommucationError;
+            return Md::CommError;
     if(comack == 0xaa)
-            return EraseError;
+        return Md::EraseError;
     ////////wait for erase process
     QElapsedTimer time;
     time.start();
@@ -866,7 +866,7 @@ QSend::SendResult QSend::SendBin(QFile &binfile,QWidget *parent){
             continue;
         if(funcode == 0xc3){
             if(comack == 0xaa)
-                return EraseError;
+                return Md::EraseError;
             progressdialog.setValue(comack);
             QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
             if(comack == 100)
@@ -874,7 +874,7 @@ QSend::SendResult QSend::SendBin(QFile &binfile,QWidget *parent){
         }
     }
     if(time.elapsed()>=20000)
-        return EraseError;
+        return Md::EraseError;
     ProgramEncrypt encrypt;
     progressdialog.setLabelText(tr("烧写进度"));
     binfile.open(QIODevice::ReadOnly);
@@ -886,11 +886,11 @@ QSend::SendResult QSend::SendBin(QFile &binfile,QWidget *parent){
         encrypt.Decrypt(&d_send[5],512);
         if(!ProgramSend(comack)){
             binfile.close();
-            return CommucationError;
+            return Md::CommError;
         }
         if(comack==0xaa){
             binfile.close();
-            return BurnError;
+            return Md::BurnError;
         }
         progressdialog.setValue(512*i*100/binfile.size());
 
@@ -900,21 +900,21 @@ QSend::SendResult QSend::SendBin(QFile &binfile,QWidget *parent){
     *(unsigned char *)(d_send+3) = 0x55;
     if(!ProgramSend()){
         binfile.close();
-        return CommucationError;
+        return Md::CommError;
     }
     progressdialog.setValue(100);
     binfile.close();
-    return  BurnOK;
+    return  Md::Ok;
 }
 
 
 ////////////////send bag////////////////////////////////
-QSend::SendResult QSend::SendBag(QString &bagfilename,QWidget *parent){
+int QSend::SendBag(QString &bagfilename,QWidget *parent){
     QFile file(bagfilename);
     if(!file.exists())
-        return FileNotExist;
+        return Md::FileNotExist;
     if(!file.open(QIODevice::ReadOnly))
-        return FileOpenFail;
+        return Md::FileOpenFail;
 
     unsigned short comack;
     int i=0;
@@ -923,25 +923,25 @@ QSend::SendResult QSend::SendBag(QString &bagfilename,QWidget *parent){
         *(unsigned char *)(d_send+2) = 0xd0;
         *(unsigned char *)(d_send+3) = 0x55;
         if(!ProgramSend())
-            return CommucationError;
+            return Md::CommError;
         *(unsigned short *)d_send = htons(07);
         *(unsigned char *)(d_send+2) = 0xd1;
         *(unsigned char *)(d_send+3) = 0x55;
         if(!ProgramSend(comack))
-            return CommucationError;
+            return Md::CommError;
         if(comack == 0x55)
             break;
     }
     if(i==3)
-        return BagCanNotInBoot;
+        return Md::BagCanNotInBoot;
     ///////erase////////////////////////////
     *(unsigned short *)d_send = htons(07);
     *(unsigned char *)(d_send+2) = 0xd2;
     *(unsigned char *)(d_send+3) = 0x55;
     if(!ProgramSend(comack))
-        return CommucationError;
+        return Md::CommError;
     if(comack == 0xAA)
-        return EraseError;
+        return Md::EraseError;
     ////////wait for erase process
     QProgressDialog progressdialog(parent);
     QElapsedTimer time;
@@ -959,7 +959,7 @@ QSend::SendResult QSend::SendBag(QString &bagfilename,QWidget *parent){
             continue;
         if(funcode == 0xd3){
             if(comack == 0xaa)
-                return EraseError;
+                return Md::EraseError;
             progressdialog.setValue(comack);
             QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
             if(comack == 100)
@@ -967,7 +967,7 @@ QSend::SendResult QSend::SendBag(QString &bagfilename,QWidget *parent){
         }
     }
     if(time.elapsed()>=20000)
-        return EraseError;
+        return Md::EraseError;
     //////////start burn//////////////////
     progressdialog.setLabelText(tr("烧写进度"));
     int bagcount = file.size()/64+((file.size()%64)?1:0);
@@ -981,10 +981,10 @@ QSend::SendResult QSend::SendBag(QString &bagfilename,QWidget *parent){
             *(unsigned char *)(d_send+5) = 0x00;
         file.read((char *)&d_send[6],64);
         if(!__ProgramSend(comack)){
-            return CommucationError;
+            return Md::CommError;
         }
         if(comack==0xaa){
-            return BurnError;
+            return Md::BurnError;
         }
         progressdialog.setValue((i+1)*100/bagcount);
     }
@@ -995,9 +995,9 @@ QSend::SendResult QSend::SendBag(QString &bagfilename,QWidget *parent){
     *(unsigned char *)(d_send+3) = 0x55;
     for(int i=0;i<3;i++){
         if(ProgramSend())
-            return BurnOK;
+            return Md::Ok;
     }
-    return BurnOK;
+    return Md::Ok;
 }
 
 

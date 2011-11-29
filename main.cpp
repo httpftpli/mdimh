@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
     a.setMouseClickSound("resource/sound/click.wav");    
     MainWindow w;
     qRcv.start();
-    Md::InitResult r= sysInit();
-    if(r!=Md::OK){
+    Md::Result r= sysInit();
+    if(r!=Md::Ok){
         QMdMessageBox box;
         box.exec(QObject::tr("控制板初始化"),QObject::tr("初始化错误"),QMessageBox::Critical,
                  QMessageBox::Cancel,QMessageBox::Cancel);

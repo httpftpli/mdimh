@@ -77,10 +77,6 @@ private:
     int bits10;
 };
 
-
-
-
-
 class QDMZModel :public QAbstractTableModel{
     Q_OBJECT
 public:
@@ -319,6 +315,28 @@ signals:
 private:
    QPatternData *patterndata;
    QList<QPatternData::SzkbData> szkblist;
+   bool checkdatavalid();
+};
+
+
+class QTingcheModel:public QAbstractTableModel{
+     Q_OBJECT
+public:
+   QTingcheModel(QPatternData *pattern ,QObject * parent = 0);
+   void saveToFile();
+   int rowCount(const QModelIndex &parent) const;
+   int columnCount(const QModelIndex &parent) const;
+   QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+   QVariant data(const QModelIndex &index, int role) const;
+   bool setData(const QModelIndex &index, const QVariant &value, int role);
+   Qt::ItemFlags flags(const QModelIndex &index) const;
+   bool insertRows(int row, int count,const QModelIndex &parent);
+   bool removeRows(int row, int count,const QModelIndex &parent);
+signals:
+   void datasValid(bool);
+private:
+   QPatternData *patterndata;
+   QList<unsigned short > cntrows;
    bool checkdatavalid();
 };
 

@@ -76,9 +76,6 @@ private:
 class QSend :public QObject{
    Q_OBJECT
 public:
-   enum SendResult{SendFileOk = 0,FileNotExist,NotPatCntSaz,CommucationError,FileSame,
-                   FileOpenFail,InBootState,InUserState,EraseError,BurnError,BurnOK,
-                   BagCanNotInBoot,WaitingForShoutDown,SendOk,CustomerIdNotPass,CustomerIdPass};
    QSend(QObject *parent = 0);
    void Send();
    bool ProgramSend();
@@ -98,28 +95,28 @@ public:
    void BedReposition();
    void LeftMuslin(unsigned char force,bool clockwise = TRUE);
    void RightMuslin(unsigned char force,bool clockwise = TRUE);
-   SendResult ShoutDownSystem();
-   SendResult ReadAbsoluteNoOfPin(unsigned short &val);
-   SendResult ReadEncoder(unsigned short &val);
-   SendResult ReadHead();
+   int ShoutDownSystem();
+   int ReadAbsoluteNoOfPin(unsigned short &val);
+   int ReadEncoder(unsigned short &val);
+   int ReadHead();
    void ClearError();
-   SendResult firstLineLoop(bool loop);
-   SendResult goToLine(unsigned short line);
-   SendResult sazuiDownUp(bool up);
-   SendResult sazuiReplaceSwap(bool replaceorswap,unsigned char leftsazui,unsigned char rightsazui);
-   SendResult cntUpdate(unsigned short line,unsigned char *buf);
-   SendResult patUpdate(unsigned short line,unsigned char *buf,unsigned short patlinelen);
-   SendResult headStopAside();
-   SendResult pollSysVersion(QString &mainbordVersion,QString &bagVersion);
-   SendResult TogSysStat(unsigned char stat);
-   SendResult sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,
+   int firstLineLoop(bool loop);
+   int goToLine(unsigned short line);
+   int sazuiDownUp(bool up);
+   int sazuiReplaceSwap(bool replaceorswap,unsigned char leftsazui,unsigned char rightsazui);
+   int cntUpdate(unsigned short line,unsigned char *buf);
+   int patUpdate(unsigned short line,unsigned char *buf,unsigned short patlinelen);
+   int headStopAside();
+   int pollSysVersion(QString &mainbordVersion,QString &bagVersion);
+   int TogSysStat(unsigned char stat);
+   int sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,
                     unsigned char OneStop,unsigned char alarmLimit,unsigned char DanKouLock);
-   SendResult SendFile(QFile &file,unsigned short fileid,bool samehint,QWidget *parent);
-   SendResult SendParama(  QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
-   SendResult IsInBoot();
-   SendResult SendBin(QFile &binfile,QWidget *parent=NULL);
-   SendResult SendBag(QString &bagfilename,QWidget *parent = NULL);
-   SendResult checkCustomerId(unsigned short id);
+   int SendFile(QFile &file,unsigned short fileid,bool samehint,QWidget *parent);
+   int SendParama(  QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
+   int IsInBoot();
+   int SendBin(QFile &binfile,QWidget *parent=NULL);
+   int SendBag(QString &bagfilename,QWidget *parent = NULL);
+   int checkCustomerId(unsigned short id);
 
 
 

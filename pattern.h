@@ -151,7 +151,7 @@ public:
              NoCntFile = 0x104,
              NoPatFile = 0x105,
              NoWrkFile = 0x106,
-             OK          = 0
+             Ok          = 0
          };
     struct SzkbData{
          unsigned short ZuSa;
@@ -169,7 +169,7 @@ public:
     void refreshBuf(Md::HAVEFILEFLAG flag);
     void deloadFile(Md::HAVEFILEFLAG flag=Md::HAVEALL);
     void patSetData(unsigned short row,unsigned short column,unsigned char data);
-    void cntSetData(unsigned short row,unsigned char index,unsigned short data);
+    void cntSetData(unsigned short row,unsigned char index,unsigned short data,unsigned char len);
     Md::HAVEFILEFLAG loadStatus();
     Result loadLoop(const QString &prmfilepath);
     void Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag=Md::HAVENO);

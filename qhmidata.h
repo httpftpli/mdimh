@@ -117,20 +117,12 @@ public:
 
                  CXBJZSZJTH,   //程序编辑中的沙嘴交/替换0x49
                  CXBJZ_CNT_GB,  //程序编辑中的CNT数据块改变0x4a
-                 DQZDJZT,       //当前主电机状态
-
+                 DQZDJZT,       //当前主电机状态             
                  GUARDIANS        //枚举类型最后一个，仅用于边界守护
 
              };
 
-
-    typedef struct __HMIData {
-        int Val;
-        unsigned char  InputOrOutPut;  //0:output, 1:input, 3:biderection
-    }HMIDataType;
-
-    HMIDataType dataBuf[GUARDIANS];
-
+    int dataBuf[GUARDIANS];
     QHMIData(QSend *send,QObject *parent = 0);
 
     bool speedLimit;
@@ -155,12 +147,12 @@ public:
     QString sysLogFilePath;
     QString udiskDirPath;
     QString sysconfigfilename;
-    QString parttenfilename;
+    QString partternName;
     int totalBzTime;
     int currentBzTime;
     int totalStopTime;
     int currentStopTime;
-    QSend::SendResult commResult;
+    int commResult;
     QSend *psend;
     bool isInBoot;
     bool isRun();
@@ -169,12 +161,13 @@ public:
     void finish();
     void setclothSetCount(unsigned short val);
     void setclothFinishCount(unsigned short val);
+    int  setSpeedLimit(bool limit);
     void saveSysCfgFile();
     void start();
     unsigned short clothSetCount;
     unsigned short clothFinishCount;
-    Md::InitResult errorcode;
-    Md::InitResult errorCode();
+    Md::Result errorcode;
+    Md::Result errorCode();
 
 public slots:
     void RequireData(unsigned short index);
@@ -195,7 +188,7 @@ signals:
     void hmi_cntNumber(unsigned short val);
     void hmi_loopTatal(int val);
     void hmi_jitouxiangduizhengshu(int val);
-    void hmi_xtguilingwc(unsigned char val);  //0x55归零完成，0xbb归零错误
+    void xtGuiling(unsigned char val);  //0x55归零完成，0xbb归零错误
     void Sig_tatalPatLine(int line);
     void clothSetCountChanged(int val);
     void clothFinishCountChanged(int val);

@@ -59,7 +59,7 @@ void machineexame::On_DataChanged(unsigned short index,QVariant Val){
     }
         break;
     case QHMIData::ZXHJSQ:
-        label_60->setText(QString::number(hmiData.dataBuf[QHMIData::ZXHJSQ].Val));
+        label_60->setText(QString::number(hmiData.dataBuf[QHMIData::ZXHJSQ]));
         break;
     default:
         break;

@@ -161,7 +161,7 @@ void QFormFile::on_qMdPushButton_5_clicked()
     INFORMLOG(tr("更换花型")+cntfilename+QString(" ")+patfilename+QString(" ")+wrkfilename+QString(" ")+sazfilename);
     QPatternData::Result r = patternData.setFile(cntfilepath,patfilepath,wrkfilepath,sazfilepath);
     QMdMessageBox box;
-    if(r!=QPatternData::OK){
+    if(r!=QPatternData::Ok){
         box.exec(tr("选择文件"),tr("花型文件错误"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return;
@@ -170,8 +170,8 @@ void QFormFile::on_qMdPushButton_5_clicked()
     progressDialog.setLabelText(tr("发送CNT文件"));
     progressDialog.show();
     QFile cntfile(cntfilepath);
-    QSend::SendResult result = qSend.SendFile(cntfile,0,FALSE,this);
-    if(result ==QSend::CommucationError) {
+    int result = qSend.SendFile(cntfile,0,FALSE,this);
+    if(result ==Md::CommError) {
         box.exec(tr("花型发送"),tr("发送CNT文件，通信错误"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return;
@@ -180,7 +180,7 @@ void QFormFile::on_qMdPushButton_5_clicked()
     progressDialog.show();
     QFile patfile(patfilepath);
     result = qSend.SendFile(patfile,0,FALSE,this);
-    if(result ==QSend::CommucationError) {
+    if(result ==Md::CommError) {
         box.exec(tr("花型发送"),tr("发送PAT文件，通信错误"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return;
@@ -189,7 +189,7 @@ void QFormFile::on_qMdPushButton_5_clicked()
     QFile wrkfile(wrkfilepath);
     QFile spafile(hmiData.spaFilePath);
     result = qSend.SendParama(wrkfile,spafile,0xf7,NULL);
-    if(result ==QSend::CommucationError) {
+    if(result ==Md::CommError) {
         box.exec(tr("花型发送"),tr("发送WRK文件,通信错误"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return;
@@ -198,7 +198,7 @@ void QFormFile::on_qMdPushButton_5_clicked()
     if(flag&Md::HAVESAZ){ //发送沙嘴捆绑文件
         QFile sazfile(sazfilepath);
         result = qSend.SendFile(sazfile,0,FALSE,this);
-        if(result ==QSend::CommucationError) {
+        if(result ==Md::CommError) {
             box.exec(tr("花型发送"),tr("发送沙嘴捆绑,通信错误"),QMessageBox::Warning,
                      QMessageBox::Cancel,QMessageBox::Cancel);
             return;

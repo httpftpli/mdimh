@@ -44,35 +44,35 @@ QCntEditForm::QCntEditForm(QWidget *parent,QPatternData *data) :
 
 void QCntEditForm::rowToggle(int row){
     lineEdit_row->setText(QString::number(row+1));
-    lineEdit_hbh1->setText(QString::number(pattern->cnt_fechData(row,CNT_S1H_Pat)));
-    lineEdit_hbh2->setText(QString::number(pattern->cnt_fechData(row,CNT_S2H_Pat)));
-    lineEdit_hbh1_q->setText(QString::number(pattern->cnt_fechData(row,CNT_S1Q_Pat)));
-    lineEdit_hbh2_q->setText(QString::number(pattern->cnt_fechData(row,CNT_S2Q_Pat)));
+    lineEdit_hbh1->setText(QString::number(pattern->cntFechData(row,CNT_S1H_Pat)));
+    lineEdit_hbh2->setText(QString::number(pattern->cntFechData(row,CNT_S2H_Pat)));
+    lineEdit_hbh1_q->setText(QString::number(pattern->cntFechData(row,CNT_S1Q_Pat)));
+    lineEdit_hbh2_q->setText(QString::number(pattern->cntFechData(row,CNT_S2Q_Pat)));
 
     /**********1系统后床指令A*********************/
-    int indextmp = pattern->_azl(pattern->cnt_fechData(row,CNT_S1H_AZiLing));
+    int indextmp = pattern->_azl(pattern->cntFechData(row,CNT_S1H_AZiLing));
     comboBox_zla1->setCurrentIndex(indextmp);
     /**********1系统后床指令H*********************/
-    indextmp = pattern->_hzl(pattern->cnt_fechData(row,CNT_S1H_HZiLing));
+    indextmp = pattern->_hzl(pattern->cntFechData(row,CNT_S1H_HZiLing));
     comboBox_zlh1->setCurrentIndex(indextmp);
     /**********1系统前床指令A*********************/
-    indextmp = pattern->_azl(pattern->cnt_fechData(row,CNT_S1Q_AZiLing));
+    indextmp = pattern->_azl(pattern->cntFechData(row,CNT_S1Q_AZiLing));
     comboBox_zla1_q->setCurrentIndex(indextmp);
     /**********1系统前床指令H*********************/
-    indextmp = pattern->_hzl(pattern->cnt_fechData(row,CNT_S1Q_HZiLing));
+    indextmp = pattern->_hzl(pattern->cntFechData(row,CNT_S1Q_HZiLing));
     comboBox_zlh1_q->setCurrentIndex(indextmp);
 
     /**********2系统后床指令A*********************/
-    indextmp = pattern->_azl(pattern->cnt_fechData(row,CNT_S2H_AZiLing));
+    indextmp = pattern->_azl(pattern->cntFechData(row,CNT_S2H_AZiLing));
     comboBox_zla2->setCurrentIndex(indextmp);
     /**********2系统后床指令H*********************/
-    indextmp = pattern->_hzl(pattern->cnt_fechData(row,CNT_S2H_HZiLing));
+    indextmp = pattern->_hzl(pattern->cntFechData(row,CNT_S2H_HZiLing));
     comboBox_zlh2->setCurrentIndex(indextmp);
     /**********2系统前床指令A*********************/
-    indextmp = pattern->_azl(pattern->cnt_fechData(row,CNT_S2Q_AZiLing));
+    indextmp = pattern->_azl(pattern->cntFechData(row,CNT_S2Q_AZiLing));
     comboBox_zla2_q->setCurrentIndex(indextmp);
     /**********2系统前床指令H*********************/
-    indextmp = pattern->_hzl(pattern->cnt_fechData(row,CNT_S2Q_HZiLing));
+    indextmp = pattern->_hzl(pattern->cntFechData(row,CNT_S2Q_HZiLing));
     comboBox_zlh2_q->setCurrentIndex(indextmp);
 
 
@@ -125,9 +125,9 @@ void QCntEditForm::rowToggle(int row){
     /**********摇床*********************/
     lineEdit_yc->setText(pattern->cnt_yaoChuang(row));
     /**********循环首*********************/
-    lineEdit_xhs->setText(QString::number(pattern->cnt_fechData(row,CNT_LoopStart,2)));
+    lineEdit_xhs->setText(QString::number(pattern->cntFechData(row,CNT_LoopStart,2)));
     /**********循环次数*********************/
-    lineEdit_xhcs->setText(QString::number(pattern->cnt_fechData(row,CNT_LoopNum,2)));
+    lineEdit_xhcs->setText(QString::number(pattern->cntFechData(row,CNT_LoopNum,2)));
 }
 
 void QCntEditForm::on_pushButton_3_clicked()

@@ -197,10 +197,14 @@ public:
     unsigned short wrk_qizhengdian();
 
 
-    //unsigned char  cnt_fechData(unsigned short row,unsigned char addr);
-    unsigned short cnt_fechData(unsigned short row,unsigned char addr,unsigned short leng=1);
+    //unsigned char  cntFechData(unsigned short row,unsigned char addr);
+    unsigned short cntFechData(unsigned short row,unsigned char addr,unsigned short leng=1);
     short wrk_fechData(WrkItemHd handle,int offset);
     void  wrk_setData(WrkItemHd handle,int offset,short data);
+
+    int  wrkSpeedZhi(unsigned int index);
+    int  wrkMainLuolaZhi(unsigned int index);
+    int  wrkFuzhuLuolaZhi(unsigned int index);
 
     QSize patternSize() const;
     bool isValid () const ;
@@ -215,7 +219,6 @@ public:
     QString wrkFilePath;
     QString wrkFileName;
     QString sazFilePath;
-    unsigned char *cntbuf;    //用于载入整个CNT文件
     unsigned char *patbuf;    //用于载入整个PAT文件
     unsigned short *wrkbuf;    //用于载入整个wrk文件
     unsigned char shazuiused_r;  //系统1左边花型中用到的沙嘴；
@@ -243,6 +246,7 @@ signals:
 private:
     unsigned char dumu_history;
     QSend *qsend;
+    unsigned char *cntbuf;    //用于载入整个CNT文件
 
 };
 

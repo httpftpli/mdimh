@@ -116,3 +116,5 @@ void QParam::save(bool isdownload){
         qsend->SendParama(*patternData.wrkfile,*spafile,bagflag,NULL);
     }
 }
+
+

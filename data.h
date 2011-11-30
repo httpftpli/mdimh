@@ -328,16 +328,14 @@ public:
    int columnCount(const QModelIndex &parent) const;
    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
    QVariant data(const QModelIndex &index, int role) const;
-   bool setData(const QModelIndex &index, const QVariant &value, int role);
-   Qt::ItemFlags flags(const QModelIndex &index) const;
-   bool insertRows(int row, int count,const QModelIndex &parent);
+   //bool setData(const QModelIndex &index, const QVariant &value, int role);
+   //Qt::ItemFlags flags(const QModelIndex &index) const;
+   //bool insertRows(int row, int count,const QModelIndex &parent);
    bool removeRows(int row, int count,const QModelIndex &parent);
-signals:
-   void datasValid(bool);
+   bool	insertCntRow (unsigned short cntrow);
 private:
    QPatternData *patterndata;
-   QList<unsigned short > cntrows;
-   bool checkdatavalid();
+   QMap<unsigned short,unsigned char > cntrows;
 };
 
 

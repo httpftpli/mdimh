@@ -22,6 +22,7 @@ public slots:
     void Timeout1s();
 
 private slots:
+    void on_pushButton_11_clicked();
     void on_pushButton_7_clicked();
     void on_qMdPushButton_5_clicked();
     void on_qMdPushButton_8_clicked(bool checked);

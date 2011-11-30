@@ -25,8 +25,6 @@
 
 
 
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent,Qt::FramelessWindowHint){
     setupUi(this);
@@ -111,9 +109,15 @@ void MainWindow::runPatternRowChange(unsigned short cntnumber){
     bool temp;
     lcdNumber->display(cntnumber+1);
     label_dumu->setNum(patternData.cnt_duMu(cntnumber,temp));
-    label_speed->setNum(patternData.cnt_spead(cntnumber));
-    label_mainLuola->setNum(patternData.cnt_mainLuola(cntnumber));
-    label_fuzhuLuola->setNum(patternData.cnt_fuzuLuola(cntnumber));
+    int speed = patternData.cnt_spead(cntnumber);
+    label_speed->setNum(speed);
+    label_speedzhi->setNum(patternData.wrkSpeedZhi(speed));
+    int mainluola = patternData.cnt_mainLuola(cntnumber);
+    label_mainLuola->setNum(mainluola);
+    label_mainLuolazhi->setNum(patternData.wrkMainLuolaZhi(mainluola));
+    int fuzhuluola = patternData.cnt_fuzuLuola(cntnumber);
+    label_fuzhuLuola->setNum(fuzhuluola);
+    label_fuzhuLuolazhi->setNum(patternData.wrkFuzhuLuolaZhi(fuzhuluola));
     label_songsha->setNum(patternData.cnt_songSha(cntnumber));
     label_shazuiTf->setNum(patternData.cnt_shazuiTf(cntnumber));
     label_yaochuang->setText(patternData.cnt_yaoChuang(cntnumber));
@@ -126,10 +130,10 @@ void MainWindow::runPatternRowChange(unsigned short cntnumber){
     label_hbhq->setNum(patternData.cnt_huabanhang_q1(cntnumber));
 
     ///////动作/////////////////////////////////////
-    label_awdzh->setText(azllist.value(patternData._azl(patternData.cnt_fechData(cntnumber,CNT_S1H_AZiLing))));
-    label_awdzq->setText(azllist.value(patternData._azl(patternData.cnt_fechData(cntnumber,CNT_S1Q_AZiLing))));
-    label_hwdzh->setText(azllist.value(patternData._hzl(patternData.cnt_fechData(cntnumber,CNT_S1H_HZiLing))));
-    label_hwdzq->setText(azllist.value(patternData._hzl(patternData.cnt_fechData(cntnumber,CNT_S1Q_HZiLing))));
+    label_awdzh->setText(azllist.value(patternData._azl(patternData.cntFechData(cntnumber,CNT_S1H_AZiLing))));
+    label_awdzq->setText(azllist.value(patternData._azl(patternData.cntFechData(cntnumber,CNT_S1Q_AZiLing))));
+    label_hwdzh->setText(azllist.value(patternData._hzl(patternData.cntFechData(cntnumber,CNT_S1H_HZiLing))));
+    label_hwdzq->setText(azllist.value(patternData._hzl(patternData.cntFechData(cntnumber,CNT_S1Q_HZiLing))));
     ////////色代号//////////////////////////////
     label_awsch->setText(patternData.cnt_seDaiHao(cntnumber,CNT_S1H_AColor));
     label_hwsch->setText(patternData.cnt_seDaiHao(cntnumber,CNT_S1H_HColor));
@@ -395,4 +399,9 @@ void MainWindow::on_pushButton_7_clicked()
     dialog->setWindowTitle(tr("停车编辑"));
     dialog->move((width()-dialog->width())/2,100);
     dialog->exec();
+}
+
+void MainWindow::on_pushButton_11_clicked()
+{
+    on_pushButton_2_clicked();
 }

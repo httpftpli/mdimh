@@ -38,7 +38,8 @@ QTabBar::tab {
  border: 2px solid #C4C4C3;
  border-bottom-left-radius: 8px;
  border-bottom-right-radius: 8px;
- min-width: 60px;    
+ min-width: 60px;   
+ min-height:45px; 
  padding: 2px;		
 }
 QTabBar::tab:hover{
@@ -135,10 +136,6 @@ QTabBar::tab:!selected{
      <bool>true</bool>
     </property>
     <widget class="QWidget" name="tab">
-     <attribute name="icon">
-      <iconset>
-       <normaloff>../HMI-build-desktop/resouce/7-1程序编辑.bmp</normaloff>../HMI-build-desktop/resouce/7-1程序编辑.bmp</iconset>
-     </attribute>
      <attribute name="title">
       <string>运行</string>
      </attribute>
@@ -158,9 +155,9 @@ QTabBar::tab:!selected{
          <string>复位</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/image/resouce/F1-2.bmp</normaloff>
-          <normalon>:/image/resouce/F1-1.bmp</normalon>:/image/resouce/F1-2.bmp</iconset>
+         <iconset resource="resouce.qrc">
+          <normaloff>:/image/resource/1a.png</normaloff>
+          <normalon>:/image/resource/1h.png</normalon>:/image/resource/1a.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -188,12 +185,12 @@ QTabBar::tab:!selected{
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>锁行</string>
+         <string>锁</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/image/resouce/F2-2.bmp</normaloff>
-          <normalon>:/image/resouce/F2-1.bmp</normalon>:/image/resouce/F2-2.bmp</iconset>
+         <iconset resource="resouce.qrc">
+          <normaloff>:/image/resource/1b.png</normaloff>
+          <normalon>:/image/resource/1i.png</normalon>:/image/resource/1b.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -221,12 +218,12 @@ QTabBar::tab:!selected{
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>速度限制</string>
+         <string>速</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/image/resouce/F3-2.bmp</normaloff>
-          <normalon>:/image/resouce/F3-1.bmp</normalon>:/image/resouce/F3-2.bmp</iconset>
+         <iconset resource="resouce.qrc">
+          <normaloff>:/image/resource/1c.png</normaloff>
+          <normalon>:/image/resource/1j.png</normalon>:/image/resource/1c.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -254,12 +251,12 @@ QTabBar::tab:!selected{
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>单片停车</string>
+         <string>单</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/image/resouce/F4-1.bmp</normaloff>
-          <normalon>:/image/resouce/F4-2.bmp</normalon>:/image/resouce/F4-1.bmp</iconset>
+         <iconset resource="resouce.qrc">
+          <normaloff>:/image/resource/1d.png</normaloff>
+          <normalon>:/image/resource/1k.png</normalon>:/image/resource/1d.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -287,12 +284,12 @@ QTabBar::tab:!selected{
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>报警限制</string>
+         <string>报</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/image/resouce/F5-2.bmp</normaloff>
-          <normalon>:/image/resouce/F5-1.bmp</normalon>:/image/resouce/F5-2.bmp</iconset>
+         <iconset resource="resouce.qrc">
+          <normaloff>:/image/resource/1e.png</normaloff>
+          <normalon>:/image/resource/1l.png</normalon>:/image/resource/1e.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -326,12 +323,12 @@ QTabBar::tab:!selected{
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>沙嘴</string>
+         <string>沙</string>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>:/image/resouce/F6-2.bmp</normaloff>
-          <normalon>:/image/resouce/F6-1.bmp</normalon>:/image/resouce/F6-2.bmp</iconset>
+         <iconset resource="resouce.qrc">
+          <normaloff>:/image/resource/1f.png</normaloff>
+          <normalon>:/image/resource/1m.png</normalon>:/image/resource/1f.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -366,7 +363,17 @@ QTabBar::tab:!selected{
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>花样编辑</string>
+         <string>花</string>
+        </property>
+        <property name="icon">
+         <iconset resource="resouce.qrc">
+          <normaloff>:/image/resource/1g.png</normaloff>:/image/resource/1g.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>48</width>
+          <height>48</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -382,7 +389,7 @@ QTabBar::tab:!selected{
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>程序编辑</string>
+         <string>工艺</string>
         </property>
        </widget>
       </item>
@@ -1060,11 +1067,14 @@ QTabBar::tab:!selected{
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>:/image/resouce/F4-2.bmp</pixmap>
        </property>
       </widget>
      </item>
@@ -1255,11 +1265,14 @@ QTabBar::tab:!selected{
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>:/image/resouce/F1-1.bmp</pixmap>
        </property>
       </widget>
      </item>
@@ -1301,16 +1314,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton_4">
@@ -1366,16 +1379,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_11">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="label_34">
@@ -1419,16 +1432,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="label_31">
@@ -1478,16 +1491,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton_9">
@@ -1537,16 +1550,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="label_29">
@@ -1590,19 +1603,25 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton_8">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>70</width>
@@ -1697,16 +1716,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="label_35">
@@ -1777,16 +1796,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_13">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton">
@@ -1842,16 +1861,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_12">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton_2">
@@ -1882,6 +1901,13 @@ QTabBar::tab:!selected{
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QLabel" name="label_speedzhi">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -1895,16 +1921,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_17">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton_3">
@@ -1941,10 +1967,17 @@ QTabBar::tab:!selected{
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QLabel" name="label_mainLuolazhi">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
-     <item row="0" column="3">
+     <item row="1" column="2">
       <widget class="QFrame" name="frame_17">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -1954,19 +1987,25 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_18">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
-        </property>
-        <property name="bottomMargin">
          <number>2</number>
         </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QPushButton" name="pushButton_11">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
             <width>50</width>
@@ -1994,10 +2033,17 @@ QTabBar::tab:!selected{
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QLabel" name="label_fuzhuLuolazhi">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
-     <item row="0" column="4">
+     <item row="1" column="3">
       <widget class="QFrame" name="frame_19">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -2007,16 +2053,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_20">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton_5">
@@ -2050,7 +2096,7 @@ QTabBar::tab:!selected{
        </layout>
       </widget>
      </item>
-     <item row="0" column="5">
+     <item row="0" column="3">
       <widget class="QFrame" name="frame_21">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -2060,16 +2106,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_22">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton_6">
@@ -2104,62 +2150,6 @@ QTabBar::tab:!selected{
       </widget>
      </item>
      <item row="0" column="6">
-      <widget class="QFrame" name="frame_23">
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_24">
-        <property name="leftMargin">
-         <number>6</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>6</number>
-        </property>
-        <property name="bottomMargin">
-         <number>2</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="minimumSize">
-           <size>
-            <width>50</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>50</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>摇床</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_yaochuang">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="1" column="0">
       <widget class="QFrame" name="frame_12">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -2169,16 +2159,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_14">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton_10">
@@ -2218,7 +2208,63 @@ QTabBar::tab:!selected{
        </layout>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="1" column="0">
+      <widget class="QFrame" name="frame_22">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_23">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_17">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string> 压脚 </string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_yajiao">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="6">
       <widget class="QFrame" name="frame_14">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -2228,16 +2274,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_15">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="label_5">
@@ -2277,35 +2323,29 @@ QTabBar::tab:!selected{
        </layout>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QFrame" name="frame_16">
+     <item row="1" column="1">
+      <widget class="QFrame" name="frame_23">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_16">
+       <layout class="QHBoxLayout" name="horizontalLayout_24">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
-        </property>
-        <property name="bottomMargin">
          <number>2</number>
         </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLabel" name="label_8">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+         <widget class="QLabel" name="label_3">
           <property name="minimumSize">
            <size>
             <width>50</width>
@@ -2319,12 +2359,15 @@ QTabBar::tab:!selected{
            </size>
           </property>
           <property name="text">
-           <string>循环数</string>
+           <string>摇床</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_loopCount">
+         <widget class="QLabel" name="label_yaochuang">
           <property name="text">
            <string/>
           </property>
@@ -2336,7 +2379,7 @@ QTabBar::tab:!selected{
        </layout>
       </widget>
      </item>
-     <item row="1" column="3">
+     <item row="0" column="7">
       <widget class="QFrame" name="frame_18">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -2346,16 +2389,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_19">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QLabel" name="label_11">
@@ -2395,110 +2438,7 @@ QTabBar::tab:!selected{
        </layout>
       </widget>
      </item>
-     <item row="1" column="4">
-      <widget class="QFrame" name="frame_20">
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_21">
-        <property name="leftMargin">
-         <number>6</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>6</number>
-        </property>
-        <property name="bottomMargin">
-         <number>2</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="label_14">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>起 针 点 </string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_qizhengdian">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="1" column="5">
-      <widget class="QFrame" name="frame_22">
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_23">
-        <property name="leftMargin">
-         <number>6</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>6</number>
-        </property>
-        <property name="bottomMargin">
-         <number>2</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="label_17">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>压     脚</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_yajiao">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="1" column="6">
+     <item row="0" column="4">
       <widget class="QFrame" name="frame_24">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -2508,16 +2448,16 @@ QTabBar::tab:!selected{
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_25">
         <property name="leftMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="topMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>6</number>
+         <number>2</number>
         </property>
         <property name="bottomMargin">
-         <number>2</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="pushButton_7">
@@ -2551,147 +2491,115 @@ QTabBar::tab:!selected{
        </layout>
       </widget>
      </item>
+     <item row="1" column="7">
+      <widget class="QFrame" name="frame_16">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_16">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>循环数</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_loopCount">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QFrame" name="frame_20">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_21">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_14">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>起针点 </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_qizhengdian">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
-  <action name="action_quit">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/image/resouce/F1-1.bmp</normaloff>:/image/resouce/F1-1.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>退出</string>
-   </property>
-  </action>
-  <action name="action_ProgramEdit">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/image/resouce/F5-1.bmp</normaloff>:/image/resouce/F5-1.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>程序编辑</string>
-   </property>
-  </action>
-  <action name="action_PatternEdit">
-   <property name="icon">
-    <iconset>
-     <normaloff>../HMI-build-desktop/resouce/7-5总清花样.bmp</normaloff>../HMI-build-desktop/resouce/7-5总清花样.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>花样编辑</string>
-   </property>
-  </action>
-  <action name="action_LoopEdit">
-   <property name="text">
-    <string>循环编辑</string>
-   </property>
-  </action>
-  <action name="action_6">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/image/resouce/7-2花样编辑.bmp</normaloff>:/image/resouce/7-2花样编辑.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>纱嘴捆绑</string>
-   </property>
-   <property name="toolTip">
-    <string>纱嘴捆绑</string>
-   </property>
-  </action>
-  <action name="action_ClearPattern">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/image/resouce/7-2花样编辑.bmp</normaloff>:/image/resouce/7-2花样编辑.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>总清花样</string>
-   </property>
-  </action>
-  <action name="action_about">
-   <property name="text">
-    <string>关于</string>
-   </property>
-  </action>
-  <action name="action_help">
-   <property name="text">
-    <string>帮助</string>
-   </property>
-  </action>
-  <action name="action_MachiParam">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/image/resouce/7-5总清花样.bmp</normaloff>:/image/resouce/7-5总清花样.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>机器参数</string>
-   </property>
-  </action>
-  <action name="action_MachiMakeup">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/image/resouce/锁屏-1.bmp</normaloff>:/image/resouce/锁屏-1.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>机器补偿</string>
-   </property>
-  </action>
-  <action name="action_SysMakeup">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/image/resouce/WiFi.png</normaloff>:/image/resouce/WiFi.png</iconset>
-   </property>
-   <property name="text">
-    <string>系统参数</string>
-   </property>
-  </action>
-  <action name="action_MachiTest">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/image/resouce/7-5总清花样.bmp</normaloff>:/image/resouce/7-5总清花样.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>机器测试</string>
-   </property>
-  </action>
-  <action name="action_SignalTest">
-   <property name="text">
-    <string>信号测试</string>
-   </property>
-  </action>
-  <action name="action_ParamFile">
-   <property name="text">
-    <string>参数文件</string>
-   </property>
-  </action>
-  <action name="action_SysClose">
-   <property name="text">
-    <string>系统关机</string>
-   </property>
-  </action>
-  <action name="action_FileManage">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/image/resouce/7-2花样编辑.bmp</normaloff>:/image/resouce/7-2花样编辑.bmp</iconset>
-   </property>
-   <property name="text">
-    <string>文件管理</string>
-   </property>
-  </action>
-  <action name="action_loadFont">
-   <property name="text">
-    <string>载入字库</string>
-   </property>
-  </action>
-  <action name="action_19">
-   <property name="text">
-    <string>载入图标</string>
-   </property>
-  </action>
-  <action name="action_BordUpdata">
-   <property name="text">
-    <string>主板升级</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -2705,6 +2613,8 @@ QTabBar::tab:!selected{
    <header>mdPushbutton/qmdpushbutton.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resouce.qrc"/>
+ </resources>
  <connections/>
 </ui>

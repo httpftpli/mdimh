@@ -315,8 +315,6 @@ void paramform::on_spinBox_valueChanged(int val)
 }
 
 
-
-
 void paramform::creatextgzcsform(int indexofpage){
 
 }

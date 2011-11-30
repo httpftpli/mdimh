@@ -5,26 +5,30 @@ DialogTingche::DialogTingche(QPatternData *p, QWidget *parent):
     QDialog(parent),pattern(p),model(NULL){
     setupUi(this);
     model = new QTingcheModel(pattern,this);
-    QMdItemDelegate  *delegate = new QMdItemDelegate(this);
-    delegate->setRange(1,pattern->tatalrow);
+    spinBox->setRange(1,pattern->tatalrow);
     tableView->setModel(model);
-    tableView->setItemDelegate(delegate);
-    connect(model,SIGNAL(datasValid(bool)),pushButton_3,SLOT(setEnabled(bool)));
+    connect(pattern,SIGNAL(cntDirty(bool)),pushButton_3,SLOT(setEnabled(bool)));
     connect(pushButton_4,SIGNAL(clicked()),SLOT(accept()));
 }
 
 void DialogTingche::on_pushButton_clicked()
 {
-    model->insertRow(tableView->currentIndex().row());
+    model->insertCntRow(spinBox->value()-1);
 }
 
 void DialogTingche::on_pushButton_2_clicked()
 {
-    model->removeRow(tableView->currentIndex().row());
+    int row = tableView->currentIndex().row();
+    model->removeRow(row);
 }
 
 void DialogTingche::on_pushButton_3_clicked()
 {
-    model->saveToFile();
     pushButton_3->setEnabled(FALSE);
+    pattern->Save(Md::HAVECNT,Md::HAVECNT);
+}
+
+void DialogTingche::on_pushButton_4_clicked()
+{
+    pattern->refreshBuf(Md::HAVECNT);
 }

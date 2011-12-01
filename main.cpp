@@ -40,13 +40,14 @@ int main(int argc, char *argv[])
         box.exec(QObject::tr("控制板初始化"),QObject::tr("初始化错误"),QMessageBox::Critical,
                  QMessageBox::Cancel,QMessageBox::Cancel);
     }
+    hmiData.start();
 #ifdef SYSTEST
     QSysTest sysTest;
     if(r!=QHMIData::PatternError)
         sysTest.start();
 #endif
     w.show();
-    hmiData.start();
+    //hmiData.run();
     return a.exec();
 }
 

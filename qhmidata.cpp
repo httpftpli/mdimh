@@ -5,10 +5,17 @@
 #include "data.h"
 #include <QTimerEvent>
 #include <QProcess>
+#include"customerid.h"
 
 
-QHMIData::QHMIData(QSend *send,QObject *parent):QObject(parent),psend(send){
-
+QHMIData::QHMIData(QSend *send,QRcv *rcv,QObject *parent):
+        QObject(parent),psend(send),prcv(rcv),speedlimit(0),
+        alarmlimit(0),shazuiup(1),dankoulock(0),isruning(FALSE){
+    connect(prcv,SIGNAL(DataChanged(unsigned short,QVariant)),
+                     SLOT(On_DataChanged_FromCtrl(unsigned short,QVariant)));
+    connect(&timer700ms,SIGNAL(timeout()),SLOT(on_700mstimeout()));
+    timer700ms.setInterval(700);
+    timer700ms.setSingleShot(FALSE);
 }
 
 
@@ -102,10 +109,10 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
     }
 
     case QHMIData::DQZDJZT:  //当前主电机状态
-        //收到数据01表示停止，停车检查定时器(600ms)重新启动
+        //收到数据01表示停止，停车检查定时器(700ms)重新启动
         //运行定时器关，停车定时器开
-        //JTZTtimer.start();
-        dataBuf[JTDZZT]=0; //标记为停车
+        timer700ms.start();//reset timer;
+        isruning = FALSE;
         break;
     case QHMIData::CWBJXX:{//报警信息
         unsigned int i = Val.toInt();
@@ -120,7 +127,13 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
         break;
     }
     case QHMIData::GLWC:{
-            emit xtGuiling(Val.toInt());
+            bool r;
+            int val = Val.toInt();
+            if(0xaa==val)
+                r = TRUE;
+            else if(0xbb==val)
+                r = FALSE;
+            emit xtGuilingFinish(r);
         }
     default:
         emit DataChanged_ToHMI(index,Val);
@@ -129,12 +142,12 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
     }
 }
 
-void QHMIData::setJitouTingChi(){  //停车检查定时器溢出
-    dataBuf[JTDZZT]=1; //标记为运行
+void QHMIData::on_700mstimeout(){
+    isruning = TRUE;
 }
 
-bool QHMIData::isRun(){
-    return (bool)dataBuf[JTDZZT];
+bool QHMIData::isRuning(){
+    return isruning;
 }
 
 void QHMIData::RequireData(unsigned short index){
@@ -149,14 +162,14 @@ void QHMIData::loadParam(const QString &inifilepath){
     sysconfigfilename = inifilepath;
     int clothsetcount = sysset.value("run/clothSetCount").toInt();
     int clothfinishcount = sysset.value("run/clothFinishCount").toInt();
-    setclothSetCount(clothsetcount);
-    setclothFinishCount(clothfinishcount);
-    speedLimit = sysset.value("run/speedLimit").toBool();
-    stopPerOne = sysset.value("run/stopPerOne").toBool();
-    alarmLimit = sysset.value("run/alarmLimit").toBool();
-    dankouLock = sysset.value("run/dankouLock").toBool();
-    sysStat = sysset.value("run/sysStat").toInt();
-    customerId = sysset.value("system/CD").toString().toInt(0);
+    setclothSetCount(clothsetcount,FALSE);
+    setclothFinishCount(clothfinishcount,FALSE);
+    int stopperone = sysset.value("run/stopperone").toBool();
+    setStopPerOne(stopperone,FALSE);
+    int linelock = sysset.value("run/linelock").toBool();
+    setLineLock(linelock,FALSE);
+    xtguilingorrun = sysset.value("run/resetrun").toBool();
+    customerId = sysset.value("system/cd").toString().toInt(0);
     patternVailable = sysset.value("pattern/vailable").toBool();
     patFilePath = sysset.value("pattern/patFileName").toString();
     cntFilePath = sysset.value("pattern/cntFileName").toString();
@@ -173,7 +186,7 @@ void QHMIData::loadParam(const QString &inifilepath){
     runTime = sysset.value("run/runtime").toLongLong();
 }
 
-Md::Result  QHMIData::errorCode(){
+int  QHMIData::errorCode(){
     return errorcode;
 }
 
@@ -182,8 +195,11 @@ void QHMIData::finish(){
 }
 
 void QHMIData::start(){
-    //clothSetCountChange(this->clothSetCount);
-    timeid1s = startTimer(1000);
+     timeid1s = startTimer(1000);
+}
+
+void QHMIData::run(){
+     timer700ms.start();
 }
 
 void QHMIData::timerEvent(QTimerEvent * event){
@@ -191,7 +207,7 @@ void QHMIData::timerEvent(QTimerEvent * event){
     if(id==timeid1s){
         QDateTime datatime = QDateTime::currentDateTime();
         curruntTime = datatime.toTime_t();
-        if(hmiData.isRun())
+        if(isruning)
             runTime++;
         else
             stopTime++;
@@ -201,13 +217,11 @@ void QHMIData::timerEvent(QTimerEvent * event){
 
 void QHMIData::saveSysCfgFile(){
     QSettings sysset(sysconfigfilename,QSettings::IniFormat,this);
-    sysset.setValue("run/clothSetCount",QString::number(clothSetCount));
-    sysset.setValue("run/clothFinishCount",QString::number(clothFinishCount));
-    sysset.setValue("run/speedLimit",QString::number(speedLimit));
-    sysset.setValue("run/stopPerOne",QString::number(stopPerOne));
-    sysset.setValue("run/alarmLimit",QString::number(alarmLimit));
-    sysset.setValue("run/dankouLock",QString::number(dankouLock));
-    sysset.setValue("run/sysStat",QString::number(sysStat));
+    sysset.setValue("run/clothSetCount",QString::number(clothsetcount));
+    sysset.setValue("run/clothFinishCount",QString::number(clothfinishcount));
+    sysset.setValue("run/stopperone",QString::number(stopperone));
+    sysset.setValue("run/linelock",QString::number(linelock));
+    sysset.setValue("run/resetrun",QString::number(xtguilingorrun));
     sysset.setValue("pattern/patFileName",patFilePath);
     sysset.setValue("pattern/cntFileName",cntFilePath);
     sysset.setValue("pattern/wrkFileName",wrkFilePath);
@@ -219,27 +233,121 @@ void QHMIData::saveSysCfgFile(){
     qDebug()<<"QProcess::executer"<<r;
 }
 
-int QHMIData::setSpeedLimit(bool limit){
-    return psend->sendParamaInRun(clothSetCount,clothFinishCount,limit,
-                           stopPerOne,alarmLimit,dankouLock);
+int QHMIData::sendParamaInRun(){
+    return  psend->sendParamaInRun(clothsetcount,clothfinishcount,
+                               speedlimit,stopperone,
+                               alarmlimit,dankoulock);
 }
 
-void QHMIData::setclothSetCount(unsigned short val){
-    if(val!=clothSetCount){
-        clothSetCount = val;
-        emit clothSetCountChanged(val);
+int QHMIData::setSpeedLimit(bool limit,bool send){
+    int r=0;
+    if(send)
+        r = psend->sendParamaInRun(clothsetcount,clothfinishcount,limit,
+                                 stopperone,alarmlimit,dankoulock);
+    if(r==Md::Ok)
+        speedlimit = limit;
+    emit speedLimit(speedlimit);
+    return r;
+}
+
+int QHMIData::setAlarmLimit(bool limit,bool send){
+    int r=0;
+    if(send)
+        r = psend->sendParamaInRun(clothsetcount,clothfinishcount,
+                                   speedlimit,stopperone,limit,dankoulock);
+    if(Md::Ok==r)
+        alarmlimit = limit;
+    emit alarmLimit(alarmlimit);
+    return r;
+}
+
+int QHMIData::setShazuiUp(bool up,bool send){
+    int r=0;
+    if(send)
+        r = psend->sazuiDownUp(up);
+    if(Md::Ok==r)
+        shazuiup = up;
+    emit shazuiUp(shazuiup);
+    return r;
+}
+
+int QHMIData::setStopPerOne(bool stop,bool send){
+    int r=0;
+    if(send)
+        r = psend->sendParamaInRun(clothsetcount,clothfinishcount,
+                                   speedlimit,stop,alarmlimit,dankoulock);
+    if(Md::Ok==r)
+        stopperone = stop;
+    emit stopPerOne(stopperone);
+    return r;
+}
+
+int QHMIData::setLineLock(bool lock,bool send){
+    int r=0;
+    if(send)
+        r = psend->lineLock(lock);
+    if(Md::Ok==r)
+        linelock = lock;
+    emit lineLock(linelock);
+    return r;
+}
+
+int QHMIData::setDankouLock(bool lock,bool send){
+    int r=0;
+    if(send)
+        r = psend->sendParamaInRun(clothsetcount,clothfinishcount,
+                                   speedlimit,stopperone,alarmlimit,lock);
+    if(Md::Ok==r)
+        dankoulock = lock;
+    emit dankouLock(dankoulock);
+    return r;
+}
+
+int QHMIData::setRunOrGuiling(bool run){
+    unsigned code;    
+    switch(customerId){
+    case 31:
+        code = run?0x0b:0x0a;
+        break;
+    default:
+        code = run?0x01:0x03;
+        break;
     }
+    return psend->TogSysStat(code);
 }
 
-void QHMIData::setclothFinishCount(unsigned short val){
-        clothFinishCount = val;
-        emit clothFinishCountChanged(val);
+int QHMIData::setRunOrGuiling(){
+    return setRunOrGuiling(xtguilingorrun);
 }
 
-void QHMIData::downloadParam(){
-    psend->sendParamaInRun(clothSetCount,clothFinishCount,
-                           speedLimit,stopPerOne,
-                           alarmLimit,dankouLock);
+int QHMIData::setclothSetCount(unsigned short val,bool send){
+    int r=0;
+    if(send)
+        r = psend->sendParamaInRun(val,clothfinishcount,
+                                   speedlimit,stopperone,alarmlimit,dankoulock);
+    if(Md::Ok==r)
+        clothsetcount = val;
+    emit clothSetCountChanged(clothsetcount);
+    return r;
+}
+
+int QHMIData::setclothFinishCount(unsigned short val,bool send){
+    int r=0;
+    if(send)
+        r = psend->sendParamaInRun(clothsetcount,val,
+                                   speedlimit,stopperone,alarmlimit,dankoulock);
+    if(Md::Ok==r)
+        clothfinishcount = val;
+    emit clothFinishCountChanged(clothfinishcount);
+    return r;
+}
+
+int QHMIData::clothFinishCount(){
+    return clothfinishcount;
+}
+
+int QHMIData::clothSetCount(){
+    return clothsetcount;
 }
 
 void QHMIData::on_patternChange(const QString &patternname,const QString &cntfilepath, const QString &patfilepath,
@@ -249,10 +357,8 @@ void QHMIData::on_patternChange(const QString &patternname,const QString &cntfil
     patFilePath = patfilepath;
     wrkFilePath = wrkfilepath;
     sazFilePath = sazfilepath;
-    setclothFinishCount(0);
-    psend->sendParamaInRun(clothSetCount,clothFinishCount,
-                           speedLimit,stopPerOne,alarmLimit,
-                           dankouLock);
+    setclothFinishCount(0,TRUE);
+    sendParamaInRun();
 }
 
 void QHMIData::on_clothFinish( ){

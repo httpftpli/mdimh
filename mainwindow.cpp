@@ -31,19 +31,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setup();
 }
 
-void MainWindow::onXtGuiling(unsigned char val){
-    if(0xaa==val)//系统归零完成
-        qMdPushButton_5->setChecked(TRUE);
-    else if(0xbb==val){//系统归零错误
-        qMdPushButton_5->setChecked(FALSE);
-        QMdMessageBox box;
-        box.exec(tr("系统复位"),tr("归零错误"),
-                 QMessageBox::Warning,
-                 QMessageBox::Cancel,
-                 QMessageBox::Cancel);
-    }
-}
-
 
 void MainWindow::setup(){
     label_left->hide();
@@ -64,7 +51,12 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(hmi_direction(Md::DIRECTION)),this,
             SLOT(runDirectionChange(Md::DIRECTION)));
     connect(&hmiData,SIGNAL(hmi_jitouxiangduizhengshu(int)),label_zwz,SLOT(setNum(int)));
-    connect(&hmiData,SIGNAL(xtGuiling(unsigned char)),SLOT(onXtGuiling(unsigned char)));
+    connect(&hmiData,SIGNAL(xtGuilingFinish(bool)),qMdPushButton_5,SLOT(setChecked(bool)));
+    connect(&hmiData,SIGNAL(lineLock(bool)),qMdPushButton_6,SLOT(setChecked(bool)));
+    connect(&hmiData,SIGNAL(speedLimit(bool)),qMdPushButton_8,SLOT(setChecked(bool)));
+    connect(&hmiData,SIGNAL(stopPerOne(bool)),qMdPushButton_9,SLOT(setChecked(bool)));
+    connect(&hmiData,SIGNAL(alarmLimit(bool)),qMdPushButton_10,SLOT(setChecked(bool)));
+    connect(&hmiData,SIGNAL(shazuiUp(bool)),qMdPushButton_11,SLOT(setChecked(bool)));
 
     pcheckBoxArray[0] = checkBox_1;
     pcheckBoxArray[1] = checkBox_2;
@@ -242,31 +234,22 @@ void MainWindow::on_qMdPushButton_14_clicked()
 
 void MainWindow::on_qMdPushButton_5_clicked(bool checked)
 {
-
+    qMdPushButton_5->setChecked(!checked);
+    if(!checked)
+        hmiData.setRunOrGuiling(FALSE);
 }
 
 void MainWindow::on_qMdPushButton_6_clicked(bool checked)
 {
     qMdPushButton_6->setChecked(!checked);
-    int r = qSend.firstLineLoop(checked);
-    if(r==Md::Ok)
-        qMdPushButton_6->setChecked(checked);
-    else
-        qMdPushButton_6->setChecked(!checked);
+    hmiData.setLineLock(checked,TRUE);
 }
 
 void MainWindow::on_qMdPushButton_11_clicked(bool checked)
 {
     qMdPushButton_11->setChecked(!checked);
-    int r = qSend.sazuiDownUp(checked);
-    if(r==Md::Ok)
-        qMdPushButton_11->setChecked(checked);
-    else
-        qMdPushButton_11->setChecked(!checked);
+    hmiData.setShazuiUp(checked,TRUE);
 }
-
-
-
 
 void MainWindow::on_qMdPushButton_21_clicked()
 {
@@ -347,7 +330,7 @@ void MainWindow::on_pushButton_4_clicked()
 
 void MainWindow::on_pushButton_9_clicked()
 {
-    if(hmiData.clothFinishCount==0)
+    if(hmiData.clothFinishCount()==0)
         return;
     QMdMessageBox box;
     box.setText(tr("完成件数清零"));
@@ -356,8 +339,7 @@ void MainWindow::on_pushButton_9_clicked()
     box.setDefaultButton(QMessageBox::Yes);
     box.setIcon(QMessageBox::Question);
     if(box.exec()==QMessageBox::Yes){
-        hmiData.setclothFinishCount(0);
-        hmiData.downloadParam();
+        hmiData.setclothFinishCount(0,TRUE);
     }
 }
 
@@ -368,28 +350,22 @@ void MainWindow::on_pushButton_8_clicked()
     dialog->move((width()-dialog->width())/2,100);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     if((dialog->exec()==QDialog::Accepted)&&
-                (hmiData.clothSetCount!=dialog->val)){
-        hmiData.setclothSetCount(dialog->val);
-        hmiData.downloadParam();
-    }
+                (hmiData.clothSetCount()!=dialog->val))
+        hmiData.setclothSetCount(dialog->val,TRUE);
 }
 
 void MainWindow::on_pushButton_10_clicked()
 {
+
     on_qMdPushButton_23_clicked();
 }
 
 
 void MainWindow::on_qMdPushButton_8_clicked(bool checked)
 {
-
+    qMdPushButton_8->setChecked(!checked);
+    hmiData.setSpeedLimit(checked,TRUE);
 }
-
-void MainWindow::on_qMdPushButton_5_clicked()
-{
-
-}
-
 
 
 void MainWindow::on_pushButton_7_clicked()
@@ -405,3 +381,17 @@ void MainWindow::on_pushButton_11_clicked()
 {
     on_pushButton_2_clicked();
 }
+
+void MainWindow::on_qMdPushButton_9_clicked(bool checked)
+{
+    qMdPushButton_9->setChecked(!checked);
+    hmiData.setStopPerOne(checked,TRUE);
+}
+
+void MainWindow::on_qMdPushButton_10_clicked(bool checked)
+{
+    qMdPushButton_10->setChecked(!checked);
+    hmiData.setAlarmLimit(checked,TRUE);
+}
+
+

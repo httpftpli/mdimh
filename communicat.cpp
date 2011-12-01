@@ -261,10 +261,10 @@ bool QSend::__ProgramSend(unsigned short &ackval){  //此函数是针对升级�
 }
 
 
-int QSend::firstLineLoop(bool loop){
+int QSend::lineLock(bool lock){
     *(unsigned short *)d_send = htons(8); //len
     *(unsigned char *)(d_send+2) = (0x46);//fun code
-    *(unsigned short *)(d_send+3) = htons((unsigned short)loop);
+    *(unsigned short *)(d_send+3) = htons((unsigned short)lock);
     if(ProgramSend())
         return Md::Ok;
     return Md::CommError;

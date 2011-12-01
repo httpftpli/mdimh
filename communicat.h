@@ -100,7 +100,7 @@ public:
    int ReadEncoder(unsigned short &val);
    int ReadHead();
    void ClearError();
-   int firstLineLoop(bool loop);
+   int lineLock(bool lock);
    int goToLine(unsigned short line);
    int sazuiDownUp(bool up);
    int sazuiReplaceSwap(bool replaceorswap,unsigned char leftsazui,unsigned char rightsazui);

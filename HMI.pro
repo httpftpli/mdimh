@@ -98,7 +98,8 @@ HEADERS  += \
     qmdsplashscreen.h \
     qhmidata.h \
     dialogsetfinishcount.h \
-    dialogtingche.h
+    dialogtingche.h \
+    customerid.h
 
 FORMS    += \
     qformfile.ui \

@@ -107,7 +107,6 @@ public:
                  JTXDZS,         //机头相对针数
                  JTBMQZ,         //机头编码器值
                  JTJDZS,         //机头绝对针数
-                 JTDZZT,         //机头动作状态,标记是否停车 0：停止 1：运行
 
 
                  QHXTZT_ACK,     //切换系统状态应答0X40
@@ -123,14 +122,9 @@ public:
              };
 
     int dataBuf[GUARDIANS];
-    QHMIData(QSend *send,QObject *parent = 0);
+    QHMIData(QSend *send,QRcv *rcv,QObject *parent = 0);
 
-    bool speedLimit;
-    bool stopPerOne;
-    bool alarmLimit;
-    bool dankouLock;
     bool patternVailable;
-    char sysStat;
     unsigned short customerId;
     int stopTimeHistory;
     int runTimeHistory;
@@ -155,19 +149,27 @@ public:
     int commResult;
     QSend *psend;
     bool isInBoot;
-    bool isRun();
+    bool isRuning();
     void loadParam(const QString &inifilepath);
-    void downloadParam();
     void finish();
-    void setclothSetCount(unsigned short val);
-    void setclothFinishCount(unsigned short val);
-    int  setSpeedLimit(bool limit);
+    int setclothSetCount(unsigned short val,bool send);
+    int setclothFinishCount(unsigned short val,bool send);
+    int clothFinishCount();
+    int clothSetCount();
+    int setSpeedLimit(bool limit,bool send);
+    int setAlarmLimit(bool limit,bool send);
+    int setShazuiUp(bool up,bool send);
+    int setStopPerOne(bool stop,bool send);
+    int setLineLock(bool lock,bool send);
+    int setDankouLock(bool lock,bool send);
+    int setRunOrGuiling(bool run);
+    int setRunOrGuiling();
+    int sendParamaInRun();
     void saveSysCfgFile();
     void start();
-    unsigned short clothSetCount;
-    unsigned short clothFinishCount;
+    void run();
     Md::Result errorcode;
-    Md::Result errorCode();
+    int errorCode();
 
 public slots:
     void RequireData(unsigned short index);
@@ -188,19 +190,36 @@ signals:
     void hmi_cntNumber(unsigned short val);
     void hmi_loopTatal(int val);
     void hmi_jitouxiangduizhengshu(int val);
-    void xtGuiling(unsigned char val);  //0x55归零完成，0xbb归零错误
+    void xtGuilingFinish(bool val);
     void Sig_tatalPatLine(int line);
     void clothSetCountChanged(int val);
     void clothFinishCountChanged(int val);
     void time1sOuted();
+    void speedLimit(bool);
+    void alarmLimit(bool);
+    void shazuiUp(bool);
+    void stopPerOne(bool);
+    void lineLock(bool);
+    void dankouLock(bool);
 ////////////////////////////////
 protected:
     virtual void timerEvent(QTimerEvent * event);//1s 600ms,
 private  slots:
-    void setJitouTingChi();//置停车标记
+    void on_700mstimeout();
 private:
     int timeid1s;
-    int timeid700ms;
+    QTimer timer700ms;
+    QRcv *prcv;
+    bool speedlimit;
+    bool stopperone;
+    bool alarmlimit;
+    bool linelock;
+    bool dankoulock;
+    bool shazuiup;
+    bool isruning;
+    bool xtguilingorrun;
+    unsigned short clothfinishcount;
+    unsigned short clothsetcount;
 };
 
 

@@ -16,15 +16,13 @@ QRcv  qRcv;
 QMutex mutex;
 QPatternData patternData(&qSend);
 QParam paramaData(&qSend);
-QHMIData hmiData(&qSend);
+QHMIData hmiData(&qSend,&qRcv);
 QSysLog sysLog;
 QProgressIndicator *ProgressIndiForm;
 
 
 Md::Result sysInit(){
     QDir::setCurrent(QCoreApplication::applicationDirPath());
-    QObject::connect(&qRcv,SIGNAL(DataChanged(unsigned short,QVariant)),&hmiData,
-                     SLOT(On_DataChanged_FromCtrl(unsigned short,QVariant)));
     QObject::connect(&qSend,SIGNAL(NotifyRcver(unsigned char,bool)),&qRcv,
                      SLOT(On_NotifyRcver(unsigned char,bool)));
     QObject::connect(&hmiData,SIGNAL(hmi_finishCount(int)),&hmiData,
@@ -152,9 +150,7 @@ Md::Result sysInit(){
     }
 
     //运行时参数设置//////////////////////////////////////////////
-    commResult = qSend.sendParamaInRun(hmiData.clothSetCount,hmiData.clothFinishCount,
-                                   hmiData.speedLimit,hmiData.stopPerOne,
-                                   hmiData.alarmLimit,hmiData.dankouLock);
+    commResult = hmiData.sendParamaInRun();
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("通讯错误,运行时参数设置失败"),Qt::AlignBottom);
         return Md::CommError;
@@ -166,9 +162,10 @@ Md::Result sysInit(){
             return Md::CommError;
         }else if(commResult == Md::CustomerIdNotPass){
             splash->showMessage(QObject::tr("厂商ID不匹配"),Qt::AlignBottom);
-           return Md::CustomerIdNotPass;
+            return Md::CustomerIdNotPass;
         }
     }
+    hmiData.setRunOrGuiling();
     INFORMLOG(QObject::tr("开机初始化成功"));
     return Md::Ok;
 }

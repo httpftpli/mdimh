@@ -53,7 +53,8 @@ SOURCES += main.cpp\
     qmdsplashscreen.cpp \
     qhmidata.cpp \
     dialogsetfinishcount.cpp \
-    dialogtingche.cpp
+    dialogtingche.cpp \
+    alarmform.cpp
 
 HEADERS  += \
     mdPushbutton/qmdpushbutton.h \
@@ -99,7 +100,8 @@ HEADERS  += \
     qhmidata.h \
     dialogsetfinishcount.h \
     dialogtingche.h \
-    customerid.h
+    customerid.h \
+    alarmform.h
 
 FORMS    += \
     qformfile.ui \

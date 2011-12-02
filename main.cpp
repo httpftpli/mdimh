@@ -12,6 +12,7 @@
 #include "qmdmessagebox.h"
 #include "qmdapplication.h"
 #include "qhmidata.h"
+#include "alarmform.h"
 
 
 
@@ -33,6 +34,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(textcode);
     a.setMouseClickSound("resource/sound/click.wav");    
     MainWindow w;
+    AlarmForm alarmform(&hmiData);
     qRcv.start();
     Md::Result r= sysInit();
     if(r!=Md::Ok){

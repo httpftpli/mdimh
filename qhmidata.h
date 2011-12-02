@@ -3,6 +3,7 @@
 #include <QObject>
 #include "namespace.h"
 #include "communicat.h"
+#include <QQueue>
 
 
 const unsigned char  INPUT_MAP[32][2] = {  //显示序号与开关量的映射表(数组下标,位)
@@ -13,53 +14,53 @@ const unsigned char  INPUT_MAP[32][2] = {  //显示序号与开关量的映射�
 };
 
 const QString CWBJ_ErrorCode[80]={
-QObject::tr(" "),                          //[0]
-QObject::tr("主电机没有准备信号!"),           // "Moto is not ready!",
-QObject::tr("摇床电机没有准备信号!"),          //"Move is not ready!",
-QObject::tr("机头左限位报警!"),                 // "Left limite alarm!",
-QObject::tr("机头右限位报警!"),             // "Right limite alarm!",
-QObject::tr("摇床限位报警!"),              //"Move bed error!",
-QObject::tr("左收线报警!"),                //"Left take up error!",
-QObject::tr("右收线报警!"),               //"Right take up error!",
-QObject::tr("断纱报警!"),                //"Break yarn error!",
-QObject::tr("储纱器断纱报警!"),             //"Store yarn break error!",
-QObject::tr("大纱结报警!"),               //"Big knot yarn error!",                        //[10]
-QObject::tr("卷布报警!"),                    //"Roll error!",
-QObject::tr("落布报警!"),                //"Drop cloth error!",
-QObject::tr("付罗拉限位报警!"),             //"Secont roll error!",
-QObject::tr("前床撞针报警!"),              //"Front break knit error!",
-QObject::tr("后备电源异常!"),              //"Power down error!",
-QObject::tr("机头12V电源失效!"),           //"Head 12V fuse error!",                    //[16]
-QObject::tr("机头主板+24V保险丝F1失效!"),     //"Head +24V fuse F1 error!",        //[17]
-QObject::tr("1号选针器板+24V保险丝F3失效!"),//"Select 1 +24V fuse F3 error!",
-QObject::tr("探针报警!"),                //"Probe error!",
-QObject::tr("7号密度马达故障!"),        //"No.7 density motor error!",                //[20]
-QObject::tr("8号密度马达故障!"),        //"No.8 density motor error!",
-QObject::tr("3号密度马达故障!"),        //"No.3 density motor error!",
-QObject::tr("4号密度马达故障!"),        //"No.4 density motor error!",
-QObject::tr("5号密度马达故障!"),        //"No.5 density motor error!",
-QObject::tr("6号密度马达故障!"),        //"No.6 density motor error!",
-QObject::tr("1号密度马达故障!"),        //"No.1 density motor error!",
-QObject::tr("2号密度马达故障!"),        //"No.2 density motor error!",
-QObject::tr("后生克电机故障!"),         //"Back sinker error!",
-QObject::tr("前生克电机故障!"),         //"Front sinker error!",
-QObject::tr("摇床零位异常!"),          //"Bed zero error!",                                //[30]
-QObject::tr("紧急制动锁定!"),          //"Stop break locking!",                            // 31
-QObject::tr("编织花样超出针板范围!"),      //"Over neddle plate!",
-QObject::tr("2号选针器板+24V保险丝F2失效!"),//"Select 2 +24V fuse F2 error!",     // 33
-QObject::tr("机头电机板-24V保险丝F6失效!"),//"Motor -24V fuse F6 error!",
-QObject::tr("1号选针器板-24V保险丝F4失效!"),//"Select 1 -24V fuse F4 error!",
-QObject::tr("2号选针器板-24V保险丝F5失效!"),//"Select 2 -24V fuse F5 error!",
-QObject::tr("后床撞针报警!"),              //"Back break knit error!",
-QObject::tr("摇床位置错误!"),              //"Move bed place error!",                         //38
-QObject::tr("主板12V保险丝失效!"),          //"Main board 12V fuse error!",                 //[39]
-QObject::tr("内存无花型!"),               //"No file in mem!",                                 //[40]
-QObject::tr("错误3"),                    //"Rev error3!",
-QObject::tr("设定件数完成!"),              //"Set pieces done!",
-QObject::tr("单件停车!"),                   //"One finish stop!",
-QObject::tr("机头背包通讯异常!"),            //"Head communications error!",
-QObject::tr("后备电源正在掉电!"),            //"Power downing!",
-QObject::tr("系统保留的错误"),              //"System reservation error!",
+QObject::trUtf8("通讯错误，通讯码 "),             //  communication error                        //[0]
+QObject::trUtf8("主电机没有准备信号!"),           // "Moto is not ready!",
+QObject::trUtf8("摇床电机没有准备信号!"),          //"Move is not ready!",
+QObject::trUtf8("机头左限位报警!"),                 // "Left limite alarm!",
+QObject::trUtf8("机头右限位报警!"),             // "Right limite alarm!",
+QObject::trUtf8("摇床限位报警!"),              //"Move bed error!",
+QObject::trUtf8("左收线报警!"),                //"Left take up error!",
+QObject::trUtf8("右收线报警!"),               //"Right take up error!",
+QObject::trUtf8("断纱报警!"),                //"Break yarn error!",
+QObject::trUtf8("储纱器断纱报警!"),             //"Store yarn break error!",
+QObject::trUtf8("大纱结报警!"),               //"Big knot yarn error!",                        //[10]
+QObject::trUtf8("卷布报警!"),                    //"Roll error!",
+QObject::trUtf8("落布报警!"),                //"Drop cloth error!",
+QObject::trUtf8("付罗拉限位报警!"),             //"Secont roll error!",
+QObject::trUtf8("前床撞针报警!"),              //"Front break knit error!",
+QObject::trUtf8("后备电源异常!"),              //"Power down error!",
+QObject::trUtf8("机头12V电源失效!"),           //"Head 12V fuse error!",                    //[16]
+QObject::trUtf8("机头主板+24V保险丝F1失效!"),     //"Head +24V fuse F1 error!",        //[17]
+QObject::trUtf8("1号选针器板+24V保险丝F3失效!"),//"Select 1 +24V fuse F3 error!",
+QObject::trUtf8("探针报警!"),                //"Probe error!",
+QObject::trUtf8("7号密度马达故障!"),        //"No.7 density motor error!",                //[20]
+QObject::trUtf8("8号密度马达故障!"),        //"No.8 density motor error!",
+QObject::trUtf8("3号密度马达故障!"),        //"No.3 density motor error!",
+QObject::trUtf8("4号密度马达故障!"),        //"No.4 density motor error!",
+QObject::trUtf8("5号密度马达故障!"),        //"No.5 density motor error!",
+QObject::trUtf8("6号密度马达故障!"),        //"No.6 density motor error!",
+QObject::trUtf8("1号密度马达故障!"),        //"No.1 density motor error!",
+QObject::trUtf8("2号密度马达故障!"),        //"No.2 density motor error!",
+QObject::trUtf8("后生克电机故障!"),         //"Back sinker error!",
+QObject::trUtf8("前生克电机故障!"),         //"Front sinker error!",
+QObject::trUtf8("摇床零位异常!"),          //"Bed zero error!",                                //[30]
+QObject::trUtf8("紧急制动锁定!"),          //"Stop break locking!",                            // 31
+QObject::trUtf8("编织花样超出针板范围!"),      //"Over neddle plate!",
+QObject::trUtf8("2号选针器板+24V保险丝F2失效!"),//"Select 2 +24V fuse F2 error!",     // 33
+QObject::trUtf8("机头电机板-24V保险丝F6失效!"),//"Motor -24V fuse F6 error!",
+QObject::trUtf8("1号选针器板-24V保险丝F4失效!"),//"Select 1 -24V fuse F4 error!",
+QObject::trUtf8("2号选针器板-24V保险丝F5失效!"),//"Select 2 -24V fuse F5 error!",
+QObject::trUtf8("后床撞针报警!"),              //"Back break knit error!",
+QObject::trUtf8("摇床位置错误!"),              //"Move bed place error!",                         //38
+QObject::trUtf8("主板12V保险丝失效!"),          //"Main board 12V fuse error!",                 //[39]
+QObject::trUtf8("内存无花型!"),               //"No file in mem!",                                 //[40]
+QObject::trUtf8("错误3"),                    //"Rev error3!",
+QObject::trUtf8("设定件数完成!"),              //"Set pieces done!",
+QObject::trUtf8("单件停车!"),                   //"One finish stop!",
+QObject::trUtf8("机头背包通讯异常!"),            //"Head communications error!",
+QObject::trUtf8("后备电源正在掉电!"),            //"Power downing!",
+QObject::trUtf8("系统保留的错误")             //"System reservation error!",
 };
 
 
@@ -168,6 +169,8 @@ public:
     void saveSysCfgFile();
     void start();
     void run();
+    QString fetchAlarm();
+    void clearAlarm();
     Md::Result errorcode;
     int errorCode();
 
@@ -201,11 +204,13 @@ signals:
     void stopPerOne(bool);
     void lineLock(bool);
     void dankouLock(bool);
+    void alarm();
 ////////////////////////////////
 protected:
     virtual void timerEvent(QTimerEvent * event);//1s 600ms,
 private  slots:
     void on_700mstimeout();
+    void on_CommTimerOut(unsigned char);
 private:
     int timeid1s;
     QTimer timer700ms;
@@ -220,6 +225,8 @@ private:
     bool xtguilingorrun;
     unsigned short clothfinishcount;
     unsigned short clothsetcount;
+    QQueue<int > alarmque;
+    QQueue<int > commerrorcode;
 };
 
 

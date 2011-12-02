@@ -5,6 +5,7 @@
 
 class QMdMessageBox : public QMessageBox
 {
+    Q_OBJECT
 public:
     QMdMessageBox(QWidget *parent=0):QMessageBox(parent){
     }

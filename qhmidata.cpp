@@ -14,6 +14,7 @@ QHMIData::QHMIData(QSend *send,QRcv *rcv,QObject *parent):
     connect(prcv,SIGNAL(DataChanged(unsigned short,QVariant)),
                      SLOT(On_DataChanged_FromCtrl(unsigned short,QVariant)));
     connect(&timer700ms,SIGNAL(timeout()),SLOT(on_700mstimeout()));
+    connect(psend,SIGNAL(commTimerOut(unsigned char)),SLOT(on_CommTimerOut(unsigned char)));
     timer700ms.setInterval(700);
     timer700ms.setSingleShot(FALSE);
 }
@@ -24,6 +25,31 @@ QHMIData::QHMIData(QSend *send,QRcv *rcv,QObject *parent):
     patterndata.LoadFile(TRUE,FALSE);
 }
 */
+
+void QHMIData::on_CommTimerOut(unsigned char code){
+    if((alarmque.isEmpty())||alarmque.last()!=0){
+        alarmque.enqueue(0);
+        if(alarmque.size()>20)
+            alarmque.dequeue();
+        if(commerrorcode.size()<20)
+            commerrorcode.enqueue(code);
+        emit alarm();
+    }
+}
+
+QString QHMIData::fetchAlarm(){
+    int code = alarmque.dequeue();
+    if(code!=0)
+        return CWBJ_ErrorCode[code];
+    else{
+        QString str = CWBJ_ErrorCode[0];
+        return str.append(QString::number(commerrorcode.dequeue()));
+    }
+}
+
+void QHMIData::clearAlarm(){
+    psend->ClearError();
+}
 
 void QHMIData::On_DataChanged_FromHMI(unsigned short index,QVariant Val){
     unsigned char temp_uchar;
@@ -115,10 +141,13 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
         isruning = FALSE;
         break;
     case QHMIData::CWBJXX:{//报警信息
-        unsigned int i = Val.toInt();
-        if(i>79)
+        int i = Val.toInt();
+        if(i>index )
             i = 79;
-        emit DataChanged_ToHMI(index,CWBJ_ErrorCode[i]);
+        alarmque.enqueue(i);
+        if(alarmque.size()>20)
+            alarmque.dequeue();
+        emit alarm();
         break;
     }
     case QHMIData::JTXDZS:{//机头相对针数，显示在主界面上
@@ -212,6 +241,8 @@ void QHMIData::timerEvent(QTimerEvent * event){
         else
             stopTime++;
         emit time1sOuted();
+        if(!alarmque.isEmpty())
+            emit alarm();
     }
 }
 

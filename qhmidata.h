@@ -204,7 +204,7 @@ signals:
     void stopPerOne(bool);
     void lineLock(bool);
     void dankouLock(bool);
-    void alarm();
+    void alarm(unsigned char code);
 ////////////////////////////////
 protected:
     virtual void timerEvent(QTimerEvent * event);//1s 600ms,

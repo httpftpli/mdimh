@@ -24,7 +24,7 @@ private:
     QString alarmstr;
     int flashtimes;
 private slots:
-    void onAlarm();
+    void onAlarm(unsigned char code);
     void onPushButtonClick();
     void onTimeOut();
 };

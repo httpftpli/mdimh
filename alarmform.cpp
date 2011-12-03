@@ -1,6 +1,6 @@
 #include "alarmform.h"
 #include <QStyleOption>
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include<QLabel>
 #include"qhmidata.h"
 #include<QPainter>
@@ -9,23 +9,24 @@
 
 AlarmForm::AlarmForm(QHMIData *d, QWidget *parent):
         hmidata(d),QWidget(parent),flashtimes(0){
-    connect(d,SIGNAL(alarm()),SLOT(onAlarm()));
+
+    connect(d,SIGNAL(alarm(unsigned char)),SLOT(onAlarm(unsigned char)));
     connect(&timer,SIGNAL(timeout()),SLOT(onTimeOut()));
     setWindowFlags(Qt::FramelessWindowHint|Qt::ToolTip);
-
+    setFixedSize(200,100);
     sound.setFile(QCoreApplication::applicationDirPath()+QString("/resource/sound/alarm.wav"));
-    //qDebug()<<QDir::currentPath()+QString("/resource/sound/alarm.wav");
     timer.setInterval(700);
     timer.setSingleShot(FALSE);
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(6,0,6,0);
     label = new QLabel;
     pushbutton = new QPushButton;
     connect(pushbutton,SIGNAL(clicked()),SLOT(onPushButtonClick()));
     pushbutton->setText(tr("清除"));
-    pushbutton->setFixedWidth(50);
+    pushbutton->setFixedSize(50,40);
     layout->addWidget(label);
     layout->addWidget(pushbutton);
+
 }
 
 void AlarmForm::onTimeOut(){
@@ -41,14 +42,14 @@ void AlarmForm::onTimeOut(){
         hide();
         timer.stop();
     }
-
 }
 
-void AlarmForm::onAlarm(){
+void AlarmForm::onAlarm(unsigned char code){
     alarmstr= hmidata->fetchAlarm();
     label->setText(alarmstr);
     timer.start();
     show();
+    pushbutton->setEnabled(code);
     move((800-width())/2,600-height()-100);
 }
 

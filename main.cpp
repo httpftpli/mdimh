@@ -13,6 +13,7 @@
 #include "qmdapplication.h"
 #include "qhmidata.h"
 #include "alarmform.h"
+#include <QTest>
 
 
 
@@ -34,7 +35,6 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(textcode);
     a.setMouseClickSound("resource/sound/click.wav");    
     MainWindow w;
-    AlarmForm alarmform(&hmiData);
     qRcv.start();
     Md::Result r= sysInit();
     if(r!=Md::Ok){
@@ -49,7 +49,9 @@ int main(int argc, char *argv[])
         sysTest.start();
 #endif
     w.show();
-    //hmiData.run();
+    QTest::qWaitForWindowShown(&w);
+    AlarmForm alarmform(&hmiData);
+    hmiData.run();
     return a.exec();
 }
 

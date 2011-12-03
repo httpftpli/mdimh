@@ -33,7 +33,7 @@ void QHMIData::on_CommTimerOut(unsigned char code){
             alarmque.dequeue();
         if(commerrorcode.size()<20)
             commerrorcode.enqueue(code);
-        emit alarm();
+        emit alarm(0);
     }
 }
 
@@ -43,7 +43,7 @@ QString QHMIData::fetchAlarm(){
         return CWBJ_ErrorCode[code];
     else{
         QString str = CWBJ_ErrorCode[0];
-        return str.append(QString::number(commerrorcode.dequeue()));
+        return str.append(QString::number(commerrorcode.dequeue(),16));
     }
 }
 
@@ -144,10 +144,12 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
         int i = Val.toInt();
         if(i>index )
             i = 79;
-        alarmque.enqueue(i);
+        if((alarmque.isEmpty())||(alarmque.last()!=i)){
+            alarmque.enqueue(i);
+            emit alarm(i);
+        }
         if(alarmque.size()>20)
             alarmque.dequeue();
-        emit alarm();
         break;
     }
     case QHMIData::JTXDZS:{//机头相对针数，显示在主界面上
@@ -242,7 +244,7 @@ void QHMIData::timerEvent(QTimerEvent * event){
             stopTime++;
         emit time1sOuted();
         if(!alarmque.isEmpty())
-            emit alarm();
+            emit alarm(alarmque.last());
     }
 }
 

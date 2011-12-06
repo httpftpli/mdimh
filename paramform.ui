@@ -522,7 +522,7 @@ QHeaderView {
         <bool>false</bool>
        </property>
        <property name="currentIndex">
-        <number>7</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page">
         <widget class="QMdTableView" name="tableView">
@@ -530,7 +530,7 @@ QHeaderView {
           <rect>
            <x>0</x>
            <y>40</y>
-           <width>321</width>
+           <width>451</width>
            <height>491</height>
           </rect>
          </property>
@@ -562,24 +562,56 @@ QHeaderView {
         <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
-           <x>30</x>
-           <y>10</y>
+           <x>31</x>
+           <y>11</y>
            <width>181</width>
            <height>19</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="spacing">
+           <number>15</number>
+          </property>
           <item>
            <widget class="QMdLabel" name="label_2">
             <property name="text">
-             <string>右行使用</string>
+             <string>1系统右行</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QMdLabel" name="label">
             <property name="text">
-             <string>左行使用</string>
+             <string>1系统左行</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="layoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>234</x>
+           <y>11</y>
+           <width>201</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <property name="spacing">
+           <number>15</number>
+          </property>
+          <item>
+           <widget class="QMdLabel" name="label_sys2r">
+            <property name="text">
+             <string>2系统右行</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QMdLabel" name="label_sys2l">
+            <property name="text">
+             <string>2系统左行</string>
             </property>
            </widget>
           </item>

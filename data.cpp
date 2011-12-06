@@ -1330,16 +1330,16 @@ bool QTingcheModel::removeRows(int row,int count, const QModelIndex &parent){
 
 int QDMBCModel::rowCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
+#if DUAL_SYSTEM
+    return 8;
+#else
     return 4;
+#endif
 }
 
 int QDMBCModel::columnCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
-#if DUAL_SYSTEM
-    return 6;
-#else
     return 3;
-#endif
 }
 
 QVariant  QDMBCModel::data(const QModelIndex &index, int role) const{
@@ -1398,6 +1398,9 @@ QVariant QDMBCModel::headerData(int section, Qt::Orientation orientation, int ro
     if(role!=Qt::DisplayRole)
         return QVariant();
     if(orientation == Qt::Vertical){
+#if DUAL_SYSTEM
+        return QString("#0%1").arg(section+1);
+#else
         switch(section){
         case 0:
             return tr("后左");
@@ -1410,7 +1413,7 @@ QVariant QDMBCModel::headerData(int section, Qt::Orientation orientation, int ro
         default:
             break;
         }
-
+#endif
     } else{
         switch(section){
         case 0:

@@ -3,7 +3,7 @@
 
 #include <qsyslog.h>
 #include <namespace.h>
-#define DUAL_SYSTEM 0
+#define DUAL_SYSTEM 1
 //#define SYSTEST
 
 class QHMIData;

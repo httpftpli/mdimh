@@ -4,7 +4,11 @@
 #include <QFlags>
 
 #include "formjqgzcs.h"
+#if DUAL_SYSTEM
+#include "formxtcs2.h"
+#else
 #include "formxtcs.h"
+#endif
 
 paramform::paramform(QWidget *parent) :
     QWidget(parent,Qt::FramelessWindowHint),patterndata(NULL),paramadata(NULL),dmzmodel(NULL),llmodel(NULL),
@@ -66,6 +70,16 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             tableView->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
             tableView->verticalHeader()->setResizeMode(QHeaderView::Fixed);
             tableView->setModel(dmzmodel);
+#if DUAL_SYSTEM
+            tableView->setGeometry(tableView->x(),tableView->y(),
+                                   450,tableView->height());
+#else
+            tableView->setGeometry(tableView->x(),tableView->y(),
+                                   250,tableView->height());
+            label_sys2l->hide();
+            label_sys2r->hide();
+#endif
+
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
             int valbottom =wrkItemDsp[WrkItemHd_DuMuZi].valrangebottom;
             int valtop =wrkItemDsp[WrkItemHd_DuMuZi].valrangetop;
@@ -247,7 +261,11 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
         break;
    case 12:
         if(NULL==formxtcs){
+#if DUAL_SYSTEM
+            formxtcs = new FormXtcs2(paramadata,this);
+#else
             formxtcs = new FormXtcs(paramadata,this);
+#endif
             QWidget *widget =stackedWidget->currentWidget();
             QGridLayout *layout = new QGridLayout();
             widget->setLayout(layout);

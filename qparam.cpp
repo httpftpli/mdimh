@@ -108,6 +108,7 @@ void QParam::save(bool isdownload){
     spafile->flush();
     spafile->close();
     emit dirty(FALSE);
+    emit changed();
     if(isdownload){
         unsigned short bagflag =0;
         foreach(ItemHd handle,modifyedItem){

@@ -1,10 +1,16 @@
 #ifndef PARAMFORM_H
 #define PARAMFORM_H
-
 #include "ui_paramform.h"
 #include "data.h"
+#include "globaldata.h"
+
 class FormJqgzcs;
+
+#if DUAL_SYSTEM
+class FormXtcs2;
+#else
 class FormXtcs;
+#endif
 
 class paramform : public QWidget, private Ui::paramform
 {
@@ -19,6 +25,7 @@ public:
         Index_ytx,
         Index_cjp,
         Index_pzk,
+        Index_qt,
         Index_dmbc,
         Index_ycbc,
         Index_fzycbc,
@@ -67,8 +74,16 @@ private:
     QYCWZXZModel *ycwzxzmodel;
     QFZYCWZXZModel *fzycwzxzmodel;
     FormJqgzcs *formjqgzcs;
+#if DUAL_SYSTEM
+    FormXtcs2   *formxtcs;
+#else
     FormXtcs   *formxtcs;
+#endif
     int showindex;
+
+
+
+
 
 
     ////////////////////////////

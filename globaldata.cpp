@@ -16,7 +16,7 @@ QRcv  qRcv;
 QMutex mutex;
 QPatternData patternData(&qSend);
 QParam paramaData(&qSend);
-QHMIData hmiData(&qSend,&qRcv);
+QHMIData hmiData(&paramaData,&qSend,&qRcv);
 QSysLog sysLog;
 QProgressIndicator *ProgressIndiForm;
 

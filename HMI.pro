@@ -54,7 +54,9 @@ SOURCES += main.cpp\
     qhmidata.cpp \
     dialogsetfinishcount.cpp \
     dialogtingche.cpp \
-    alarmform.cpp
+    alarmform.cpp \
+    formxtcs2.cpp \
+    formhead.cpp
 
 HEADERS  += \
     mdPushbutton/qmdpushbutton.h \
@@ -101,7 +103,9 @@ HEADERS  += \
     dialogsetfinishcount.h \
     dialogtingche.h \
     customerid.h \
-    alarmform.h
+    alarmform.h \
+    formxtcs2.h \
+    formhead.h
 
 FORMS    += \
     qformfile.ui \
@@ -122,7 +126,9 @@ FORMS    += \
     formjqgzcs.ui \
     formxtcs.ui \
     dialogsetfinishcount.ui \
-    dialogtingche.ui
+    dialogtingche.ui \
+    formxtcs2.ui \
+    formhead.ui
 
 OTHER_FILES +=
 

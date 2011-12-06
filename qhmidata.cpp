@@ -1,22 +1,26 @@
 #include "qhmidata.h"
 #include "pattern.h"
 #include "qmdmessagebox.h"
-#include "globaldata.h"
 #include "data.h"
 #include <QTimerEvent>
 #include <QProcess>
 #include"customerid.h"
+#include "qparam.h"
 
 
-QHMIData::QHMIData(QSend *send,QRcv *rcv,QObject *parent):
+QHMIData::QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent):
         QObject(parent),psend(send),prcv(rcv),speedlimit(0),
-        alarmlimit(0),shazuiup(1),dankoulock(0),isruning(FALSE){
+        alarmlimit(0),shazuiup(1),isruning(FALSE){
     connect(prcv,SIGNAL(DataChanged(unsigned short,QVariant)),
                      SLOT(On_DataChanged_FromCtrl(unsigned short,QVariant)));
     connect(&timer700ms,SIGNAL(timeout()),SLOT(on_700mstimeout()));
     connect(psend,SIGNAL(commTimerOut(unsigned char)),SLOT(on_CommTimerOut(unsigned char)));
     timer700ms.setInterval(700);
     timer700ms.setSingleShot(FALSE);
+#if DUAL_SYSTEM
+    dankoulock = param->fechData(ItemHd_Xtcs,20);
+    emit dankouLock(dankoulock);
+#endif
 }
 
 
@@ -325,16 +329,22 @@ int QHMIData::setLineLock(bool lock,bool send){
     return r;
 }
 
+#if DUAL_SYSTEM
 int QHMIData::setDankouLock(bool lock,bool send){
     int r=0;
     if(send)
         r = psend->sendParamaInRun(clothsetcount,clothfinishcount,
-                                   speedlimit,stopperone,alarmlimit,lock);
+                                   speedlimit,stopperone,alarmlimit,lock);    
     if(Md::Ok==r)
         dankoulock = lock;
     emit dankouLock(dankoulock);
     return r;
 }
+int QHMIData::toggleDankouLock(){
+    return setDankouLock(!dankoulock,TRUE);
+}
+
+#endif
 
 int QHMIData::setRunOrGuiling(bool run){
     unsigned code;    

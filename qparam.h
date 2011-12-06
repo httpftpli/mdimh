@@ -124,6 +124,7 @@ private:
     QSend *qsend;
 signals:
     void dirty(bool val);
+    void changed();
 public slots:
 
 };

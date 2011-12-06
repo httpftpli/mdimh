@@ -4,8 +4,10 @@
 #include "ui_mainwindow.h"
 #include"namespace.h"
 #include <QShortcut>
+#include "globaldata.h"
 
 class paramform;
+class FormHead;
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
@@ -17,11 +19,13 @@ public:
 
 public slots:
     void runPatternRowChange(unsigned short val);
+    void onParamChanged();
+    void onDankouLock(bool);
     void slot_patternChange();
-    void runDirectionChange(Md::DIRECTION direction);
     void Timeout1s();
 
 private slots:
+    void on_pushButton_12_clicked();
     void on_pushButton_11_clicked();
     void on_qMdPushButton_10_clicked(bool checked);
     void on_qMdPushButton_9_clicked(bool checked);
@@ -54,12 +58,15 @@ private slots:
     void on_qMdPushButton_clicked();
     void on_qMdPushButton_12_clicked();
 
-private:
-    QCheckBox *pcheckBoxArray[8];
-    QStringList azllist,hzllist;
 
-    bool eventFilter(QObject *, QEvent *);
+private:
+    QStringList azllist,hzllist;
     QPointer<paramform > paramForm;
+    QPixmap pixmapleft,pixmapright;
+    FormHead *formhead1;
+#if DUAL_SYSTEM
+    FormHead *formhead2;
+#endif
 
 };
 

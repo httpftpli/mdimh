@@ -22,19 +22,39 @@
 #include "qmdstyle.h"
 #include "dialogsetfinishcount.h"
 #include "dialogtingche.h"
-
+#include "formhead.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent,Qt::FramelessWindowHint){
+    QMainWindow(parent,Qt::FramelessWindowHint),
+    pixmapleft(":/image/resource/1x.png"),
+    pixmapright(":/image/resource/1w.png")
+{
+    formhead1 = new FormHead(&patternData,&hmiData,&paramaData,this);
+#if DUAL_SYSTEM
+    formhead2 = new FormHead(&patternData,&hmiData,&paramaData,this);
+#endif
     setupUi(this);
     setup();
 }
 
 
 void MainWindow::setup(){
-    label_left->hide();
-    label_right->hide();
+    QWidget *widget = new QWidget(this);
+    QHBoxLayout *layout = new QHBoxLayout(widget);
+    layout->addStretch();
+    layout->addWidget(formhead1);
+    layout->addStretch();
+#if DUAL_SYSTEM
+    layout->addWidget(formhead2);
+    layout->addStretch();
+    widget->setFixedSize(780,280);
+    widget->move(10,80);
+#else
+    widget->setFixedSize(460,280);
+    widget->move(170,80);
+#endif
+
     connect(&hmiData,SIGNAL(time1sOuted()),this,SLOT(Timeout1s()));
     connect(&hmiData,SIGNAL(clothFinishCountChanged(int)),label_FinishCount,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(clothSetCountChanged(int)),label_setCount,SLOT(setNum(int)));
@@ -48,8 +68,6 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(hmi_loopTatal(int)),label_loopCount,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(hmi_cntNumber(unsigned short)),this,
             SLOT(runPatternRowChange(unsigned short)));
-    connect(&hmiData,SIGNAL(hmi_direction(Md::DIRECTION)),this,
-            SLOT(runDirectionChange(Md::DIRECTION)));
     connect(&hmiData,SIGNAL(hmi_jitouxiangduizhengshu(int)),label_zwz,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(xtGuilingFinish(bool)),qMdPushButton_5,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(lineLock(bool)),qMdPushButton_6,SLOT(setChecked(bool)));
@@ -57,20 +75,15 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(stopPerOne(bool)),qMdPushButton_9,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(alarmLimit(bool)),qMdPushButton_10,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(shazuiUp(bool)),qMdPushButton_11,SLOT(setChecked(bool)));
-
-    pcheckBoxArray[0] = checkBox_1;
-    pcheckBoxArray[1] = checkBox_2;
-    pcheckBoxArray[2] = checkBox_3;
-    pcheckBoxArray[3] = checkBox_4;
-    pcheckBoxArray[4] = checkBox_5;
-    pcheckBoxArray[5] = checkBox_6;
-    pcheckBoxArray[6] = checkBox_7;
-    pcheckBoxArray[7] = checkBox_8;
-    for(int i=0;i<8;i++){
-        pcheckBoxArray[i]->installEventFilter(this);
-    }
+    connect(&hmiData,SIGNAL(dankouLock(bool)),SLOT(onDankouLock(bool)));
     azllist<<tr("空")<<tr("翻针")<<tr("编织");
     hzllist<<tr("空")<<tr("吊目")<<tr("接针")<<tr("吊目2")<<tr("编松2");
+#if DUAL_SYSTEM
+
+#else
+    frame_dankoulock->hide();
+#endif
+
 }
 
 
@@ -79,25 +92,22 @@ void  MainWindow::slot_patternChange(){
     label_patternFile->setText(patternData.patternName);
 }
 
-void MainWindow::runDirectionChange(Md::DIRECTION direction){
-    if(direction==Md::LEFT){
-        label_left->show();
-        label_right->hide();
-    }else{
-        label_right->show();
-        label_left->hide();
-    }
-}
 
 void MainWindow::Timeout1s(){
     label_currenttime->setText(QDateTime::fromTime_t(hmiData.curruntTime).toString("yyyy-MM-dd hh:mm:ss"));
     label_timebianzhi->setText(secondToString(hmiData.runTimeHistory)+QChar('/')+secondToString(hmiData.runTime));
     label_timetingche->setText(secondToString(hmiData.stopTimeHistory)+QChar('/')+secondToString(hmiData.stopTime));
-    //label_timebianzhi->setNum(QDateTime::f);
+}
+
+void MainWindow::onParamChanged(){
+
+}
+
+void MainWindow::onDankouLock(bool lock){
+    label_dankoulock->setText(lock?tr("锁定"):tr("不锁定"));
 }
 
 void MainWindow::runPatternRowChange(unsigned short cntnumber){
-
     bool temp;
     lcdNumber->display(cntnumber+1);
     label_dumu->setNum(patternData.cnt_duMu(cntnumber,temp));
@@ -116,48 +126,7 @@ void MainWindow::runPatternRowChange(unsigned short cntnumber){
     label_yajiao->setNum(patternData.cnt_yaJiao(cntnumber));
     label_tingche->setText(patternData.cnt_tingChe(cntnumber)?tr("是"):tr("否"));
     label_qizhengdian->setNum(patternData.wrk_qizhengdian());
-
-    /////////花板行/////////////////////////////
-    label_hbhh->setNum(patternData.cnt_huabanhang_h1(cntnumber));
-    label_hbhq->setNum(patternData.cnt_huabanhang_q1(cntnumber));
-
-    ///////动作/////////////////////////////////////
-    label_awdzh->setText(azllist.value(patternData._azl(patternData.cntFechData(cntnumber,CNT_S1H_AZiLing))));
-    label_awdzq->setText(azllist.value(patternData._azl(patternData.cntFechData(cntnumber,CNT_S1Q_AZiLing))));
-    label_hwdzh->setText(azllist.value(patternData._hzl(patternData.cntFechData(cntnumber,CNT_S1H_HZiLing))));
-    label_hwdzq->setText(azllist.value(patternData._hzl(patternData.cntFechData(cntnumber,CNT_S1Q_HZiLing))));
-    ////////色代号//////////////////////////////
-    label_awsch->setText(patternData.cnt_seDaiHao(cntnumber,CNT_S1H_AColor));
-    label_hwsch->setText(patternData.cnt_seDaiHao(cntnumber,CNT_S1H_HColor));
-    label_awscq->setText(patternData.cnt_seDaiHao(cntnumber,CNT_S1Q_AColor));
-    label_hwscq->setText(patternData.cnt_seDaiHao(cntnumber,CNT_S1Q_HColor));
-    ////////沙嘴///////////////////////////////
-    unsigned char sz1 = patternData.cnt_shaZui1(cntnumber);
-    for(int i=0;i<8;i++)
-        pcheckBoxArray[i]->setChecked(sz1&1<<i);
-    ///////////////////度目值/////////////////////////
-    if(cntnumber%2){//偶数数行        
-        label_dmz_hz->setNum(paramaData.duMu_BuGongZuo(QParam::BackLeft));
-        label_dmz_qz->setNum(paramaData.duMu_BuGongZuo(QParam::FrontLeft));
-        label_dmz_hy->setNum(patternData.duMuZhi(TRUE,cntnumber));
-        label_dmz_qy->setNum(patternData.duMuZhi(FALSE,cntnumber));
-
-    }else{//奇数行
-        label_dmz_hz->setNum(patternData.duMuZhi(TRUE,cntnumber));
-        label_dmz_qz->setNum(patternData.duMuZhi(FALSE,cntnumber));
-        label_dmz_hy->setNum(paramaData.duMu_BuGongZuo(QParam::BackRight));
-        label_dmz_qy->setNum(paramaData.duMu_BuGongZuo(QParam::FrontRight));
-    }
 }
-
-bool MainWindow::eventFilter ( QObject * watched, QEvent * event ){
-    if(watched->parent()==this->frame_3){
-        if((event->type()==QEvent::MouseButtonPress)||(event->type()==QEvent::MouseButtonDblClick))
-            return TRUE;
-    }
-    return FALSE;
-}
-
 
 
 void MainWindow::on_qMdPushButton_12_clicked()
@@ -314,6 +283,14 @@ void MainWindow::on_pushButton_5_clicked()
     paramForm->show();
 }
 
+
+void MainWindow::on_pushButton_12_clicked()
+{
+#if DUAL_SYSTEM
+    hmiData.toggleDankouLock();
+#endif
+}
+
 void MainWindow::on_pushButton_6_clicked()
 {
     if(!paramForm)
@@ -393,5 +370,7 @@ void MainWindow::on_qMdPushButton_10_clicked(bool checked)
     qMdPushButton_10->setChecked(!checked);
     hmiData.setAlarmLimit(checked,TRUE);
 }
+
+
 
 

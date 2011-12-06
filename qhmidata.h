@@ -4,7 +4,9 @@
 #include "namespace.h"
 #include "communicat.h"
 #include <QQueue>
+#include "globaldata.h"
 
+class QParam;
 
 const unsigned char  INPUT_MAP[32][2] = {  //显示序号与开关量的映射表(数组下标,位)
     {3,0}, {3,1}, {3,2}, {3,3}, {3,4}, {3,5}, {3,6}, {3,7},
@@ -123,7 +125,7 @@ public:
              };
 
     int dataBuf[GUARDIANS];
-    QHMIData(QSend *send,QRcv *rcv,QObject *parent = 0);
+    QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent = 0);
 
     bool patternVailable;
     unsigned short customerId;
@@ -162,7 +164,11 @@ public:
     int setShazuiUp(bool up,bool send);
     int setStopPerOne(bool stop,bool send);
     int setLineLock(bool lock,bool send);
+#if DUAL_SYSTEM
     int setDankouLock(bool lock,bool send);
+    //bool dankouLock();
+    int toggleDankouLock();
+#endif
     int setRunOrGuiling(bool run);
     int setRunOrGuiling();
     int sendParamaInRun();
@@ -203,7 +209,9 @@ signals:
     void shazuiUp(bool);
     void stopPerOne(bool);
     void lineLock(bool);
+#if DUAL_SYSTEM
     void dankouLock(bool);
+#endif
     void alarm(unsigned char code);
 ////////////////////////////////
 protected:
@@ -219,6 +227,7 @@ private:
     bool stopperone;
     bool alarmlimit;
     bool linelock;
+
     bool dankoulock;
     bool shazuiup;
     bool isruning;

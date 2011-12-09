@@ -310,8 +310,10 @@ void QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag)
                 stream<<(long long)0;
                 filelen = filelen+8;
             }
-
             sazfile->close();
+            if(downloadflag&Md::HAVESAZ){
+                qsend->SendShazuiKb(sazFilePath);
+            }
         }
     }
     if(saveflag&Md::HAVEPAT){

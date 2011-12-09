@@ -166,12 +166,15 @@ public:
     int setLineLock(bool lock,bool send);
 #if DUAL_SYSTEM
     int setDankouLock(bool lock,bool send);
-    //bool dankouLock();
+    bool dankouLock();
     int toggleDankouLock();
 #endif
     int setRunOrGuiling(bool run);
     int setRunOrGuiling();
     int sendParamaInRun();
+    int pollSysVersion();
+    QString mainboardVersion();
+    QString bagVersion();
     void saveSysCfgFile();
     void start();
     void run();
@@ -210,7 +213,7 @@ signals:
     void stopPerOne(bool);
     void lineLock(bool);
 #if DUAL_SYSTEM
-    void dankouLock(bool);
+    void sigDankouLock(bool);
 #endif
     void alarm(unsigned char code);
 ////////////////////////////////
@@ -219,10 +222,12 @@ protected:
 private  slots:
     void on_700mstimeout();
     void on_CommTimerOut(unsigned char);
+    void onParamChanged();
 private:
     int timeid1s;
     QTimer timer700ms;
     QRcv *prcv;
+    QParam *pparam;
     bool speedlimit;
     bool stopperone;
     bool alarmlimit;
@@ -236,6 +241,7 @@ private:
     unsigned short clothsetcount;
     QQueue<int > alarmque;
     QQueue<int > commerrorcode;
+    QString mainboardversion,bagversion;
 };
 
 

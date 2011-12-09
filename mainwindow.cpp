@@ -42,12 +42,12 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::setup(){
     QWidget *widget = new QWidget(this);
     QHBoxLayout *layout = new QHBoxLayout(widget);
-    layout->addStretch();
+    layout->addStretch(20);
     layout->addWidget(formhead1);
-    layout->addStretch();
+    layout->addStretch(20);
 #if DUAL_SYSTEM
     layout->addWidget(formhead2);
-    layout->addStretch();
+    layout->addStretch(20);
     widget->setFixedSize(780,280);
     widget->move(10,80);
 #else
@@ -69,17 +69,17 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(hmi_cntNumber(unsigned short)),this,
             SLOT(runPatternRowChange(unsigned short)));
     connect(&hmiData,SIGNAL(hmi_jitouxiangduizhengshu(int)),label_zwz,SLOT(setNum(int)));
-    connect(&hmiData,SIGNAL(xtGuilingFinish(bool)),qMdPushButton_5,SLOT(setChecked(bool)));
+    connect(&hmiData,SIGNAL(xtGuilingFinish(bool)),SLOT(onXtGuilingFinish(bool)));
     connect(&hmiData,SIGNAL(lineLock(bool)),qMdPushButton_6,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(speedLimit(bool)),qMdPushButton_8,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(stopPerOne(bool)),qMdPushButton_9,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(alarmLimit(bool)),qMdPushButton_10,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(shazuiUp(bool)),qMdPushButton_11,SLOT(setChecked(bool)));
-    connect(&hmiData,SIGNAL(dankouLock(bool)),SLOT(onDankouLock(bool)));
     azllist<<tr("空")<<tr("翻针")<<tr("编织");
     hzllist<<tr("空")<<tr("吊目")<<tr("接针")<<tr("吊目2")<<tr("编松2");
 #if DUAL_SYSTEM
-
+    connect(&hmiData,SIGNAL(sigDankouLock(bool)),SLOT(onDankouLock(bool)));
+    label_dankoulock->setText(hmiData.dankouLock()?tr("锁定"):tr("不锁定"));
 #else
     frame_dankoulock->hide();
 #endif
@@ -103,9 +103,11 @@ void MainWindow::onParamChanged(){
 
 }
 
+#if DUAL_SYSTEM
 void MainWindow::onDankouLock(bool lock){
     label_dankoulock->setText(lock?tr("锁定"):tr("不锁定"));
 }
+#endif
 
 void MainWindow::runPatternRowChange(unsigned short cntnumber){
     bool temp;
@@ -128,6 +130,13 @@ void MainWindow::runPatternRowChange(unsigned short cntnumber){
     label_qizhengdian->setNum(patternData.wrk_qizhengdian());
 }
 
+void MainWindow::onXtGuilingFinish(bool val){
+     qMdPushButton_5->setChecked(FALSE);
+     if(!val){
+        QMdMessageBox box;
+        box.exec(tr("系统归零"),tr("归零错误"),QMessageBox::Warning,QMessageBox::Cancel,QMessageBox::Cancel);
+    }
+}
 
 void MainWindow::on_qMdPushButton_12_clicked()
 {
@@ -204,8 +213,10 @@ void MainWindow::on_qMdPushButton_14_clicked()
 void MainWindow::on_qMdPushButton_5_clicked(bool checked)
 {
     qMdPushButton_5->setChecked(!checked);
-    if(!checked)
-        hmiData.setRunOrGuiling(FALSE);
+    if(!checked){ //in run state
+        qMdPushButton_5->setChecked(TRUE);
+        hmiData.setRunOrGuiling(FALSE); //set in reset state;
+    }
 }
 
 void MainWindow::on_qMdPushButton_6_clicked(bool checked)
@@ -370,7 +381,4 @@ void MainWindow::on_qMdPushButton_10_clicked(bool checked)
     qMdPushButton_10->setChecked(!checked);
     hmiData.setAlarmLimit(checked,TRUE);
 }
-
-
-
 

@@ -133,12 +133,14 @@ bool QInterComm::IsAcked(unsigned short &val1,unsigned short &val2){
 
 bool QInterComm::IsAcked(char *buf ,unsigned char &len){
     pmutex->lock();
-    if(!packetrcved)
+    if(!packetrcved){
         pmutex->unlock();
         return FALSE;
-    if(!isack)
+    }
+    if(!isack){
         pmutex->unlock();
         return FALSE;
+    }
     memcpy(buf,this->buf,this->len);
     len = this->len;
     pmutex->unlock();
@@ -695,6 +697,38 @@ int QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent
     }
 }
 
+int  QSend::SendShazuiKb(const QString &sazfilepath){
+    *(unsigned short *)d_send = htons(519);
+    *(unsigned char *)(d_send+2) = 0x84;
+    memset(d_send+4,0,512);
+
+    if(!sazfilepath.isEmpty()){
+        QFile sazfile(sazfilepath);
+        if(!sazfile.exists()){
+            ERRORLOG(tr("找不到沙嘴捆绑文件"));
+            goto ELSE;
+        }
+        sazfile.open(QIODevice::ReadOnly);
+        sazfile.read((char *)&d_send[4],512);
+        sazfile.close();
+        int i=0;
+        for(i=0;i<64;i++){
+            if(*(unsigned short *)(d_send+4+8*i)==0)
+                break;
+        }
+        *(unsigned char *)(d_send+3) =i+1;
+    }else
+        ELSE:
+    *(unsigned char *)(d_send+3) =0;
+    unsigned short ackval;
+    if(!ProgramSend(ackval)){
+        return Md::CommError;
+    }
+    if(ackval!=0x55){
+        return Md::CommError;
+    }
+    return Md::Ok;
+}
 
 int  QSend::SendFile(QFile &file,unsigned short fileid, bool samehint, QWidget *parent){
     if(!file.exists()){
@@ -710,9 +744,6 @@ int  QSend::SendFile(QFile &file,unsigned short fileid, bool samehint, QWidget *
     }else if (fname.endsWith(".pat",Qt::CaseInsensitive)){
         infofuncode = 0x82; //            PAT FILE
         datafuncode = 0x83;
-    }else if(fname.endsWith(".saz",Qt::CaseInsensitive)){
-        infofuncode = 0x00;
-        datafuncode = 0x84;
     }else{
         return Md::NotPatCntSaz;
     }
@@ -761,43 +792,21 @@ int  QSend::SendFile(QFile &file,unsigned short fileid, bool samehint, QWidget *
     }
     file.open(QIODevice::ReadOnly);
     QDataStream stream(&file);
-    stream.setByteOrder(QDataStream::LittleEndian);
-    if(0==infofuncode){
-       int i;
-       for(i=0;i<64;i++){
-           unsigned short sazui;
-           file.seek(i*8);
-           stream>>sazui;
-           if(sazui==0)
-               break;
-       }
-       file.seek(0);
-       *(unsigned short *)d_send = htons(519);
-       *(unsigned char *)(d_send+2) = datafuncode;
-       *(unsigned char *)(d_send+3) =i+1;
-       stream.readRawData((char *)&d_send[4],512);
-       if(!ProgramSend(result)){
-           return Md::CommError;
-       }
-       if(result!=0x55){
-           return Md::CommError;
-       }
-   }else{
-       for(int i=0;i<packet;i++){
-           stream.readRawData((char*)&d_send[5],512);
-           *(unsigned short *)d_send = htons(520);
-           *(unsigned char *)(d_send+2) = datafuncode;
-           *(unsigned short *)(d_send+3) =htons(i);
-           if(!ProgramSend(result)){
-               return Md::CommError;
-           }
-           if(result!=i){
-               return Md::CommError;
-           }
-           emit commPercent((i+1)*100/packet);
-       }
-   }
-   return Md::Ok;
+    stream.setByteOrder(QDataStream::LittleEndian);    
+    for(int i=0;i<packet;i++){
+        stream.readRawData((char*)&d_send[5],512);
+        *(unsigned short *)d_send = htons(520);
+        *(unsigned char *)(d_send+2) = datafuncode;
+        *(unsigned short *)(d_send+3) =htons(i);
+        if(!ProgramSend(result)){
+            return Md::CommError;
+        }
+        if(result!=i){
+            return Md::CommError;
+        }
+        emit commPercent((i+1)*100/packet);
+    }
+    return Md::Ok;
 }
 
 

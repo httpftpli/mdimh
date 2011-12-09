@@ -59,7 +59,6 @@ Md::Result sysInit(){
                 QFile file(filename);
                 commResult = qSend.SendBin(file,splash);
                 if(commResult == Md::Ok){
-                    box.setParent(splash);
                     box.setText(QObject::tr("下载固件"));
                     box.setInformativeText(QObject::tr("下载成功"));
                     box.setStandardButtons(QMessageBox::Ok);
@@ -113,8 +112,7 @@ Md::Result sysInit(){
         return Md::CommError;
     }
     ///szkb///////////////////////////////////
-    QFile sazfile(hmiData.sazFilePath);
-    commResult = qSend.SendFile(sazfile,0,FALSE,NULL);
+    commResult = qSend.SendShazuiKb(hmiData.sazFilePath);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("下载SAZ文件，通讯错误"),Qt::AlignBottom);
         return Md::CommError;;
@@ -165,6 +163,7 @@ Md::Result sysInit(){
             return Md::CustomerIdNotPass;
         }
     }
+    hmiData.pollSysVersion();
     hmiData.setRunOrGuiling();
     INFORMLOG(QObject::tr("开机初始化成功"));
     return Md::Ok;

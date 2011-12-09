@@ -112,7 +112,8 @@ public:
    int sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,
                     unsigned char OneStop,unsigned char alarmLimit,unsigned char DanKouLock);
    int SendFile(QFile &file,unsigned short fileid,bool samehint,QWidget *parent);
-   int SendParama(  QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
+   int SendShazuiKb(const QString &sazfilepath=QString());
+   int SendParama(QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
    int IsInBoot();
    int SendBin(QFile &binfile,QWidget *parent=NULL);
    int SendBag(QString &bagfilename,QWidget *parent = NULL);

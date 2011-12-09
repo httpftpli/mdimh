@@ -156,8 +156,8 @@ QTabBar::tab:!selected{
         </property>
         <property name="icon">
          <iconset resource="resouce.qrc">
-          <normaloff>:/image/resource/1a.png</normaloff>
-          <normalon>:/image/resource/1h.png</normalon>:/image/resource/1a.png</iconset>
+          <normaloff>:/image/resource/1h.png</normaloff>
+          <normalon>:/image/resource/1a.png</normalon>:/image/resource/1h.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -170,6 +170,9 @@ QTabBar::tab:!selected{
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

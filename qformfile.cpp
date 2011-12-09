@@ -196,8 +196,7 @@ void QFormFile::on_qMdPushButton_5_clicked()
     }
 
     if(flag&Md::HAVESAZ){ //发送沙嘴捆绑文件
-        QFile sazfile(sazfilepath);
-        result = qSend.SendFile(sazfile,0,FALSE,this);
+        result = qSend.SendShazuiKb(sazfilepath);
         if(result ==Md::CommError) {
             box.exec(tr("花型发送"),tr("发送沙嘴捆绑,通信错误"),QMessageBox::Warning,
                      QMessageBox::Cancel,QMessageBox::Cancel);

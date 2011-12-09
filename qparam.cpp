@@ -41,6 +41,7 @@ bool QParam::setFile(const QString &spafilepath){
     spafile->seek(Addr_Bgzdmlwbc*2);
     spafile->read((char *)dumu_bugongzuo,sizeof dumu_bugongzuo);
     spafile->close();
+    emit changed();
     return TRUE;
 }
 
@@ -70,6 +71,22 @@ short QParam::fechData(ItemHd handle,int offset){
     }
     return 0;
 }
+
+#if DUAL_SYSTEM
+void QParam::setDankouLock(bool lock){
+   Q_ASSERT(spafile);
+   if(spabuf)
+       spabuf[Addr_Xtcs+20] = lock;
+   bool open = spafile->isOpen();
+   if(!open)
+       spafile->open(QIODevice::ReadWrite);
+   spafile->seek((Addr_Xtcs+20)*2);
+   unsigned short temp = lock;
+   spafile->write((char *)&temp,2);
+   if(!open)
+       spafile->close();
+}
+#endif
 
 void QParam::setData(ItemHd handle,int offset,short data){
     if(spabuf){

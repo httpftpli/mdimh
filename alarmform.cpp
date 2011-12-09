@@ -45,6 +45,7 @@ void AlarmForm::onTimeOut(){
 }
 
 void AlarmForm::onAlarm(unsigned char code){
+    qDebug()<<"on alarm";
     alarmstr= hmidata->fetchAlarm();
     label->setText(alarmstr);
     timer.start();

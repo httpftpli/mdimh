@@ -1248,7 +1248,7 @@ bool QSzkbModel::removeRows(int row,int count, const QModelIndex &parent){
 
 void QSzkbModel::saveToFile(){
     this->patterndata->sazbuf = this->szkblist;
-    this->patterndata->Save(Md::HAVESAZ);
+    this->patterndata->Save(Md::HAVESAZ,Md::HAVESAZ);
 }
 
 bool QSzkbModel::checkdatavalid(){

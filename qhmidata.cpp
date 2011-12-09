@@ -9,18 +9,15 @@
 
 
 QHMIData::QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent):
-        QObject(parent),psend(send),prcv(rcv),speedlimit(0),
+        QObject(parent),pparam(param),psend(send),prcv(rcv),speedlimit(0),
         alarmlimit(0),shazuiup(1),isruning(FALSE){
     connect(prcv,SIGNAL(DataChanged(unsigned short,QVariant)),
                      SLOT(On_DataChanged_FromCtrl(unsigned short,QVariant)));
     connect(&timer700ms,SIGNAL(timeout()),SLOT(on_700mstimeout()));
     connect(psend,SIGNAL(commTimerOut(unsigned char)),SLOT(on_CommTimerOut(unsigned char)));
+    connect(pparam,SIGNAL(changed()),SLOT(onParamChanged()));
     timer700ms.setInterval(700);
-    timer700ms.setSingleShot(FALSE);
-#if DUAL_SYSTEM
-    dankoulock = param->fechData(ItemHd_Xtcs,20);
-    emit dankouLock(dankoulock);
-#endif
+    timer700ms.setSingleShot(FALSE);  
 }
 
 
@@ -29,6 +26,16 @@ QHMIData::QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent):
     patterndata.LoadFile(TRUE,FALSE);
 }
 */
+
+
+void QHMIData::onParamChanged(){
+#if DUAL_SYSTEM
+    bool dankoulock = pparam->fechData(ItemHd_Xtcs,20);
+    if(this->dankoulock!=dankoulock)
+        emit sigDankouLock(dankoulock);
+#endif
+
+}
 
 void QHMIData::on_CommTimerOut(unsigned char code){
     if((alarmque.isEmpty())||alarmque.last()!=0){
@@ -41,10 +48,28 @@ void QHMIData::on_CommTimerOut(unsigned char code){
     }
 }
 
+int QHMIData::pollSysVersion(){
+    return psend->pollSysVersion(mainboardversion,bagversion);
+}
+
+QString QHMIData::mainboardVersion(){
+    return mainboardversion;
+}
+
+QString QHMIData::bagVersion(){
+    return bagversion;
+}
+
 QString QHMIData::fetchAlarm(){
-    int code = alarmque.dequeue();
-    if(code!=0)
+    int code=0;
+    if(!alarmque.empty()){
+        code = alarmque.dequeue();
+        qDebug()<<code;
+    }
+    if(code!=0){
+        qDebug()<<CWBJ_ErrorCode[code];
         return CWBJ_ErrorCode[code];
+    }
     else{
         QString str = CWBJ_ErrorCode[0];
         return str.append(QString::number(commerrorcode.dequeue(),16));
@@ -146,11 +171,12 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
         break;
     case QHMIData::CWBJXX:{//报警信息
         int i = Val.toInt();
-        if(i>index )
+        if(i>79 )
             i = 79;
         if((alarmque.isEmpty())||(alarmque.last()!=i)){
             alarmque.enqueue(i);
             emit alarm(i);
+            qDebug()<<"emit alarm";
         }
         if(alarmque.size()>20)
             alarmque.dequeue();
@@ -337,11 +363,17 @@ int QHMIData::setDankouLock(bool lock,bool send){
                                    speedlimit,stopperone,alarmlimit,lock);    
     if(Md::Ok==r)
         dankoulock = lock;
-    emit dankouLock(dankoulock);
+    pparam->setDankouLock(dankoulock);
+    emit sigDankouLock(dankoulock);
     return r;
 }
+
 int QHMIData::toggleDankouLock(){
     return setDankouLock(!dankoulock,TRUE);
+}
+
+bool QHMIData::dankouLock(){
+    return this->dankoulock;
 }
 
 #endif
@@ -356,7 +388,9 @@ int QHMIData::setRunOrGuiling(bool run){
         code = run?0x01:0x03;
         break;
     }
-    return psend->TogSysStat(code);
+   if(run)
+       emit xtGuilingFinish(TRUE);
+   return psend->TogSysStat(code);
 }
 
 int QHMIData::setRunOrGuiling(){

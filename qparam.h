@@ -7,6 +7,7 @@
 #include <QSet>
 #include <QStringList>
 #include <QVariant>
+#include "globaldata.h"
 
 #define LENOFSPA 0x1000
 
@@ -113,6 +114,10 @@ class QParam : public QObject
     bool  setFile(const QString &spafilepath);
     short fechData(ItemHd handle,int offset);
     void setData(ItemHd handle,int offset,short data);
+#if DUAL_SYSTEM
+    void setDankouLock(bool lock);  //send the dankoulock only set in the file ,
+                                    // don't send to mainboard and emit signal
+#endif
     void refreshBuf();
     void save(bool isdownload);
     unsigned short duMu_BuGongZuo(HeadPosDir posdir);

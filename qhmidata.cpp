@@ -15,7 +15,6 @@ QHMIData::QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent):
                      SLOT(On_DataChanged_FromCtrl(unsigned short,QVariant)));
     connect(&timer700ms,SIGNAL(timeout()),SLOT(on_700mstimeout()));
     connect(psend,SIGNAL(commTimerOut(unsigned char)),SLOT(on_CommTimerOut(unsigned char)));
-    connect(pparam,SIGNAL(changed()),SLOT(onParamChanged()));
     timer700ms.setInterval(700);
     timer700ms.setSingleShot(FALSE);  
 }
@@ -38,13 +37,13 @@ void QHMIData::onParamChanged(){
 }
 
 void QHMIData::on_CommTimerOut(unsigned char code){
-    if((alarmque.isEmpty())||alarmque.last()!=0){
-        alarmque.enqueue(0);
+    if((alarmque.isEmpty())||alarmque.last()!=59){
+        alarmque.enqueue(59);
         if(alarmque.size()>20)
             alarmque.dequeue();
         if(commerrorcode.size()<20)
             commerrorcode.enqueue(code);
-        emit alarm(0);
+        emit alarm(59);
     }
 }
 
@@ -64,14 +63,12 @@ QString QHMIData::fetchAlarm(){
     int code=0;
     if(!alarmque.empty()){
         code = alarmque.dequeue();
-        qDebug()<<code;
     }
-    if(code!=0){
-        qDebug()<<CWBJ_ErrorCode[code];
+    if(code!=59){
         return CWBJ_ErrorCode[code];
     }
     else{
-        QString str = CWBJ_ErrorCode[0];
+        QString str = CWBJ_ErrorCode[59];
         return str.append(QString::number(commerrorcode.dequeue(),16));
     }
 }
@@ -171,12 +168,13 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
         break;
     case QHMIData::CWBJXX:{//报警信息
         int i = Val.toInt();
+        if(i==0)
+            break;
         if(i>79 )
             i = 79;
         if((alarmque.isEmpty())||(alarmque.last()!=i)){
             alarmque.enqueue(i);
             emit alarm(i);
-            qDebug()<<"emit alarm";
         }
         if(alarmque.size()>20)
             alarmque.dequeue();
@@ -286,6 +284,7 @@ void QHMIData::saveSysCfgFile(){
     sysset.setValue("run/linelock",QString::number(linelock));
     sysset.setValue("run/resetrun",QString::number(xtguilingorrun));
     sysset.setValue("pattern/patFileName",patFilePath);
+    qDebug()<<patFilePath;
     sysset.setValue("pattern/cntFileName",cntFilePath);
     sysset.setValue("pattern/wrkFileName",wrkFilePath);
     sysset.setValue("pattern/sazFileName",sazFilePath);

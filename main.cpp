@@ -6,7 +6,6 @@
 #include "communicat.h"
 #include "data.h"
 #include "globaldata.h"
-#include "systest.h"
 #include "QFont"
 #include "qmdinputcontext.h"
 #include "qmdmessagebox.h"
@@ -43,15 +42,11 @@ int main(int argc, char *argv[])
                  QMessageBox::Cancel,QMessageBox::Cancel);
     }
     hmiData.start();
-#ifdef SYSTEST
-    QSysTest sysTest;
-    if(r!=QHMIData::PatternError)
-        sysTest.start();
-#endif
     w.show();
     QTest::qWaitForWindowShown(&w);
     AlarmForm alarmform(&hmiData);
     hmiData.run();
+    a.setscreenprodelay(20);
     return a.exec();
 }
 

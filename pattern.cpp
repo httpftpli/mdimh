@@ -82,10 +82,10 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
         ERRORLOG(tr("花型文件格式错误，文件长度不匹配"));
         return  PatFileError;
     }
-    if(cntfile->size()<128*hight){
-        ERRORLOG(tr("pat文件和cnt文件不匹配"));
-        return  CntPatNotMatch;
-    }
+    //if(cntfile->size()<128*hight){
+      //  ERRORLOG(tr("pat文件和cnt文件不匹配"));
+       // return  CntPatNotMatch;
+    //}
     cntfile->open(QIODevice::ReadOnly);
     stream.setDevice(cntfile.data());
     for(int i=1;i<=hight;i++){  //读取原始沙嘴

@@ -30,7 +30,6 @@ SOURCES += main.cpp\
     qsyslog.cpp \
     syslogform.cpp \
     updateromform.cpp \
-    systest.cpp \
     pattern.cpp \
     inputpanel.cpp \
     qmdinputcontext.cpp \
@@ -77,7 +76,6 @@ HEADERS  += \
     qsyslog.h \
     syslogform.h \
     updateromform.h \
-    systest.h \
     pattern.h \
     namespace.h \
     inputpanel.h \

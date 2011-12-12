@@ -588,8 +588,8 @@ int QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent
             case 0:
                 *(unsigned short *)d_send = htons(206);
                 *(unsigned char *)(d_send+2) = 0x91;      //fun code pat file
-                *(unsigned short *)(d_send+3) =htons(0x896e);     //param crc
-                *(unsigned short *)(d_send+5) = htons(0x6119);     //param crc  id
+                *(unsigned short *)(d_send+3) =htons(0x00);     //param crc
+                *(unsigned short *)(d_send+5) = htons(0x00);     //param crc  id
                 spafile.seek(0x4C0);
                 readshorts(spastream,(unsigned short *)&d_send[7],34);
                 wrkfile.seek(0xdea);
@@ -605,8 +605,8 @@ int QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent
             case 1:
                 *(unsigned short *)d_send = htons(442);
                 *(unsigned char *)(d_send+2) = 0x92;      //fun code pat file
-                *(unsigned short *)(d_send+3) = ntohs(0x17f1);     //param crc
-                *(unsigned short *)(d_send+5) = ntohs(0x5810);     //param crc  id
+                *(unsigned short *)(d_send+3) = ntohs(0x00);     //param crc
+                *(unsigned short *)(d_send+5) = ntohs(0x00);     //param crc  id
                 wrkfile.seek(0);
                 readshorts(wrkstream,(unsigned short *)&d_send[7],192);
                 wrkfile.seek(0x6a0);
@@ -616,8 +616,8 @@ int QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent
             case 2:
                 *(unsigned short *)d_send = htons(266);
                 *(unsigned char *)(d_send+2) = 0x93;      //fun code pat file
-                *(unsigned short *)(d_send+3) = ntohs(0x84d1);     //param crc
-                *(unsigned short *)(d_send+5) = ntohs(0x4b03);     //param crc  id
+                *(unsigned short *)(d_send+3) = ntohs(0x00);     //param crc
+                *(unsigned short *)(d_send+5) = ntohs(0x00);     //param crc  id
                 wrkfile.seek(0x400);
                 readshorts(wrkstream,(unsigned short *)&d_send[7],128);
                 result = result+(ProgramSend()<<i);
@@ -625,8 +625,8 @@ int QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent
             case 3:
                 *(unsigned short *)d_send = htons(278);
                 *(unsigned char *)(d_send+2) = 0x94;      //fun code pat file
-                *(unsigned short *)(d_send+3) = htons(0xf584);     //param crc
-                *(unsigned short *)(d_send+5) = htons(0x570f);     //param crc  id
+                *(unsigned short *)(d_send+3) = htons(0x00);     //param crc
+                *(unsigned short *)(d_send+5) = htons(0x00);     //param crc  id
                 spafile.seek(0);
                 readshorts(spastream,(unsigned short *)&d_send[7],29);
                 spafile.seek(0xa0);            //dpm
@@ -648,8 +648,8 @@ int QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent
             case 4:
                 *(unsigned short *)d_send = htons(298);
                 *(unsigned char *)(d_send+2) = 0x95;      //fun code pat file
-                *(unsigned short *)(d_send+3) = htons(0x9141);     //param crc
-                *(unsigned short *)(d_send+5) = htons(0x5109);     //param crc  id
+                *(unsigned short *)(d_send+3) = htons(0x00);     //param crc
+                *(unsigned short *)(d_send+5) = htons(0x00);     //param crc  id
                 wrkfile.seek(0x800);             //zss
                 readshorts(wrkstream,(unsigned short *)&d_send[7],24);
                 wrkfile.seek(0x840);             //yss
@@ -667,8 +667,8 @@ int QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent
             case 5:
                 *(unsigned short *)d_send = htons(283);
                 *(unsigned char *)(d_send+2) = 0x96;      //fun code pat file
-                *(unsigned short *)(d_send+3) = htons(0x2e2b);     //param crc
-                *(unsigned short *)(d_send+5) = htons(0x9951);     //param crc  id
+                *(unsigned short *)(d_send+3) = htons(0x00);     //param crc
+                *(unsigned short *)(d_send+5) = htons(0x00);     //param crc  id
                 wrkfile.seek(0x8a0);
                 readshorts(wrkstream,(unsigned char *)&d_send[7],16);
                 wrkfile.seek(0xa00);

@@ -45,12 +45,11 @@ void AlarmForm::onTimeOut(){
 }
 
 void AlarmForm::onAlarm(unsigned char code){
-    qDebug()<<"on alarm";
     alarmstr= hmidata->fetchAlarm();
     label->setText(alarmstr);
     timer.start();
     show();
-    pushbutton->setEnabled(code);
+    pushbutton->setEnabled(code!=59);
     move((800-width())/2,600-height()-100);
 }
 

@@ -15,8 +15,8 @@ const unsigned char  INPUT_MAP[32][2] = {  //显示序号与开关量的映射�
     {0,4}, {0,1}, {0,2}, {0,0}, {0,3}, {0,5}, {0,6}, {0,7}
 };
 
-const QString CWBJ_ErrorCode[80]={
-QObject::trUtf8("通讯错误，通讯码 "),             //  communication error                        //[0]
+const QString CWBJ_ErrorCode[60]={
+QObject::trUtf8(" "),             //  communication error                        //[0]
 QObject::trUtf8("主电机没有准备信号!"),           // "Moto is not ready!",
 QObject::trUtf8("摇床电机没有准备信号!"),          //"Move is not ready!",
 QObject::trUtf8("机头左限位报警!"),                 // "Left limite alarm!",
@@ -46,7 +46,7 @@ QObject::trUtf8("1号密度马达故障!"),        //"No.1 density motor error!"
 QObject::trUtf8("2号密度马达故障!"),        //"No.2 density motor error!",
 QObject::trUtf8("后生克电机故障!"),         //"Back sinker error!",
 QObject::trUtf8("前生克电机故障!"),         //"Front sinker error!",
-QObject::trUtf8("摇床零位异常!"),          //"Bed zero error!",                                //[30]
+QObject::trUtf8("摇床零位异常!"),          //"Bed zero error!",                               //[30]
 QObject::trUtf8("紧急制动锁定!"),          //"Stop break locking!",                            // 31
 QObject::trUtf8("编织花样超出针板范围!"),      //"Over neddle plate!",
 QObject::trUtf8("2号选针器板+24V保险丝F2失效!"),//"Select 2 +24V fuse F2 error!",     // 33
@@ -62,7 +62,20 @@ QObject::trUtf8("设定件数完成!"),              //"Set pieces done!",
 QObject::trUtf8("单件停车!"),                   //"One finish stop!",
 QObject::trUtf8("机头背包通讯异常!"),            //"Head communications error!",
 QObject::trUtf8("后备电源正在掉电!"),            //"Power downing!",
-QObject::trUtf8("系统保留的错误")             //"System reservation error!",
+QObject::trUtf8("系统保留的错误"),             //"System reservation error!",
+"",
+"",
+"",
+"",              // 50
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+QObject::trUtf8("通讯错误，通讯码 "),             //  communication error                        //[59]
 };
 
 
@@ -190,6 +203,8 @@ public slots:
     void on_patternChange( const QString &patternname, const  QString &cntfilepath, const QString &patfilepath,
                           const  QString &wrkfilepath , const QString &sazfilepath);
     void on_clothFinish();
+public slots:
+    void onParamChanged();
 
 signals:
     void DataChanged_ToCtrl(unsigned short index,QVariant val);
@@ -222,7 +237,7 @@ protected:
 private  slots:
     void on_700mstimeout();
     void on_CommTimerOut(unsigned char);
-    void onParamChanged();
+
 private:
     int timeid1s;
     QTimer timer700ms;

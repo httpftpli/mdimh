@@ -23,7 +23,6 @@ FormMovie::FormMovie(QWidget *parent) :
     //myProcess->write("vo_fullscreen\n");
     //myProcess->write("mute\n");
     //myProcess->write("volume 0\n");
-    show();
 }
 
 bool FormMovie::event(QEvent *event){

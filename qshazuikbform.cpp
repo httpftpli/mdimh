@@ -9,8 +9,8 @@ QShazuiKbForm::QShazuiKbForm(QWidget *parent) :
     setWindowFlags(Qt::FramelessWindowHint);
     QSzkbModel *szkbmodel = new QSzkbModel(&patternData,this);
     QMdItemDelegate *delegate = new QMdItemDelegate(this);
-    delegate->setRange(1,patternData.tatalrow,-1,2);
-    delegate->setRange(1,patternData.tatalrow,-1,3);
+    delegate->setRange(1,patternData.tatalcntrow,-1,2);
+    delegate->setRange(1,patternData.tatalcntrow,-1,3);
     unsigned char shazuiraw = patternData.shazuiused_l|
                               patternData.shazuiused_r;
 

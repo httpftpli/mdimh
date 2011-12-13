@@ -34,10 +34,10 @@ QCntEditForm::QCntEditForm(QWidget *parent,QPatternData *data) :
         }
     }
     QIntValidator *intval = new QIntValidator(this);
-    intval->setRange(1,pattern->tatalrow);
+    intval->setRange(1,pattern->tatalcntrow);
     lineEdit_row->setValidator(intval);
     lineEdit_row->setText("1");
-    label_totalrow->setNum(pattern->tatalrow);
+    label_totalrow->setNum(pattern->tatalcntrow);
     ////////////////////////////
 }
 
@@ -144,7 +144,7 @@ void QCntEditForm::on_pushButton_clicked()
 void QCntEditForm::on_lineEdit_row_textChanged(QString text)
 {
     pushButton_rowup->setDisabled(text.toInt()==1);
-    pushButton_rowdown->setDisabled(text.toInt()==pattern->tatalrow);
+    pushButton_rowdown->setDisabled(text.toInt()==pattern->tatalcntrow);
 }
 
 void QCntEditForm::on_pushButton_rowdown_clicked()

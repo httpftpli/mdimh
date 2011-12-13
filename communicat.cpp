@@ -330,19 +330,23 @@ int QSend::headStopAside(){
 
 int QSend::pollSysVersion(QString &mainbordVersion,QString &bagVersion){
     *(unsigned short *)d_send = htons(7); //len
-    *(unsigned char *)(d_send+2) = (0x53);//fun code
-    *(unsigned char *)(d_send+3) = 0x55;
+    *(unsigned char *)(d_send+2) = 0x53;//fun code
+    *(unsigned char *)(d_send+3) = 0x00;
     char buf[256];
     unsigned char len;
     if(ProgramSend(buf,len)){
-        int lenofmain = ntohs(*(unsigned short *)buf);
-        if(lenofmain>240)
+        int lenofmain = *(unsigned char *)buf;
+        if((lenofmain>240)||(lenofmain==0)){
             mainbordVersion = "";
-        mainbordVersion = QString::fromAscii(buf+2,lenofmain);
-        int lenofbag = ntohs(*(unsigned short*)(buf+2+lenofmain));
-        if((lenofmain+lenofbag)>240)
+            return Md::Ok;
+        }
+        mainbordVersion = QString::fromAscii(buf+1,lenofmain);
+        int lenofbag = *(unsigned char*)(buf+1+lenofmain);
+        if(((lenofmain+lenofbag)>240)||(lenofbag==0)){
             bagVersion = "";
-        bagVersion = QString::fromAscii(buf+4+lenofmain,lenofbag);
+            return Md::Ok;
+        }
+        bagVersion = QString::fromAscii(buf+2+lenofmain,lenofbag);
         return Md::Ok;
     }
     return Md::CommError;
@@ -781,11 +785,11 @@ int  QSend::SendFile(QFile &file,unsigned short fileid, bool samehint, QWidget *
         *(unsigned short *)(d_send+22) = fileid;            //file id
         *(unsigned short *)(d_send+24) = htons(packet);
         if(ProgramSend(result)){
-            if(result ==0){
-                if(QMessageBox::warning(parent,tr("花型发送"),fileinfo.suffix()+tr("文件已存在,是否覆盖"),
-                                        QMessageBox::Yes|QMessageBox::No)== QMessageBox::No)
-                    return Md::FileSame;
-            }
+            //if(result ==0){
+            //    if(QMessageBox::warning(parent,tr("花型发送"),fileinfo.suffix()+tr("文件已存在,是否覆盖"),
+             //                           QMessageBox::Yes|QMessageBox::No)== QMessageBox::No)
+             //       return Md::FileSame;
+           // }
         }else{
             return Md::CommError;
         }
@@ -1255,7 +1259,7 @@ void QRcv::ReadPendingDatagrams(){
 
         case 0x41:
             if(20==len){
-                emit DataChanged(QHMIData::YXHXCL,(QByteArray(*data,14)));
+                emit DataChanged(QHMIData::YXHXCL,(QByteArray((char *)data,14)));
                 Ack(fun,0x55);
             }
             break;

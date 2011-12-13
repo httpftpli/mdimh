@@ -60,7 +60,7 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(clothSetCountChanged(int)),label_setCount,SLOT(setNum(int)));
     connect(&patternData,SIGNAL(patternChanged(const QString&,const QString&,const QString&,
                                                const QString&,const QString&)),
-                                               SLOT(slot_patternChange()));
+                                               SLOT(onpatternChange()));
     connect(&hmiData,SIGNAL(hmi_loopend(int)),label_loopEnd,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(hmi_loopleft(int)),label_loopLeft,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(hmi_loopStart(int)),label_loopStart,SLOT(setNum(int)));
@@ -69,7 +69,8 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(hmi_cntNumber(unsigned short)),this,
             SLOT(runPatternRowChange(unsigned short)));
     connect(&hmiData,SIGNAL(hmi_jitouxiangduizhengshu(int)),label_zwz,SLOT(setNum(int)));
-    connect(&hmiData,SIGNAL(xtGuilingFinish(bool)),SLOT(onXtGuilingFinish(bool)));
+    connect(&hmiData,SIGNAL(xtGuilingError()),SLOT(onXtGuilingError()));
+    connect(&hmiData,SIGNAL(xtRunOrGuiling(bool)),qMdPushButton_5,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(lineLock(bool)),qMdPushButton_6,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(speedLimit(bool)),qMdPushButton_8,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(stopPerOne(bool)),qMdPushButton_9,SLOT(setChecked(bool)));
@@ -87,8 +88,8 @@ void MainWindow::setup(){
 }
 
 
-void  MainWindow::slot_patternChange(){
-    label_totalLine->setNum(patternData.tatalrow);
+void  MainWindow::onpatternChange(){
+    label_totalLine->setNum(patternData.tatalcntrow);
     label_patternFile->setText(patternData.patternName);
 }
 
@@ -130,12 +131,9 @@ void MainWindow::runPatternRowChange(unsigned short cntnumber){
     label_qizhengdian->setNum(patternData.wrk_qizhengdian());
 }
 
-void MainWindow::onXtGuilingFinish(bool val){
-     qMdPushButton_5->setChecked(FALSE);
-     if(!val){
-        QMdMessageBox box;
-        box.exec(tr("系统归零"),tr("归零错误"),QMessageBox::Warning,QMessageBox::Cancel,QMessageBox::Cancel);
-    }
+void MainWindow::onXtGuilingError(){
+    QMdMessageBox box;
+    box.exec(tr("系统归零"),tr("归零错误"),QMessageBox::Warning,QMessageBox::Cancel,QMessageBox::Cancel);
 }
 
 void MainWindow::on_qMdPushButton_12_clicked()
@@ -214,8 +212,7 @@ void MainWindow::on_qMdPushButton_5_clicked(bool checked)
 {
     qMdPushButton_5->setChecked(!checked);
     if(!checked){ //in run state
-        qMdPushButton_5->setChecked(TRUE);
-        hmiData.setRunOrGuiling(FALSE); //set in reset state;
+        hmiData.xtGuiling();
     }
 }
 

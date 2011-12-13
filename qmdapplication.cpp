@@ -2,10 +2,18 @@
 #include "csound.h"
 #include "formmovie.h"
 
+
+QMdApplication::QMdApplication ( int & argc, char ** argv ):QApplication(argc, argv),mousesound(0),
+                            scrprodelay(0){
+    timerid = this->startTimer(1000);
+}
+
 bool QMdApplication::notify ( QObject * receiver, QEvent * event ){
     bool r = QApplication::notify(receiver,event);
         if(event->type()==QEvent::MouseButtonPress){
-            mousesound->play();        }
+            mousesound->play();
+            second = 0;
+        }
         return  r;
     }
 

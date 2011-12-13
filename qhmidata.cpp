@@ -10,10 +10,11 @@
 
 QHMIData::QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent):
         QObject(parent),pparam(param),psend(send),prcv(rcv),speedlimit(0),
-        alarmlimit(0),shazuiup(1),isruning(FALSE){
+        alarmlimit(0),shazuiup(1),isruning(FALSE),isinitfinish(FALSE){
     connect(prcv,SIGNAL(DataChanged(unsigned short,QVariant)),
                      SLOT(On_DataChanged_FromCtrl(unsigned short,QVariant)));
     connect(&timer700ms,SIGNAL(timeout()),SLOT(on_700mstimeout()));
+
     connect(psend,SIGNAL(commTimerOut(unsigned char)),SLOT(on_CommTimerOut(unsigned char)));
     timer700ms.setInterval(700);
     timer700ms.setSingleShot(FALSE);  
@@ -109,7 +110,7 @@ void QHMIData::On_DataChanged_FromHMI(unsigned short index,QVariant Val){
     }
 }
 
-void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
+void QHMIData::On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val){
     switch(index){
     case QHMIData::YXHXCL:{     //运行时换向
         QByteArray bytearray = Val.toByteArray();
@@ -124,6 +125,9 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
             emit hmi_loopTatal(tatalloop);
         }
         stream >> cntnumber;
+        if(cntnumber==0){
+            cntnumber=0x01;
+        }
         cntnumber--;                            //上发的行号以一为起点，所以减去1
         dataBuf[RUN_CNT_NUMBER] = cntnumber;
         emit hmi_cntNumber(cntnumber);
@@ -181,23 +185,22 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,QVariant Val){
         break;
     }
     case QHMIData::JTXDZS:{//机头相对针数，显示在主界面上
-        dataBuf[JTXDZS]= Val.toInt();
+        dataBuf[JTXDZS]=(short)(Val.toInt());
         emit hmi_jitouxiangduizhengshu(dataBuf[JTXDZS]);
         break;
     }
     case QHMIData::GLWC:{
-            bool r;
             int val = Val.toInt();
-            if(0xaa==val)
-                r = TRUE;
+            if(0xaa==val){
+                emit xtRunOrGuiling(TRUE);
+                xtrunorguiling = TRUE;
+            }
             else if(0xbb==val)
-                r = FALSE;
-            emit xtGuilingFinish(r);
+                emit xtGuilingError();
         }
     default:
         emit DataChanged_ToHMI(index,Val);
         break;
-
     }
 }
 
@@ -227,7 +230,7 @@ void QHMIData::loadParam(const QString &inifilepath){
     setStopPerOne(stopperone,FALSE);
     int linelock = sysset.value("run/linelock").toBool();
     setLineLock(linelock,FALSE);
-    xtguilingorrun = sysset.value("run/resetrun").toBool();
+    xtrunorguiling = sysset.value("run/resetrun").toBool();
     customerId = sysset.value("system/cd").toString().toInt(0);
     patternVailable = sysset.value("pattern/vailable").toBool();
     patFilePath = sysset.value("pattern/patFileName").toString();
@@ -253,13 +256,10 @@ void QHMIData::finish(){
      saveSysCfgFile();
 }
 
-void QHMIData::start(){
+void QHMIData::startTimer1s(){
      timeid1s = startTimer(1000);
 }
 
-void QHMIData::run(){
-     timer700ms.start();
-}
 
 void QHMIData::timerEvent(QTimerEvent * event){
     int id = event->timerId();
@@ -282,9 +282,8 @@ void QHMIData::saveSysCfgFile(){
     sysset.setValue("run/clothFinishCount",QString::number(clothfinishcount));
     sysset.setValue("run/stopperone",QString::number(stopperone));
     sysset.setValue("run/linelock",QString::number(linelock));
-    sysset.setValue("run/resetrun",QString::number(xtguilingorrun));
+    sysset.setValue("run/resetrun",QString::number(xtrunorguiling));
     sysset.setValue("pattern/patFileName",patFilePath);
-    qDebug()<<patFilePath;
     sysset.setValue("pattern/cntFileName",cntFilePath);
     sysset.setValue("pattern/wrkFileName",wrkFilePath);
     sysset.setValue("pattern/sazFileName",sazFilePath);
@@ -377,23 +376,40 @@ bool QHMIData::dankouLock(){
 
 #endif
 
-int QHMIData::setRunOrGuiling(bool run){
-    unsigned code;    
+int QHMIData::xtGuiling(){
+    unsigned char code;
     switch(customerId){
     case 31:
-        code = run?0x0b:0x0a;
+        code = 0x0a;
         break;
     default:
-        code = run?0x01:0x03;
+        code = 0x03;
         break;
     }
-   if(run)
-       emit xtGuilingFinish(TRUE);
-   return psend->TogSysStat(code);
+    if(psend->TogSysStat(code)==Md::Ok){
+        emit xtRunOrGuiling(FALSE);
+        xtrunorguiling = FALSE;
+    }
 }
 
-int QHMIData::setRunOrGuiling(){
-    return setRunOrGuiling(xtguilingorrun);
+void QHMIData::start(){
+    timer700ms.start();
+    isinitfinish = TRUE;
+    if(xtrunorguiling){
+        unsigned char code;
+        switch(customerId){
+        case 31:
+            code =0x0b;
+            break;
+        default:
+            code = 0x01;
+            break;
+        }
+        emit xtRunOrGuiling(TRUE);
+        psend->TogSysStat(code);
+    }else{
+        xtGuiling();
+    }
 }
 
 int QHMIData::setclothSetCount(unsigned short val,bool send){

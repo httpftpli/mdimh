@@ -43,7 +43,8 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     this->shazuiused_l =0;
 
     this->tatalcolumn = 0;
-    this->tatalrow = 0;
+    this->tatalcntrow = 0;
+    this->tatalpatrow = 0;
 
     //检查cntfile patfile wrkfile文件是否可用//////////////
     QSharedPointer<QFile> cntfile,patfile,wrkfile;
@@ -69,16 +70,16 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     stream.setByteOrder(QDataStream::LittleEndian);
 
     //检查花型格式,读取花型尺寸，沙嘴使用
-    unsigned short wight,hight;
+    unsigned short wight,pathight,cnthight=1;
     patfile->open(QIODevice::ReadOnly);
     stream.setDevice(patfile.data());
-    stream>>wight>>hight;     //读取花型尺寸
+    stream>>wight>>pathight;     //读取花型尺寸
     patfile->close();
-    if((wight==0)||(hight==0)){
+    if((wight==0)||(pathight==0)){
         ERRORLOG(tr("花型文件格式错误"));
         return  PatFileError;
     }
-    if(patfile->size()<(wight/2+wight%2)*(hight+1)){
+    if(patfile->size()<(wight/2+wight%2)*(pathight+1)){
         ERRORLOG(tr("花型文件格式错误，文件长度不匹配"));
         return  PatFileError;
     }
@@ -88,7 +89,16 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     //}
     cntfile->open(QIODevice::ReadOnly);
     stream.setDevice(cntfile.data());
-    for(int i=1;i<=hight;i++){  //读取原始沙嘴
+    // scan pattern finish flag
+    while(1){
+        cntfile->seek(128*cnthight+CNT_End);
+        unsigned char cntfinish;
+        stream>>cntfinish;
+        if((cntfinish==1)||(cntfile->atEnd()))
+            break;
+        cnthight++;
+    }
+    for(int i=1;i<=cnthight;i++){  //读取原始沙嘴
         unsigned short _s1,_s2;
         unsigned char s1,s2,s,snew;
             cntfile->seek(i*128+80);
@@ -121,7 +131,8 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     this->patternName = name.left(name.size()-4);
     this->shazuiused_l = shazuil;
     this->shazuiused_r = shazuir;
-    this->tatalrow = hight;
+    this->tatalpatrow = pathight;
+    this->tatalcntrow = cnthight;
     this->tatalcolumn = wight;
 
     //检查沙嘴捆绑
@@ -154,19 +165,19 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
 Md::HAVEFILEFLAG QPatternData::loadFile(Md::HAVEFILEFLAG flag){
     Md::HAVEFILEFLAG r = loadStatus();
     if((flag&Md::HAVECNT)&&cntfile&&!cntbuf){
-        cntbuf = new unsigned char[128*tatalrow];
+        cntbuf = new unsigned char[128*tatalcntrow];
         cntfile->open(QIODevice::ReadOnly);
         cntfile->seek(128);
-        cntfile->read((char *)(this->cntbuf),128*tatalrow);
+        cntfile->read((char *)(this->cntbuf),128*tatalcntrow);
         cntfile->close();
         r |=Md::HAVECNT;
     }
 
     if((flag&Md::HAVEPAT)&&patfile&&!patbuf){
-        patbuf = new unsigned char[(tatalcolumn/2+tatalcolumn%2)*tatalrow];
+        patbuf = new unsigned char[(tatalcolumn/2+tatalcolumn%2)*tatalpatrow];
         patfile->open(QIODevice::ReadOnly);
         patfile->seek(tatalcolumn/2+tatalcolumn%2);
-        patfile->read((char *)patbuf,(tatalcolumn/2+tatalcolumn%2)*tatalrow);
+        patfile->read((char *)patbuf,(tatalcolumn/2+tatalcolumn%2)*tatalpatrow);
         patfile->close();
         r |=Md::HAVEPAT;
     }
@@ -391,7 +402,7 @@ void QPatternData::wrk_setData(WrkItemHd handle,int offset,short data){
 
 
 QSize QPatternData::patternSize()const{
-    return QSize(tatalcolumn,tatalrow);
+    return QSize(tatalcolumn,tatalpatrow);
 }
 
 bool QPatternData::isValid () const{

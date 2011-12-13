@@ -80,7 +80,7 @@ QPatModel::QPatModel( QPatternData *pattern,QObject * parent):
 
 int QPatModel::rowCount(const QModelIndex &parent)const {
     Q_UNUSED(parent)
-    return pattern->tatalrow;
+    return pattern->tatalpatrow;
 
 }
 
@@ -105,13 +105,13 @@ QVariant QPatModel::headerData(int section, Qt::Orientation orientation,int role
             return str;
         }
         else
-            return pattern->tatalrow-section;
+            return pattern->tatalcntrow-section;
     }
     return QVariant();
 }
 
 QVariant QPatModel::data(const QModelIndex &index, int role) const{
-    int r= pattern->tatalrow;
+    int r= pattern->tatalpatrow;
     int c = pattern->tatalcolumn;
     if(role==Qt::TextAlignmentRole){
         return int(Qt::AlignHCenter);
@@ -133,7 +133,7 @@ QVariant QPatModel::data(const QModelIndex &index, int role) const{
 
 bool QPatModel::setData(const QModelIndex &index, const QVariant &value, int role){
     if((role ==Qt::EditRole)&&(value.isValid())){
-        int r= pattern->tatalrow;
+        int r= pattern->tatalpatrow;
         int row = index.row();
         int column = index.column();
         QString str = value.toString();
@@ -1116,7 +1116,7 @@ void QCntLoopModel::save(){
     cntfile->open(QIODevice::ReadWrite);
     struct LoopType loop;
     unsigned short start,end,num;
-    for(int i=1;i<=patterndata->tatalrow;i++){
+    for(int i=1;i<=patterndata->tatalcntrow;i++){
         QDataStream stream(cntfile);
         stream.setByteOrder(QDataStream::LittleEndian);
         cntfile->seek(i*0x80+CNT_LoopStart);
@@ -1271,7 +1271,7 @@ bool QSzkbModel::checkdatavalid(){
 
 QTingcheModel::QTingcheModel(QPatternData *pattern ,QObject * parent):QAbstractTableModel(parent),
              patterndata(pattern){
-        for(int i=0;i<patterndata->tatalrow;i++){
+        for(int i=0;i<patterndata->tatalcntrow;i++){
             if(patterndata->cntFechData(i,CNT_TingCe,1)==1)
                 cntrows.insert(i,1);
         }

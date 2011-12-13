@@ -23,7 +23,7 @@ public slots:
 #if DUAL_SYSTEM
     void onDankouLock(bool);
 #endif
-    void slot_patternChange();
+    void onpatternChange();
     void Timeout1s();
 
 private slots:
@@ -59,7 +59,7 @@ private slots:
     void on_qMdPushButton_3_clicked();
     void on_qMdPushButton_clicked();
     void on_qMdPushButton_12_clicked();
-    void onXtGuilingFinish(bool);
+    void onXtGuilingError();
 
 
 private:

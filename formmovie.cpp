@@ -14,7 +14,7 @@ FormMovie::FormMovie(QWidget *parent) :
     args << "mad";
     args << "-slave";
     args << "-quiet";
-    args << "sucai2.avi"; //bingheshiji.mp4";
+    args << "./media/1x.avi";
     myProcess=new QProcess(this);
     myProcess->start(mplayerPath,args);
     //volatile int i=0;

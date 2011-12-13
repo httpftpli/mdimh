@@ -231,7 +231,8 @@ public:
     QSharedPointer<QFile> wrkfile;
     QSharedPointer<QFile> sazfile;
 
-    unsigned short tatalrow;
+    unsigned short tatalcntrow;
+    unsigned short tatalpatrow;
     unsigned short tatalcolumn;
     QSet<unsigned short> patModifiedRow;//用于保存修改的pat行
     QSet<unsigned short> cntModifiedRow;//用于保存修改的cnt行

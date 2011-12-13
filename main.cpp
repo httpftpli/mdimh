@@ -32,7 +32,8 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForTr(textcode);
     QTextCodec::setCodecForLocale(textcode);
     QTextCodec::setCodecForCStrings(textcode);
-    a.setMouseClickSound("resource/sound/click.wav");    
+    QDir::setCurrent(QCoreApplication::applicationDirPath());
+    a.setMouseClickSound("resource/sound/click.wav");
     MainWindow w;
     qRcv.start();
     Md::Result r= sysInit();
@@ -41,11 +42,12 @@ int main(int argc, char *argv[])
         box.exec(QObject::tr("控制板初始化"),QObject::tr("初始化错误"),QMessageBox::Critical,
                  QMessageBox::Cancel,QMessageBox::Cancel);
     }
-    hmiData.start();
+    hmiData.startTimer1s();
     w.show();
     QTest::qWaitForWindowShown(&w);
     AlarmForm alarmform(&hmiData);
-    hmiData.run();
+    hmiData.start();
+    a.setscreenprodelay(20);
     a.setscreenprodelay(20);
     return a.exec();
 }

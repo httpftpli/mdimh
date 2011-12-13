@@ -7,7 +7,7 @@ class cSound;
 class FormMovie;
 class QMdApplication: public QApplication{
 public:
-    QMdApplication ( int & argc, char ** argv ):QApplication(argc, argv),mousesound(0),scrprodelay(0){}
+    QMdApplication ( int & argc, char ** argv );
     ~QMdApplication();
     bool notify ( QObject * receiver, QEvent * event );
     void setMouseClickSound(const QString &filename);

@@ -118,7 +118,6 @@ public:
                  RUN_FUZULUOLA,
                  RUN_SONGSHA,
                  RUN_SHAZUITF,
-
                  YXHXCL,
                  JTXDZS,         //机头相对针数
                  JTBMQZ,         //机头编码器值
@@ -182,15 +181,14 @@ public:
     bool dankouLock();
     int toggleDankouLock();
 #endif
-    int setRunOrGuiling(bool run);
-    int setRunOrGuiling();
+    int xtGuiling();
     int sendParamaInRun();
     int pollSysVersion();
     QString mainboardVersion();
     QString bagVersion();
     void saveSysCfgFile();
+    void startTimer1s();
     void start();
-    void run();
     QString fetchAlarm();
     void clearAlarm();
     Md::Result errorcode;
@@ -199,7 +197,7 @@ public:
 public slots:
     void RequireData(unsigned short index);
     void On_DataChanged_FromHMI(unsigned short index,QVariant Val);
-    void On_DataChanged_FromCtrl(unsigned short index,QVariant Val);
+    void On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val);
     void on_patternChange( const QString &patternname, const  QString &cntfilepath, const QString &patfilepath,
                           const  QString &wrkfilepath , const QString &sazfilepath);
     void on_clothFinish();
@@ -217,7 +215,8 @@ signals:
     void hmi_cntNumber(unsigned short val);
     void hmi_loopTatal(int val);
     void hmi_jitouxiangduizhengshu(int val);
-    void xtGuilingFinish(bool val);
+    void xtRunOrGuiling(bool val);
+    void xtGuilingError();
     void Sig_tatalPatLine(int line);
     void clothSetCountChanged(int val);
     void clothFinishCountChanged(int val);
@@ -237,9 +236,9 @@ protected:
 private  slots:
     void on_700mstimeout();
     void on_CommTimerOut(unsigned char);
-
 private:
     int timeid1s;
+    bool isinitfinish;
     QTimer timer700ms;
     QRcv *prcv;
     QParam *pparam;
@@ -251,7 +250,7 @@ private:
     bool dankoulock;
     bool shazuiup;
     bool isruning;
-    bool xtguilingorrun;
+    bool xtrunorguiling;
     unsigned short clothfinishcount;
     unsigned short clothsetcount;
     QQueue<int > alarmque;

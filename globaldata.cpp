@@ -23,7 +23,6 @@ QProgressIndicator *ProgressIndiForm;
 
 
 Md::Result sysInit(){
-    QDir::setCurrent(QCoreApplication::applicationDirPath());
     QObject::connect(&qSend,SIGNAL(NotifyRcver(unsigned char,bool)),&qRcv,
                      SLOT(On_NotifyRcver(unsigned char,bool)));
     QObject::connect(&hmiData,SIGNAL(hmi_finishCount(int)),&hmiData,
@@ -34,23 +33,43 @@ Md::Result sysInit(){
     hmiData.loadParam("./sysconfig.conf");
     INFORMLOG(QObject::tr("开机，系统初始化开始"));
     sysLog.setFile(hmiData.sysLogFilePath);
-    QPatternData::Result r;
-    r = patternData.setFile(hmiData.cntFilePath,hmiData.patFilePath,hmiData.wrkFilePath,hmiData.sazFilePath);
-    if(r!=QPatternData::Ok){
-        ERRORLOG(QObject::tr("花型载入错误"));
-        return Md::PatternError;
-    }
-    patternData.loadFile(Md::HAVEWRK|Md::HAVECNT);
-    paramaData.setFile(hmiData.spaFilePath);
     QMdSplashScreen Splash(QPixmap("resource/image/matlab.png"));
     QMdSplashScreen *splash = &Splash;
     splash->show();
+    QMdMessageBox box;
+    QPatternData::Result r;
+    r = patternData.setFile(hmiData.cntFilePath,hmiData.patFilePath,hmiData.wrkFilePath,hmiData.sazFilePath);
+    if(r==QPatternData::Ok){
+        patternData.loadFile(Md::HAVEWRK|Md::HAVECNT);
+    }else if(r==QPatternData::NoCntFile){
+        box.setIcon(QMessageBox::Warning);
+        box.setText(QObject::tr("载入花型"));
+        box.setInformativeText(QObject::tr("找不到花型，缺少CNT文件"));
+        box.setStandardButtons(QMessageBox::Ok);
+        box.setDefaultButton(QMessageBox::Ok);
+        box.exec();
+    }else if(r==QPatternData::NoPatFile){
+        box.setIcon(QMessageBox::Warning);
+        box.setText(QObject::tr("载入花型"));
+        box.setInformativeText(QObject::tr("找不到花型，缺少PAT文件"));
+        box.setStandardButtons(QMessageBox::Ok);
+        box.setDefaultButton(QMessageBox::Ok);
+        box.exec();
+    }else{
+        box.setIcon(QMessageBox::Warning);
+        box.setText(QObject::tr("载入花型"));
+        box.setInformativeText(QObject::tr("花型文件错误"));
+        box.setStandardButtons(QMessageBox::Ok);
+        box.setDefaultButton(QMessageBox::Ok);
+        box.exec();
+    }
+    paramaData.setFile(hmiData.spaFilePath);
     int commResult;
     /////poll valible rom////////////////
     commResult  = qSend.IsInBoot();
-    QMdMessageBox box;
     if(commResult & Md::InBootState){
         box.setText(QObject::tr("初始化"));
+        box.setIcon(QMessageBox::Question);
         box.setInformativeText(QObject::tr("主控板无固件，是否下载"));
         box.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
         box.setDefaultButton(QMessageBox::Yes);
@@ -125,7 +144,7 @@ Md::Result sysInit(){
     ///////下载cnt文件///////////////////////////////////
     QObject::connect(&qSend,SIGNAL(commPercent(int)),splash,SLOT(showCntMessage(int)));
     QFile cntfile(hmiData.cntFilePath);
-    commResult = qSend.SendFile(cntfile,0,FALSE,NULL);
+    commResult = qSend.SendFile(cntfile,0,TRUE,NULL);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("下载CNT文件，通讯错误"),Qt::AlignBottom);
         QTest::qWait(2000);
@@ -134,7 +153,7 @@ Md::Result sysInit(){
     QObject::disconnect(&qSend,SIGNAL(commPercent(int)),splash,SLOT(showCntMessage(int)));
     QObject::connect(&qSend,SIGNAL(commPercent(int)),splash,SLOT(showPatMessage(int)));
     QFile patfile(hmiData.patFilePath);
-    commResult = qSend.SendFile(patfile,0,FALSE,NULL);
+    commResult = qSend.SendFile(patfile,0,TRUE,NULL);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("下载PAT文件，通讯错误"),Qt::AlignBottom);
         QTest::qWait(2000);
@@ -173,8 +192,7 @@ Md::Result sysInit(){
             return Md::CustomerIdNotPass;
         }
     }
-    //hmiData.pollSysVersion();
-    hmiData.setRunOrGuiling();
+    hmiData.pollSysVersion();
     INFORMLOG(QObject::tr("开机初始化成功"));
     return Md::Ok;
 }

@@ -5,7 +5,7 @@ DialogTingche::DialogTingche(QPatternData *p, QWidget *parent):
     QDialog(parent),pattern(p),model(NULL){
     setupUi(this);
     model = new QTingcheModel(pattern,this);
-    spinBox->setRange(1,pattern->tatalrow);
+    spinBox->setRange(1,pattern->tatalcntrow);
     tableView->setModel(model);
     connect(pattern,SIGNAL(cntDirty(bool)),pushButton_3,SLOT(setEnabled(bool)));
     connect(pushButton_4,SIGNAL(clicked()),SLOT(accept()));

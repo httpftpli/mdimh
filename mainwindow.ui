@@ -156,8 +156,8 @@ QTabBar::tab:!selected{
         </property>
         <property name="icon">
          <iconset resource="resouce.qrc">
-          <normaloff>:/image/resource/1h.png</normaloff>
-          <normalon>:/image/resource/1a.png</normalon>:/image/resource/1h.png</iconset>
+          <normaloff>:/image/resource/1a.png</normaloff>
+          <normalon>:/image/resource/1h.png</normalon>:/image/resource/1a.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -2041,6 +2041,19 @@ QTabBar::tab:!selected{
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton_13">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>560</y>
+      <width>51</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
    </widget>
   </widget>
  </widget>

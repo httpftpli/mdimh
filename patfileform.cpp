@@ -27,7 +27,7 @@ PatFileForm::PatFileForm(QWidget *parent, QPatternData *data) :
     tableView->setAlternatingRowColors(TRUE);
     QIntValidator *intv1 = new QIntValidator(this);
     QIntValidator *intv2 = new QIntValidator(this);
-    intv1->setRange(1,pattern->tatalrow);
+    intv1->setRange(1,pattern->tatalpatrow);
     intv2->setRange(1,pattern->tatalcolumn);
     lineEdit->setValidator(intv1);
     lineEdit_3->setValidator(intv2);
@@ -41,7 +41,7 @@ PatFileForm::PatFileForm(QWidget *parent, QPatternData *data) :
     connect(lineEdit,SIGNAL(textChanged(QString)),&pos,SLOT(setRow(QString)));
     connect(lineEdit_3,SIGNAL(textChanged(QString)),&pos,SLOT(setColumn(QString)));
 
-    pos.setData(pattern->tatalrow,1);
+    pos.setData(pattern->tatalpatrow,1);
     if(!(pattern->loadFile(Md::HAVEPAT)&Md::HAVEPAT)){
         QMdMessageBox box;
         box.exec(tr("载入pat文件"),tr("载入文件失败"),QMessageBox::Warning,
@@ -53,7 +53,7 @@ PatFileForm::PatFileForm(QWidget *parent, QPatternData *data) :
 void PatFileForm::tableViewIsEditing(QModelIndex index){
     int row = index.row();
     int column = index.column();
-    pos.setData(pattern->tatalrow-row,column+1);
+    pos.setData(pattern->tatalpatrow-row,column+1);
 }
 
 void PatFileForm::on_qMdPushButton_3_clicked()
@@ -80,9 +80,9 @@ void PatFileForm::decideButtonRl(int column){
 }
 void PatFileForm::decideButtonUd(int row){
     pushButton_rowdown->setDisabled(row==1);
-    pushButton_rowup->setDisabled(row==pattern->tatalrow);
+    pushButton_rowup->setDisabled(row==pattern->tatalpatrow);
     pushButton_rowfist->setDisabled(row==1);
-    pushButton_rowlast->setDisabled(row==pattern->tatalrow);
+    pushButton_rowlast->setDisabled(row==pattern->tatalpatrow);
 }
 
 
@@ -95,7 +95,7 @@ void PatFileForm::jumpTo(int row,int column,QAbstractItemView::ScrollHint scroll
         QCoreApplication::processEvents(QEventLoop::AllEvents);
     }
     QAbstractItemModel  *model = tableView->model();
-    QModelIndex index = model->index(pattern->tatalrow-row,column-1,QModelIndex());
+    QModelIndex index = model->index(pattern->tatalpatrow-row,column-1,QModelIndex());
     if(index.isValid()){
         tableView->scrollTo(index,scrollhint);
         tableView->edit(index);
@@ -156,7 +156,7 @@ void PatFileForm::on_pushButton_rowfist_clicked()
 
 void PatFileForm::on_pushButton_rowlast_clicked()
 {
-    pos.setData(pattern->tatalrow,pos.column);
+    pos.setData(pattern->tatalpatrow,pos.column);
     jumpTo(pos.row,pos.column,QAbstractItemView::EnsureVisible);
 }
 
@@ -196,7 +196,7 @@ void PatFileForm::on_pushButton_pageup_clicked()
 {
     QScrollBar *bar = tableView->verticalScrollBar();
     int i = bar->pageStep();
-    pos.setData(qMin(pos.row+i,(int)pattern->tatalrow),pos.column);
+    pos.setData(qMin(pos.row+i,(int)pattern->tatalpatrow),pos.column);
     bar->setValue(bar->value()-i);
     QCoreApplication::processEvents(QEventLoop::AllEvents);
    // pushButton_pageup->setDisabled(bar->value()==0);

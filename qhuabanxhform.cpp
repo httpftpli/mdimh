@@ -9,7 +9,7 @@ QHuabanXhForm::QHuabanXhForm(QWidget *parent) :
     setWindowFlags(Qt::FramelessWindowHint);
     QCntLoopModel *loopmodel = new QCntLoopModel(&patternData,this);
     QMdItemDelegate *delegate = new QMdItemDelegate(this);
-    delegate->setRange(1,patternData.tatalrow);
+    delegate->setRange(1,patternData.tatalcntrow);
     delegate->setRange(1,20000,-1,2);
     tableView->setModel(loopmodel);
     tableView->setItemDelegate(delegate);

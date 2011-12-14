@@ -2,19 +2,41 @@
 #include <QProcess>
 #include <QEventLoop>
 #include <QTest>
+#include<QDir>
+#include<QTextStream>
 
 FormMovie::FormMovie(QWidget *parent) :
         QWidget(parent,Qt::FramelessWindowHint){
     setupUi(this);
     setAttribute(Qt::WA_PaintOnScreen,TRUE);
     setAttribute(Qt::WA_TranslucentBackground,TRUE);
+    QDir dir("./media");
+    QStringList filters;
+    filters<<"*.avi"<<"*.mp4"<<"*.rmvb"<<"*.rm";
+    QStringList namelist = dir.entryList(filters,QDir::Files);
+    QFile playlistfile("./media/.playlist.txt");
+    playlistfile.open(QIODevice::ReadWrite);
+    QTextStream stream(&playlistfile);
+    QStringList temp;
+    while(1){
+        QString filename = (stream.readLine(75)).trimmed();
+        if(filename.isNull())
+            break;
+        temp<<filename;
+    }
+    if(temp!=namelist){
+        playlistfile.resize(0);
+        foreach(QString str ,namelist){
+            stream<<str<<endl;
+        }
+        playlistfile.flush();
+    }
+    playlistfile.close();
     const QString mplayerPath("/opt/Mplayer/mplayer/bin/mplayer");
     QStringList args;
-    args << "-ac";
-    args << "mad";
-    args << "-slave";
-    args << "-quiet";
-    args << "./media/1x.avi";
+    args << "-ac"<<"mad"<< "-slave"<<"-quiet"
+         <<"-loop"<<"0"<<"-playlist"<<"./media/.playlist.txt"
+         <<"-shuffle";
     myProcess=new QProcess(this);
     myProcess->start(mplayerPath,args);
     //volatile int i=0;
@@ -43,5 +65,8 @@ bool FormMovie::event(QEvent *event){
     return QWidget::event(event);
 }
 
+void FormMovie::makeplaylist(){
+
+}
 
 

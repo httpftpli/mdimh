@@ -15,6 +15,7 @@ public:
     bool event(QEvent *event);
 private:
     QProcess *myProcess;
+    void makeplaylist();
 };
 
 #endif // FORMMOVIE_H

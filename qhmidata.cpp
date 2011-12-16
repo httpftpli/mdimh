@@ -16,7 +16,7 @@ QHMIData::QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent):
     connect(&timer700ms,SIGNAL(timeout()),SLOT(on_700mstimeout()));
 
     connect(psend,SIGNAL(commTimerOut(unsigned char)),SLOT(on_CommTimerOut(unsigned char)));
-    timer700ms.setInterval(700);
+    timer700ms.setInterval(1000);
     timer700ms.setSingleShot(FALSE);  
 }
 
@@ -168,7 +168,10 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val)
         //收到数据01表示停止，停车检查定时器(700ms)重新启动
         //运行定时器关，停车定时器开
         timer700ms.start();//reset timer;
-        isruning = FALSE;
+        if(isruning != FALSE){
+            isruning = FALSE;
+            emit runing(FALSE);
+        }
         break;
     case QHMIData::CWBJXX:{//报警信息
         int i = Val.toInt();
@@ -206,6 +209,7 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val)
 
 void QHMIData::on_700mstimeout(){
     isruning = TRUE;
+    emit runing(TRUE);
 }
 
 bool QHMIData::isRuning(){
@@ -237,7 +241,6 @@ void QHMIData::loadParam(const QString &inifilepath){
     cntFilePath = sysset.value("pattern/cntFileName").toString();
     wrkFilePath = sysset.value("pattern/wrkFileName").toString();
     sys_wrkFilePath = sysset.value("param/wrkFileName").toString();
-    sazFilePath = sysset.value("pattern/sazFileName").toString();
     loopFilePath = sysset.value("pattern/loopFileName").toString();
     spaFilePath = sysset.value("param/spaFileName").toString();
     udiskDirPath = sysset.value("system/udiskFilePath").toString();
@@ -286,7 +289,6 @@ void QHMIData::saveSysCfgFile(){
     sysset.setValue("pattern/patFileName",patFilePath);
     sysset.setValue("pattern/cntFileName",cntFilePath);
     sysset.setValue("pattern/wrkFileName",wrkFilePath);
-    sysset.setValue("pattern/sazFileName",sazFilePath);
     sysset.setValue("history/stoptime",stopTimeHistory);
     sysset.setValue("history/runtime",runTimeHistory);
     sysset.sync();
@@ -445,12 +447,12 @@ int QHMIData::clothSetCount(){
 void QHMIData::on_patternChange(const QString &patternname,const QString &cntfilepath, const QString &patfilepath,
                               const QString &wrkfilepath , const QString &sazfilepath){
     partternName = patternname;
-    cntFilePath = cntfilepath;
-    patFilePath = patfilepath;
     wrkFilePath = wrkfilepath;
-    sazFilePath = sazfilepath;
-    setclothFinishCount(0,TRUE);
-    sendParamaInRun();
+    if((cntFilePath!=cntfilepath)||(patFilePath!=patfilepath)){
+        cntFilePath = cntfilepath;
+        patFilePath = patfilepath;
+        setclothFinishCount(0,TRUE);
+    }
 }
 
 void QHMIData::on_clothFinish( ){

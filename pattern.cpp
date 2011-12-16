@@ -4,10 +4,11 @@
 #include "globaldata.h"
 #include "qhmidata.h"
 #include "qparam.h"
+#include <QDir>
 
 QPatternData::QPatternData(QSend *s,QObject *parent):QObject(parent),
                             shaZuiKb(0),cntbuf(NULL),
-                            patfile(NULL), wrkfile(NULL),sazfile(NULL),
+                            patfile(NULL), wrkfile(NULL),
                             cntfile(NULL),patbuf(NULL),dumu_history(24),
                             shazuiused_r(0),shazuiused_l(0),qsend(s){
 
@@ -31,13 +32,11 @@ QPatternData::~QPatternData(){
 
 QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QString &patfilepath,
                                            const QString &wrkfilepath,
-                                           const QString &sazfilepath,
                                            Md::HAVEFILEFLAG openflag){
     INFORMLOG(tr("扫描花型文件"));
     cntfile.clear();
     patfile.clear();
     wrkfile.clear();
-    sazfile.clear();
     sazbuf.clear();
     this->shazuiused_r =0;
     this->shazuiused_l =0;
@@ -121,13 +120,11 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     this->cntFilePath = cntfilepath;
     this->patFilePath = patfilepath;
     //根据传入的最后一个参数，决定文件是处于关闭状态还是打开状态
-
-
     /////////////////////////////////////
 
     QFileInfo cntfileinfo(*cntfile);
     QString name = cntfileinfo.fileName();
-    patternDir = cntfileinfo.absolutePath();
+    patternDirPath = cntfileinfo.absolutePath();//doesn't include filename;
     this->patternName = name.left(name.size()-4);
     this->shazuiused_l = shazuil;
     this->shazuiused_r = shazuir;
@@ -136,27 +133,26 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     this->tatalcolumn = wight;
 
     //检查沙嘴捆绑
-    sazfile = QSharedPointer<QFile>(new QFile(sazfilepath));
-    if(!sazfile->exists()){
-        sazfile->setFileName(patternDir+'/'+patternName+".saz");
-    }else{
-        if(sazfile->size()==512){
-            sazfile->open(QIODevice::ReadOnly);
-            stream.setDevice(sazfile.data());
-            SzkbData temp;
-            while(!stream.atEnd()){
-                stream>>temp.ZuSa>>temp.FuSa>>temp.Start>>temp.End;
-                if(temp.ZuSa==0)
-                    break;
-                shaZuiKb|=1<<(temp.FuSa-1);
-                sazbuf<<temp;
-            }
-            sazfile->close();
+    QDir patterndir(patternDirPath);
+    QStringList filenamelist = patterndir.entryList(QStringList()<<(patternName+"*.SAZ"),QDir::Files);
+    if(!filenamelist.isEmpty()){
+        sazFilePath =  patternDirPath+'/'+filenamelist.at(0);
+        QFile sazfile(sazFilePath);
+        if(sazfile.size()!=512)
+            sazfile.resize(512);
+        sazfile.open(QIODevice::ReadOnly);
+        stream.setDevice(&sazfile);
+        SzkbData temp;
+        while(!stream.atEnd()){
+            stream>>temp.ZuSa>>temp.FuSa>>temp.Start>>temp.End;
+            if(temp.ZuSa==0)
+                break;
+            shaZuiKb|=1<<(temp.FuSa-1);
+            sazbuf<<temp;
         }
-        else
-            WARNLOG(tr("沙嘴捆绑文件格式错误，文件大小不等于512字节,没有加载沙嘴捆绑数据"));
+        sazfile.close();
     }
-    emit patternChanged(patternName,cntfilepath,patfilepath,wrkfilepath,sazfilepath);
+    emit patternChanged(patternName,cntfilepath,patfilepath,wrkfilepath,sazFilePath);
     return Ok;
 }
 
@@ -214,6 +210,7 @@ void QPatternData::patSetData(unsigned short row,unsigned short column,unsigned 
     }
 }
 
+/*changed cntdatabuf,but not change cntfile and compare to data in cntfile*/
 void QPatternData::cntSetData(unsigned short row,unsigned char index,unsigned short data,unsigned char len){
     if(!cntbuf)
         return;
@@ -307,25 +304,25 @@ QPatternData::Result QPatternData::loadLoop(const QString &prmfilepath){
 
 void QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag){
     if(saveflag&Md::HAVESAZ){
-        if(!sazbuf.isEmpty()){
-            sazfile->open(QIODevice::ReadWrite);
-            sazfile->resize(512);
-            int filelen = 0;
-            QDataStream stream(sazfile.data());
-            stream.setByteOrder(QDataStream::LittleEndian);
-            foreach(SzkbData data,sazbuf){
-                stream<<data.ZuSa<<data.FuSa<<data.Start<<data.End;
-                filelen = filelen+8;
-            }
-            while(filelen<512){
-                stream<<(long long)0;
-                filelen = filelen+8;
-            }
-            sazfile->close();
-            if(downloadflag&Md::HAVESAZ){
-                qsend->SendShazuiKb(sazFilePath);
-            }
+        if(sazFilePath.isNull())
+            sazFilePath = patternDirPath+'/'+patternName+".SAZ";
+        QFile sazfile(sazFilePath);
+        sazfile.open(QIODevice::ReadWrite);
+        sazfile.resize(512);
+        int filelen = 0;
+        QDataStream stream(&sazfile);
+        stream.setByteOrder(QDataStream::LittleEndian);
+        foreach(SzkbData data,sazbuf){
+            stream<<data.ZuSa<<data.FuSa<<data.Start<<data.End;
+            filelen = filelen+8;
         }
+        while(filelen<512){
+            stream<<(long long)0;
+            filelen = filelen+8;
+        }
+        sazfile.close();
+        if(downloadflag&Md::HAVESAZ)
+            sendShazuiKb();
     }
     if(saveflag&Md::HAVEPAT){
         if(!patModifiedRow.isEmpty()){
@@ -349,7 +346,7 @@ void QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag)
             wrkfile->open(QIODevice::ReadWrite);
             QSet<unsigned char> bags;
             foreach(WrkItemHd handle,wrkModifiedHandle){
-                bags.insert(wrkItemDsp[handle].bag);
+                bags.insert(wrkItemDsp[handle].runsendid);
                 wrkfile->seek(wrkItemDsp[handle].addr*2);
                 wrkfile->write((char *)&wrkbuf[wrkItemDsp[handle].addr],wrkItemDsp[handle].len*2);
             }
@@ -385,6 +382,9 @@ void QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag)
     return;
 }
 
+int QPatternData::sendShazuiKb(){
+    return qsend->SendShazuiKb(sazFilePath);
+}
 
 short QPatternData::wrk_fechData(WrkItemHd handle,int offset){
     int addr = wrkItemDsp[handle].addr;
@@ -399,7 +399,6 @@ void QPatternData::wrk_setData(WrkItemHd handle,int offset,short data){
         emit wrkDirty(TRUE);
     }
 }
-
 
 QSize QPatternData::patternSize()const{
     return QSize(tatalcolumn,tatalpatrow);
@@ -430,45 +429,38 @@ unsigned short QPatternData::cntFechData(unsigned short row,unsigned char addr,u
             return *(unsigned short *)&(cntbuf[(row)*128+addr]);
     }else{
         if(!cntfile->open(QIODevice::ReadOnly))
-            return 0xff;
+            return 0xffff;
         char val[2];
         cntfile->seek((row+1)*128+addr);
         cntfile->read(val,len);
         cntfile->close();
         return *(unsigned short *)val;
     }
-    return 0xff;
+    return 0xffff;
 }
 
-unsigned char QPatternData::shaZui(unsigned short row){
-    unsigned char cnt_sz = cnt_shaZui1(row);
+unsigned char QPatternData::shaZui(unsigned char system,unsigned short row){
+    unsigned char cnt_sz = cnt_shaZui(system,row);
     unsigned char sz = cnt_sz;
     foreach(SzkbData data,sazbuf){
-        if((data.Start>=row+1)&&(data.End<=row+1)){
-            if(cnt_sz&(1<<data.ZuSa))
-                sz  = sz|(1<<data.FuSa);
+        if((data.Start<=(row+1))&&(data.End>=(row+1))){
+            if(cnt_sz&(1<<(data.ZuSa-1)))
+                sz  = sz|(1<<(data.FuSa-1));
         }
     }
     return sz;
 }
 
 
-unsigned char QPatternData::cnt_shaZui1(unsigned short row){
-   unsigned short sz1 = cntFechData(row,CNT_S1_SaZui,2);
-   unsigned  char szh1 = (unsigned char)(sz1>>8);
-   if((sz1&0x00ff)==0x80){
-       return szh1;
-   }
-   return 0;
-}
-
-unsigned char QPatternData::cnt_shaZui2(unsigned short row){
-   unsigned short sz2 = cntFechData(row,CNT_S2_SaZui,2);
-   unsigned  char szh2 = (unsigned char)(sz2>>8);
-   if((sz2&0x00ff)==0x80){
-       return szh2;
-   }
-   return 0;
+unsigned char QPatternData::cnt_shaZui(unsigned char system,unsigned short row){
+    Q_ASSERT((system==0)||(system==1));
+    unsigned char addr = (system==0)?CNT_S1_SaZui:CNT_S2_SaZui;
+    unsigned short sz = cntFechData(row,addr,2);
+    unsigned  char szh = (unsigned char)(sz>>8);
+    if((sz&0x00ff)==0x80){
+        return szh;
+    }
+    return 0x0;
 }
 
 
@@ -487,7 +479,6 @@ unsigned char QPatternData::cnt_duMu(unsigned short row,bool &doubleOrSigle){
         doubleOrSigle = FALSE;
         return dumu;
     }else if(dumu<101){
-        WARNLOG(QString("第%1行，度目=%2，按双面第一组取度目值").arg((row+1),dumu));
         doubleOrSigle = TRUE;
         return 1;
     }else if(dumu<125){
@@ -495,7 +486,6 @@ unsigned char QPatternData::cnt_duMu(unsigned short row,bool &doubleOrSigle){
         doubleOrSigle = TRUE;
         return dumu-100;
     }else{
-        WARNLOG(QString("第%1行，度目=%2，按双面第24组取度目值").arg((row+1),dumu));
         doubleOrSigle = TRUE;
         return 24;
     }
@@ -524,35 +514,72 @@ unsigned char QPatternData::cnt_tingChe(unsigned short row){
     return this->cntFechData(row,CNT_TingCe);
 }
 
-
-unsigned short QPatternData::cnt_huabanhang_q1(unsigned short row){
-     return this->cntFechData(row,CNT_S1Q_Pat);
+int   QPatternData::cnt_Azhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR pos){
+    Q_ASSERT((system==0||(system==1)));
+    unsigned char addr;
+    if(pos==Md::POSFRONT)
+        addr = (system==0)?CNT_S1Q_AZiLing:CNT_S2Q_AZiLing;
+    else
+        addr = (system==0)?CNT_S1H_AZiLing:CNT_S2H_AZiLing;
+    return _azl(cntFechData(row,addr));
 }
 
-unsigned short QPatternData::cnt_huabanhang_h1(unsigned short row){
-     return this->cntFechData(row,CNT_S1H_Pat);
+int   QPatternData::cnt_Hzhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR pos){
+    Q_ASSERT((system==0||(system==1)));
+    unsigned char addr;
+    if(pos==Md::POSFRONT)
+        addr = (system==0)?CNT_S1Q_HZiLing:CNT_S2Q_HZiLing;
+    else
+        addr = (system==0)?CNT_S1H_HZiLing:CNT_S2H_HZiLing;
+    return _hzl(cntFechData(row,addr));
 }
 
-unsigned short QPatternData::cnt_huabanhang_q2(unsigned short row){
-     return this->cntFechData(row,CNT_S2Q_Pat);
-}
-
-unsigned short QPatternData::cnt_huabanhang_h2(unsigned short row){
-    return this->cntFechData(row,CNT_S2H_Pat);
-}
-
-unsigned short QPatternData::wrk_qizhengdian(){
-    return this->wrk_fechData(WrkItemHd_QiZenDian,0);
-}
-
-QString QPatternData::cnt_seDaiHao(unsigned short row,unsigned char inc){
-    unsigned short data= cntFechData(row,inc,2);
+QString  QPatternData::cnt_seDaiHaoA(unsigned short row,unsigned char system,Md::POS_FRONTREAR pos){
+    Q_ASSERT((system==0||(system==1)));
+    unsigned char addr;
+    if(pos==Md::POSFRONT)
+        addr = (system==0)?CNT_S1Q_AColor:CNT_S2Q_AColor;
+    else
+        addr = (system==0)?CNT_S1H_AColor:CNT_S2H_AColor;
+    unsigned short data= cntFechData(row,addr,2);
     QString str;
     for(int i=0;i<16;i++){
         if(data&(1<<i))
             str.append(QString::number(i,16).toUpper());
     }
     return str;
+}
+
+QString  QPatternData::cnt_seDaiHaoH(unsigned short row,unsigned char system,Md::POS_FRONTREAR pos){
+    Q_ASSERT((system==0||(system==1)));
+    unsigned char addr;
+    if(pos==Md::POSFRONT)
+        addr = (system==0)?CNT_S1Q_HColor:CNT_S2Q_HColor;
+    else
+        addr = (system==0)?CNT_S1H_HColor:CNT_S2H_HColor;
+    unsigned short data= cntFechData(row,addr,2);
+    QString str;
+    for(int i=0;i<16;i++){
+        if(data&(1<<i))
+            str.append(QString::number(i,16).toUpper());
+    }
+    return str;
+}
+
+
+unsigned short QPatternData::cnt_huabanhang(unsigned short row,unsigned char system,Md::POS_FRONTREAR pos){
+    Q_ASSERT((system==0)||(system==1));
+    unsigned char addr;
+    if(pos==Md::POSFRONT)
+        addr = (system==0)?CNT_S1Q_Pat:CNT_S2Q_Pat;
+    else
+        addr = (system==0)?CNT_S1H_Pat:CNT_S2H_Pat;
+    return this->cntFechData(row,addr);
+}
+
+
+unsigned short QPatternData::wrk_qizhengdian(){
+    return this->wrk_fechData(WrkItemHd_QiZenDian,0);
 }
 
 

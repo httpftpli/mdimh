@@ -1883,7 +1883,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="title">
-    <string>选针器</string>
+    <string>沙嘴</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

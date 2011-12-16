@@ -62,8 +62,8 @@ QObject::trUtf8("设定件数完成!"),              //"Set pieces done!",
 QObject::trUtf8("单件停车!"),                   //"One finish stop!",
 QObject::trUtf8("机头背包通讯异常!"),            //"Head communications error!",
 QObject::trUtf8("后备电源正在掉电!"),            //"Power downing!",
-QObject::trUtf8("系统保留的错误"),             //"System reservation error!",
-"",
+QObject::trUtf8("移床采集CPLD 输出 异常"),       //"System reservation error!",
+QObject::trUtf8("主板写入花型数据异常"),          //"System reservation error!",            //47
 "",
 "",
 "",              // 50
@@ -75,7 +75,7 @@ QObject::trUtf8("系统保留的错误"),             //"System reservation erro
 "",
 "",
 "",
-QObject::trUtf8("通讯错误，通讯码 "),             //  communication error                        //[59]
+QObject::trUtf8("通讯错误，通讯码 ")             //  communication error                        //[59]
 };
 
 
@@ -226,6 +226,7 @@ signals:
     void shazuiUp(bool);
     void stopPerOne(bool);
     void lineLock(bool);
+    void runing(bool);
 #if DUAL_SYSTEM
     void sigDankouLock(bool);
 #endif

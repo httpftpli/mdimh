@@ -25,29 +25,38 @@ FormHead::FormHead(QPatternData * data,QHMIData *hmi, QParam *p,QWidget *parent)
 
 }
 
+void  FormHead::setAtribute(unsigned char val){
+    this->leftright = val;
+}
+
 void FormHead::onParamChanded(){
     onCntNumber(cntnumber);
 }
 
-void FormHead::onCntNumber(unsigned short cntnumber){
+void FormHead::onCntNumber(unsigned short cntnumber){    
     this->cntnumber = cntnumber;
+#if DUAL_SYSTEM
+    bool sys = (cntnumber%2)^(leftright==Md::POSLEFT);
+#else
+    bool sys = FALSE;
+#endif
     /////////花板行/////////////////////////////
-    label_hbhh->setNum(pattern->cnt_huabanhang_h1(cntnumber));
-    label_hbhq->setNum(pattern->cnt_huabanhang_q1(cntnumber));
+    label_hbhh->setNum(pattern->cnt_huabanhang(cntnumber,sys,Md::POSREAR));
+    label_hbhq->setNum(pattern->cnt_huabanhang(cntnumber,sys,Md::POSFRONT));
     ///////动作/////////////////////////////////////
-    label_awdzh->setText(azllist.value(pattern->_azl(pattern->cntFechData(cntnumber,CNT_S1H_AZiLing))));
-    label_awdzq->setText(azllist.value(pattern->_azl(pattern->cntFechData(cntnumber,CNT_S1Q_AZiLing))));
-    label_hwdzh->setText(azllist.value(pattern->_hzl(pattern->cntFechData(cntnumber,CNT_S1H_HZiLing))));
-    label_hwdzq->setText(azllist.value(pattern->_hzl(pattern->cntFechData(cntnumber,CNT_S1Q_HZiLing))));
+    label_awdzh->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,sys,Md::POSREAR)));
+    label_awdzq->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,sys,Md::POSFRONT)));
+    label_hwdzh->setText(azllist.value(pattern->cnt_Hzhiling(cntnumber,sys,Md::POSREAR)));
+    label_hwdzq->setText(azllist.value(pattern->cnt_Hzhiling(cntnumber,sys,Md::POSFRONT)));
     ////////色代号//////////////////////////////
-    label_awsch->setText(pattern->cnt_seDaiHao(cntnumber,CNT_S1H_AColor));
-    label_hwsch->setText(pattern->cnt_seDaiHao(cntnumber,CNT_S1H_HColor));
-    label_awscq->setText(pattern->cnt_seDaiHao(cntnumber,CNT_S1Q_AColor));
-    label_hwscq->setText(pattern->cnt_seDaiHao(cntnumber,CNT_S1Q_HColor));
+    label_awsch->setText(pattern->cnt_seDaiHaoA(cntnumber,sys,Md::POSREAR));
+    label_hwsch->setText(pattern->cnt_seDaiHaoH(cntnumber,sys,Md::POSREAR));
+    label_awscq->setText(pattern->cnt_seDaiHaoA(cntnumber,sys,Md::POSFRONT));
+    label_hwscq->setText(pattern->cnt_seDaiHaoH(cntnumber,sys,Md::POSFRONT));
     ////////沙嘴///////////////////////////////
-    unsigned char sz1 = pattern->cnt_shaZui1(cntnumber);
+    unsigned char sz = pattern->shaZui(sys,cntnumber);
     for(int i=0;i<8;i++)
-        plablearray[i]->setText((sz1&1<<i)?QString::number(i+1):"_");
+        plablearray[i]->setText((sz&1<<i)?QString::number(i+1):"_");
     ///////////////////度目值/////////////////////////
     if(cntnumber%2){//偶数数行
         label_dmz_hz->setNum(param->duMu_BuGongZuo(QParam::BackLeft));

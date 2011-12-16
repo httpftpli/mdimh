@@ -38,7 +38,7 @@ Md::Result sysInit(){
     splash->show();
     QMdMessageBox box;
     QPatternData::Result r;
-    r = patternData.setFile(hmiData.cntFilePath,hmiData.patFilePath,hmiData.wrkFilePath,hmiData.sazFilePath);
+    r = patternData.setFile(hmiData.cntFilePath,hmiData.patFilePath,hmiData.wrkFilePath);
     if(r==QPatternData::Ok){
         patternData.loadFile(Md::HAVEWRK|Md::HAVECNT);
     }else if(r==QPatternData::NoCntFile){
@@ -135,7 +135,7 @@ Md::Result sysInit(){
         return Md::CommError;
     }
     ///szkb///////////////////////////////////
-    commResult = qSend.SendShazuiKb(hmiData.sazFilePath);
+    commResult = patternData.sendShazuiKb();
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("下载SAZ文件，通讯错误"),Qt::AlignBottom);
         QTest::qWait(2000);

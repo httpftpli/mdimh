@@ -46,8 +46,11 @@ int main(int argc, char *argv[])
     w.show();
     QTest::qWaitForWindowShown(&w);
     AlarmForm alarmform(&hmiData);
-    hmiData.start();
+    if(r==Md::Ok)
+        hmiData.start();
+#ifdef  Q_WS_QWS
     a.setscreenprodelay(30);
+#endif
     return a.exec();
 }
 

@@ -27,6 +27,7 @@ public slots:
     void Timeout1s();
 
 private slots:
+
     void on_pushButton_12_clicked();
     void on_pushButton_11_clicked();
     void on_qMdPushButton_10_clicked(bool checked);
@@ -60,15 +61,16 @@ private slots:
     void on_qMdPushButton_clicked();
     void on_qMdPushButton_12_clicked();
     void onXtGuilingError();
+    void onHmidataRuning(bool);
 
 
 private:
     QStringList azllist,hzllist;
     QPointer<paramform > paramForm;
     QPixmap pixmapleft,pixmapright;
-    FormHead *formhead1;
+    FormHead *formheadl;
 #if DUAL_SYSTEM
-    FormHead *formhead2;
+    FormHead *formheadr;
 #endif
 
 };

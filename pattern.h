@@ -93,7 +93,6 @@ enum WrkItemHd {
     WrkItemHd_CJP_FanZen,
     WrkItemHd_CJP_BianZi,
     WrkItemHd_PzkSaZui,
-    WrkItemHd_PzkClose,
     WrkItemHd_ZanKaiPianSu,
     WrkItemHd_QiZenDian,
     WrkItemHd_Guide
@@ -101,30 +100,33 @@ enum WrkItemHd {
 
 struct WrkItemDsp{
     WrkAddr addr;
+    unsigned char runsendid;
     unsigned short len;
-    unsigned char bag;
     unsigned short offsetinbag;
     short valrangebottom;
     short valrangetop;
 };
 
 const struct WrkItemDsp wrkItemDsp[WrkItemHd_Guide]={
-   /*      addr            |  len  |  bag |offsetinbag|bottom |top  */
-    { WrkAddr_DuMuZi,          192,    2,      0,         0,    800},
-    { WrkAddr_SuDuZi,          24,     1,      0,         1,    100},
-    { WrkAddr_ShaZuiTF,        128,    3,      0,         0,    99 },
-    { WrkAddr_JuanBu,          24,     1,      24,      -100,   100},
-    { WrkAddr_JuanBuFZ,        24,     2,      192,     -100,   100},
-    { WrkAddr_LeftSongSa,      24,     5 ,     0,         0,    100},
-    { WrkAddr_RightSongSa,     24,     5 ,     12,        0,    100},
-    { WrkAddr_YTXTingFang,     16,     6,      0,         0,     30},
-    { WrkAddr_YTXXiuZen,       192,    6,      16,        0,     20},
-    { WrkAddr_CJP_FanZen,      48,     5,      24,        0,   1000},
-    { WrkAddr_CJP_BianZi,      48,     5,      72,        0,   1000},
-    { WrkAddr_PzkSaZui,        64,     6,      208,       1,      8},
-    { WrkAddr_PzkClose,        1,      6,      272,       1,      8},
-    { WrkAddr_ZanKaiPianSu,    1,      1,      0,         1,      8},
-    { WrkAddr_QiZenDian,       1,      1,      24,        0,    800}
+   /*      addr             |runsendid |  len   |offsetinbag|bottom |top  */
+#if DUAL_SYSTEM
+    { WrkAddr_DuMuZi,             4,      192,      0,         0,     800},
+#else
+    { WrkAddr_DuMuZi,             4,       96,      0,         0,     800},
+#endif
+    { WrkAddr_SuDuZi,             2,       24,      0,         1,     100},
+    { WrkAddr_ShaZuiTF,           6,      128,      0,         0,      99},
+    { WrkAddr_JuanBu,             3,       24,      0,      -100,     100},
+    { WrkAddr_JuanBuFZ,           5,       24,      0,      -100,     100},
+    { WrkAddr_LeftSongSa,        15,       24,      0,         0,     100},
+    { WrkAddr_RightSongSa,       16,       24,      0,         0,     100},
+    { WrkAddr_YTXTingFang,       19,       16,      0,         0,      30},
+    { WrkAddr_YTXXiuZen,         20,      192,      0,         0,      20},
+    { WrkAddr_CJP_FanZen,        17,       48,      0,         0,    1000},
+    { WrkAddr_CJP_BianZi,        18,       48,      0,         0,    1000},
+    { WrkAddr_PzkSaZui,          21,       65,      0,         1,       8},
+    { WrkAddr_ZanKaiPianSu,       1,        1,      24,        1,       8},
+    { WrkAddr_QiZenDian,          1,        1,      0,         0,     800}
 };
 
 
@@ -164,7 +166,7 @@ public:
     Q_DECLARE_FLAGS(FileStateFlag, FileState)
     QPatternData(QSend *s,QObject *parent=0);
     ~QPatternData();
-    Result setFile(const QString &cntfilepath,const QString &patfilepath, const QString &wrkfilepath,const QString &sazfilepath,Md::HAVEFILEFLAG openflag=Md::HAVENO);
+    Result setFile(const QString &cntfilepath,const QString &patfilepath, const QString &wrkfilepath,Md::HAVEFILEFLAG openflag=Md::HAVENO);
     Md::HAVEFILEFLAG loadFile(Md::HAVEFILEFLAG flag=Md::HAVEALL);
     void refreshBuf(Md::HAVEFILEFLAG flag);
     void deloadFile(Md::HAVEFILEFLAG flag=Md::HAVEALL);
@@ -173,15 +175,15 @@ public:
     Md::HAVEFILEFLAG loadStatus();
     Result loadLoop(const QString &prmfilepath);
     void Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag=Md::HAVENO);
+    int sendShazuiKb();
 
-    unsigned char shaZui(unsigned short row);    //返回沙嘴捆绑后当前行的沙嘴
-    unsigned char cnt_shaZui1(unsigned short row);//返回CNT文件中当前行1系统的沙嘴
-    unsigned char cnt_shaZui2(unsigned short row);//返回CNT文件中当前行2系统的沙嘴
+
+
     unsigned char cnt_duMu(unsigned short row,bool &doubleOrSigle);
     unsigned char duMuZhi(bool backorfront,unsigned short row);
     unsigned char cnt_yaJiao(unsigned short row);
     QString  cnt_yaoChuang(unsigned short row);
-    QString  cnt_seDaiHao(unsigned short row,unsigned char inc);
+
     unsigned char cnt_spead(unsigned short row);
     unsigned char cnt_mainLuola(unsigned short row);
     unsigned char cnt_fuzuLuola(unsigned short row);
@@ -189,10 +191,13 @@ public:
     unsigned char cnt_shazuiTf(unsigned short row);
     unsigned char cnt_tingChe(unsigned short row);
 
-    unsigned short cnt_huabanhang_q1(unsigned short row);
-    unsigned short cnt_huabanhang_h1(unsigned short row);
-    unsigned short cnt_huabanhang_q2(unsigned short row);
-    unsigned short cnt_huabanhang_h2(unsigned short row);
+    unsigned char shaZui(unsigned char system,unsigned short row);    //返回沙嘴捆绑后当前行的沙嘴
+    int            cnt_Azhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR);
+    int            cnt_Hzhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR);
+    QString        cnt_seDaiHaoA(unsigned short row,unsigned char system,Md::POS_FRONTREAR frontorrear);
+    QString        cnt_seDaiHaoH(unsigned short row,unsigned char system,Md::POS_FRONTREAR frontorrear);
+    unsigned char  cnt_shaZui(unsigned char system,unsigned short row);//返回CNT文件中当前行的沙嘴
+    unsigned short cnt_huabanhang(unsigned short row,unsigned char system,Md::POS_FRONTREAR frontorrear);
 
     unsigned short wrk_qizhengdian();
 
@@ -209,11 +214,8 @@ public:
     QSize patternSize() const;
     bool isValid () const ;
 
-    int _azl(unsigned char data);
-    int _hzl(unsigned char data);
-
     QString patternName;
-    QString patternDir;
+    QString patternDirPath;
     QString patFilePath;
     QString cntFilePath;
     QString wrkFilePath;
@@ -229,7 +231,6 @@ public:
     QSharedPointer<QFile> cntfile;
     QSharedPointer<QFile> patfile;
     QSharedPointer<QFile> wrkfile;
-    QSharedPointer<QFile> sazfile;
 
     unsigned short tatalcntrow;
     unsigned short tatalpatrow;
@@ -248,6 +249,9 @@ private:
     unsigned char dumu_history;
     QSend *qsend;
     unsigned char *cntbuf;    //用于载入整个CNT文件
+
+    int _azl(unsigned char data);
+    int _hzl(unsigned char data);
 
 };
 

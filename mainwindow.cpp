@@ -30,9 +30,11 @@ MainWindow::MainWindow(QWidget *parent) :
     pixmapleft(":/image/resource/1x.png"),
     pixmapright(":/image/resource/1w.png")
 {
-    formhead1 = new FormHead(&patternData,&hmiData,&paramaData,this);
+    formheadl = new FormHead(&patternData,&hmiData,&paramaData,this);
 #if DUAL_SYSTEM
-    formhead2 = new FormHead(&patternData,&hmiData,&paramaData,this);
+    formheadr = new FormHead(&patternData,&hmiData,&paramaData,this);
+    formheadl->setAtribute(Md::POSLEFT);
+    formheadr->setAtribute(Md::POSRIGHT);
 #endif
     setupUi(this);
     setup();
@@ -43,10 +45,10 @@ void MainWindow::setup(){
     QWidget *widget = new QWidget(this);
     QHBoxLayout *layout = new QHBoxLayout(widget);
     layout->addStretch(20);
-    layout->addWidget(formhead1);
+    layout->addWidget(formheadl);
     layout->addStretch(20);
 #if DUAL_SYSTEM
-    layout->addWidget(formhead2);
+    layout->addWidget(formheadr);
     layout->addStretch(20);
     widget->setFixedSize(780,280);
     widget->move(10,80);
@@ -76,6 +78,7 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(stopPerOne(bool)),qMdPushButton_9,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(alarmLimit(bool)),qMdPushButton_10,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(shazuiUp(bool)),qMdPushButton_11,SLOT(setChecked(bool)));
+    connect(&hmiData,SIGNAL(runing(bool)),SLOT(onHmidataRuning(bool)));
     azllist<<tr("空")<<tr("翻针")<<tr("编织");
     hzllist<<tr("空")<<tr("吊目")<<tr("接针")<<tr("吊目2")<<tr("编松2");
 #if DUAL_SYSTEM
@@ -93,6 +96,16 @@ void  MainWindow::onpatternChange(){
     label_patternFile->setText(patternData.patternName);
 }
 
+void MainWindow::onHmidataRuning(bool val){
+    QWidget *tab = tabWidget->widget(4);//test widget
+    QObjectList list = tab->children();
+    foreach(QObject *widget,list){
+        if(widget->isWidgetType()){
+            ((QWidget *)widget)->setDisabled(val);
+        }
+    }
+    qMdPushButton_11->setDisabled(val);//shazui updown
+}
 
 void MainWindow::Timeout1s(){
     label_currenttime->setText(QDateTime::fromTime_t(hmiData.curruntTime).toString("yyyy-MM-dd hh:mm:ss"));
@@ -129,6 +142,7 @@ void MainWindow::runPatternRowChange(unsigned short cntnumber){
     label_yajiao->setNum(patternData.cnt_yaJiao(cntnumber));
     label_tingche->setText(patternData.cnt_tingChe(cntnumber)?tr("是"):tr("否"));
     label_qizhengdian->setNum(patternData.wrk_qizhengdian());
+    qMdPushButton_6->setEnabled(cntnumber==0);
 }
 
 void MainWindow::onXtGuilingError(){

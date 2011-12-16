@@ -2,6 +2,7 @@
 #include "data.h"
 #include "globaldata.h"
 #include "qhmidata.h"
+#include "qmdstyle.h"
 
 
 
@@ -23,6 +24,35 @@ machineexame::machineexame(QWidget *parent) :
     spinBox_6->setRange(1,100);
     timer.setSingleShot(FALSE);
     timer.start(250);
+
+    QMdStyle *style1 = new QMdStyle();
+    style1->setParent(spinBox);
+    spinBox->setStyle(style1);
+
+    QMdStyle *style2 = new QMdStyle();
+    style2->setParent(spinBox_2);
+    spinBox_2->setStyle(style2);
+
+    QMdStyle *style3 = new QMdStyle();
+    style3->setParent(spinBox_3);
+    spinBox_3->setStyle(style3);
+
+    QMdStyle *style4 = new QMdStyle();
+    style4->setParent(spinBox_4);
+    spinBox_4->setStyle(style4);
+
+    QMdStyle *style5 = new QMdStyle();
+    style5->setParent(spinBox_5);
+    spinBox_5->setStyle(style5);
+
+    QMdStyle *style6 = new QMdStyle();
+    style6->setParent(spinBox_6);
+    spinBox_6->setStyle(style6);
+
+    QMdStyle *style7 = new QMdStyle();
+    style7->setParent(spinBox_7);
+    spinBox_7->setStyle(style7);
+
     connect(this,SIGNAL(DataChange(unsigned short,QVariant)),
             &hmiData,SLOT(On_DataChanged_FromHMI(unsigned short,QVariant)));
     connect(&hmiData,SIGNAL(DataChanged_ToHMI(unsigned short,QVariant)),this,SLOT(On_DataChanged(unsigned short,QVariant)));

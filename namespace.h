@@ -42,6 +42,8 @@ namespace Md{
         FileNotExist = 0x40000
     };
     enum POS{FRONTLEFT= 0,FORNTRIGHT,REARLEFT,REARRIGHT};
+    enum POS_FRONTREAR{POSFRONT=0,POSREAR};
+    enum POS_LFETRIGHT{POSLEFT=0,POSRIGHT};
 
 
 }

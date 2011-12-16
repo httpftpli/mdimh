@@ -43,64 +43,65 @@ QCntEditForm::QCntEditForm(QWidget *parent,QPatternData *data) :
 
 
 void QCntEditForm::rowToggle(int row){
+    bool sys2 = row%2;
     lineEdit_row->setText(QString::number(row+1));
-    lineEdit_hbh1->setText(QString::number(pattern->cntFechData(row,CNT_S1H_Pat)));
-    lineEdit_hbh2->setText(QString::number(pattern->cntFechData(row,CNT_S2H_Pat)));
-    lineEdit_hbh1_q->setText(QString::number(pattern->cntFechData(row,CNT_S1Q_Pat)));
-    lineEdit_hbh2_q->setText(QString::number(pattern->cntFechData(row,CNT_S2Q_Pat)));
+    lineEdit_hbh1->setText(QString::number(pattern->cnt_huabanhang(row,!sys2,Md::POSREAR)));
+    lineEdit_hbh2->setText(QString::number(pattern->cnt_huabanhang(row,sys2,Md::POSREAR)));
+    lineEdit_hbh1_q->setText(QString::number(pattern->cnt_huabanhang(row,!sys2,Md::POSFRONT)));
+    lineEdit_hbh2_q->setText(QString::number(pattern->cnt_huabanhang(row,sys2,Md::POSFRONT)));
 
     /**********1系统后床指令A*********************/
-    int indextmp = pattern->_azl(pattern->cntFechData(row,CNT_S1H_AZiLing));
+    int indextmp = pattern->cnt_Azhiling(row,!sys2,Md::POSREAR);
     comboBox_zla1->setCurrentIndex(indextmp);
     /**********1系统后床指令H*********************/
-    indextmp = pattern->_hzl(pattern->cntFechData(row,CNT_S1H_HZiLing));
+    indextmp = pattern->cnt_Hzhiling(row,!sys2,Md::POSREAR);
     comboBox_zlh1->setCurrentIndex(indextmp);
     /**********1系统前床指令A*********************/
-    indextmp = pattern->_azl(pattern->cntFechData(row,CNT_S1Q_AZiLing));
+    indextmp = pattern->cnt_Azhiling(row,!sys2,Md::POSFRONT);
     comboBox_zla1_q->setCurrentIndex(indextmp);
     /**********1系统前床指令H*********************/
-    indextmp = pattern->_hzl(pattern->cntFechData(row,CNT_S1Q_HZiLing));
+    indextmp = pattern->cnt_Hzhiling(row,!sys2,Md::POSFRONT);
     comboBox_zlh1_q->setCurrentIndex(indextmp);
 
     /**********2系统后床指令A*********************/
-    indextmp = pattern->_azl(pattern->cntFechData(row,CNT_S2H_AZiLing));
+    indextmp = pattern->cnt_Azhiling(row,sys2,Md::POSREAR);
     comboBox_zla2->setCurrentIndex(indextmp);
     /**********2系统后床指令H*********************/
-    indextmp = pattern->_hzl(pattern->cntFechData(row,CNT_S2H_HZiLing));
+    indextmp = pattern->cnt_Hzhiling(row,sys2,Md::POSREAR);
     comboBox_zlh2->setCurrentIndex(indextmp);
     /**********2系统前床指令A*********************/
-    indextmp = pattern->_azl(pattern->cntFechData(row,CNT_S2Q_AZiLing));
+    indextmp = pattern->cnt_Azhiling(row,sys2,Md::POSFRONT);
     comboBox_zla2_q->setCurrentIndex(indextmp);
     /**********2系统前床指令H*********************/
-    indextmp = pattern->_hzl(pattern->cntFechData(row,CNT_S2Q_HZiLing));
+    indextmp = pattern->cnt_Hzhiling(row,sys2,Md::POSFRONT);
     comboBox_zlh2_q->setCurrentIndex(indextmp);
 
 
     /**********1系统后床色代号A*********************/
-    lineEdit_sdha1->setText(pattern->cnt_seDaiHao(row,CNT_S1H_AColor));
+    lineEdit_sdha1->setText(pattern->cnt_seDaiHaoA(row,!sys2,Md::POSREAR));
     /**********1系统后床色代号H*********************/
-    lineEdit_sdhh1->setText(pattern->cnt_seDaiHao(row,CNT_S1H_HColor));
+    lineEdit_sdhh1->setText(pattern->cnt_seDaiHaoH(row,!sys2,Md::POSREAR));
     /**********1系统前床色代号A*********************/
-    lineEdit_sdha1_q->setText(pattern->cnt_seDaiHao(row,CNT_S1Q_AColor));
+    lineEdit_sdha1_q->setText(pattern->cnt_seDaiHaoA(row,!sys2,Md::POSFRONT));
     /**********1系统前床色代号H*********************/
-    lineEdit_sdhh1_q->setText(pattern->cnt_seDaiHao(row,CNT_S1Q_HColor));
+    lineEdit_sdhh1_q->setText(pattern->cnt_seDaiHaoH(row,!sys2,Md::POSFRONT));
 
 
     /**********2系统后床色代号A*********************/
-    lineEdit_sdha2->setText( pattern->cnt_seDaiHao(row,CNT_S2H_AColor));
+    lineEdit_sdha2->setText( pattern->cnt_seDaiHaoA(row,sys2,Md::POSREAR));
     /**********2系统后床色代号H*********************/
-    lineEdit_sdhh2->setText(pattern->cnt_seDaiHao(row,CNT_S2H_HColor));
+    lineEdit_sdhh2->setText(pattern->cnt_seDaiHaoH(row,sys2,Md::POSREAR));
     /**********2系统前床色代号A*********************/
-    lineEdit_sdha2_q->setText(pattern->cnt_seDaiHao(row,CNT_S2Q_AColor));
+    lineEdit_sdha2_q->setText(pattern->cnt_seDaiHaoA(row,sys2,Md::POSFRONT));
     /**********2系统前床色代号H*********************/
-    lineEdit_sdhh2_q->setText(pattern->cnt_seDaiHao(row,CNT_S2Q_HColor));
+    lineEdit_sdhh2_q->setText(pattern->cnt_seDaiHaoH(row,sys2,Md::POSFRONT));
 
     /**********1系统纱嘴*********************/
-    unsigned char sz1 =pattern->cnt_shaZui1(row);
+    unsigned char sz1 =pattern->cnt_shaZui(!sys2,row);
     for(int i=0;i<8;i++)
         pcheckBoxArray1[i]->setChecked(sz1&1<<i);
     /**********2系统纱嘴*********************/
-    unsigned char sz2 = pattern->cnt_shaZui2(row);
+    unsigned char sz2 = pattern->cnt_shaZui(sys2,row);
     for(int i=0;i<8;i++)
         pcheckBoxArray2[i]->setChecked(sz2&1<<i);
     /**********度目,类型*********************/

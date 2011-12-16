@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>802</width>
     <height>600</height>
    </rect>
   </property>
@@ -26,9 +26,6 @@
          <layout class="QHBoxLayout" name="horizontalLayout_10">
           <item>
            <widget class="QGroupBox" name="groupBox_3">
-            <property name="title">
-             <string>系统一</string>
-            </property>
             <layout class="QVBoxLayout" name="verticalLayout">
              <property name="sizeConstraint">
               <enum>QLayout::SetDefaultConstraint</enum>
@@ -702,9 +699,6 @@
           </property>
           <item>
            <widget class="QGroupBox" name="groupBox_4">
-            <property name="title">
-             <string>系统二</string>
-            </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <property name="margin">
               <number>0</number>

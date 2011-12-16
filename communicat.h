@@ -114,10 +114,12 @@ public:
    int SendFile(QFile &file,unsigned short fileid,bool samehint,QWidget *parent);
    int SendShazuiKb(const QString &sazfilepath=QString());
    int SendParama(QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
+   int paramaUpdata();
    int IsInBoot();
    int SendBin(QFile &binfile,QWidget *parent=NULL);
    int SendBag(QString &bagfilename,QWidget *parent = NULL);
    int checkCustomerId(unsigned short id);
+
 
 
 

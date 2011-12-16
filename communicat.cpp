@@ -713,14 +713,21 @@ int  QSend::SendShazuiKb(const QString &sazfilepath){
             goto ELSE;
         }
         sazfile.open(QIODevice::ReadOnly);
-        sazfile.read((char *)&d_send[4],512);
-        sazfile.close();
-        int i=0;
-        for(i=0;i<64;i++){
-            if(*(unsigned short *)(d_send+4+8*i)==0)
+        QDataStream stream(&sazfile);
+        stream.setByteOrder(QDataStream::LittleEndian);
+        unsigned short data;
+        int count=0;
+        while(count!=512/2){
+            readshorts(stream,&data,1);
+            if(data==0)
                 break;
+            count++;
         }
-        *(unsigned char *)(d_send+3) =i+1;
+        count = count/4;
+        *(unsigned char *)(d_send+3) = count;
+        sazfile.seek(0);
+        readshorts(stream,(unsigned short *)&d_send[4],count*4);
+        sazfile.close();
     }else
         ELSE:
     *(unsigned char *)(d_send+3) =0;

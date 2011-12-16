@@ -131,8 +131,8 @@ void QFormFile::on_qMdPushButton_5_clicked()
     QModelIndex index = tableView_2->currentIndex();
     QMdSortFilterProxyModel *model =static_cast<QMdSortFilterProxyModel *>(tableView_2->model());
     QString dirname = model->upPath(index);
-    QString cntfilename,patfilename,wrkfilename,sazfilename;
-    QString cntfilepath,patfilepath,wrkfilepath,sazfilepath;
+    QString cntfilename,patfilename,wrkfilename;
+    QString cntfilepath,patfilepath,wrkfilepath;
 
     QProgressDialog progressDialog(this);
     progressDialog.setAutoClose(FALSE);
@@ -153,13 +153,8 @@ void QFormFile::on_qMdPushButton_5_clicked()
         wrkfilepath = QString();
     }
 
-    if(flag&Md::HAVESAZ){
-        sazfilename = model->patternName(index,".saz");
-        sazfilepath = dirname+"/"+sazfilename;
-    }else
-        sazfilepath = QString();
-    INFORMLOG(tr("更换花型")+cntfilename+QString(" ")+patfilename+QString(" ")+wrkfilename+QString(" ")+sazfilename);
-    QPatternData::Result r = patternData.setFile(cntfilepath,patfilepath,wrkfilepath,sazfilepath);
+    INFORMLOG(tr("更换花型")+cntfilename+QString(" ")+patfilename+QString(" ")+wrkfilename);
+    QPatternData::Result r = patternData.setFile(cntfilepath,patfilepath,wrkfilepath);
     QMdMessageBox box;
     if(r!=QPatternData::Ok){
         box.exec(tr("选择文件"),tr("花型文件错误"),QMessageBox::Warning,
@@ -196,7 +191,7 @@ void QFormFile::on_qMdPushButton_5_clicked()
     }
 
     if(flag&Md::HAVESAZ){ //发送沙嘴捆绑文件
-        result = qSend.SendShazuiKb(sazfilepath);
+        result = qSend.SendShazuiKb(patternData.sazFilePath);
         if(result ==Md::CommError) {
             box.exec(tr("花型发送"),tr("发送沙嘴捆绑,通信错误"),QMessageBox::Warning,
                      QMessageBox::Cancel,QMessageBox::Cancel);

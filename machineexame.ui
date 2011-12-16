@@ -419,7 +419,7 @@
     <rect>
      <x>9</x>
      <y>286</y>
-     <width>541</width>
+     <width>651</width>
      <height>321</height>
     </rect>
    </property>
@@ -549,7 +549,13 @@
       <property name="title">
        <string>罗拉</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_3">
+      <layout class="QGridLayout" name="gridLayout_3" columnstretch="2,1,1,2,2">
+       <property name="horizontalSpacing">
+        <number>9</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>6</number>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_44">
          <property name="sizePolicy">
@@ -571,6 +577,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>正向(闭合)</string>
          </property>
@@ -586,6 +598,12 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="text">
           <string>脉冲数</string>
@@ -866,9 +884,9 @@
    <property name="geometry">
     <rect>
      <x>690</x>
-     <y>480</y>
+     <y>520</y>
      <width>101</width>
-     <height>101</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="sizePolicy">

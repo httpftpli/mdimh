@@ -917,7 +917,7 @@ QVariant  QPZKModel::data(const QModelIndex &index, int role) const{
         if(column == 0){
             if(row ==0)
                 return QVariant();
-            short dat = patterndata->wrk_fechData(WrkItemHd_PzkClose,0);
+            short dat = patterndata->wrk_fechData(WrkItemHd_PzkSaZui,64);
             return (0==(dat&(1<<(row-1))))?Qt::Checked:Qt::Unchecked;
         }
         return QVariant();
@@ -935,7 +935,7 @@ QVariant  QPZKModel::data(const QModelIndex &index, int role) const{
         }else if(0==column)
             return QColor(Qt::gray);
         else{
-            short dat = patterndata->wrk_fechData(WrkItemHd_PzkClose,0);
+            short dat = patterndata->wrk_fechData(WrkItemHd_PzkSaZui,64);
             return (0==(dat&(1<<(row-1))))?QColor(0,0,200,100):QColor(0,0,0,100);
         }
     }
@@ -959,8 +959,8 @@ bool  QPZKModel::setData(const QModelIndex &index, const QVariant &value, int ro
         return FALSE;
     if(role ==Qt::CheckStateRole){
         short val = 1<<(row-1);
-        short dat = patterndata->wrk_fechData(WrkItemHd_PzkClose,0);
-        patterndata->wrk_setData(WrkItemHd_PzkClose,0,dat^val);
+        short dat = patterndata->wrk_fechData(WrkItemHd_PzkSaZui,64);
+        patterndata->wrk_setData(WrkItemHd_PzkSaZui,64,dat^val);
         reset();
         return TRUE;
     }
@@ -1004,7 +1004,7 @@ QVariant QPZKModel::headerData(int section, Qt::Orientation orientation, int rol
 
 int QCntLoopModel::rowCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
-    return looplist.size();
+    return looplistchanged.size();
 }
 int QCntLoopModel::columnCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
@@ -1028,11 +1028,11 @@ QVariant QCntLoopModel::data(const QModelIndex &index, int role) const{
     int row = index.row();
     int column = index.column();
     if(column ==0)
-        return QString::number(looplist.at(row).startline);
+        return QString::number(looplistchanged.at(row).startline);
     if(column ==1)
-        return QString::number(looplist.at(row).endline);
+        return QString::number(looplistchanged.at(row).endline);
     if(column ==2)
-        return QString::number(looplist.at(row).numofloop);
+        return QString::number(looplistchanged.at(row).numofloop);
     return QString();
 }
 
@@ -1062,6 +1062,7 @@ QCntLoopModel::QCntLoopModel( QPatternData *data ,QObject * parent):QAbstractTab
         }
         i++;
     }while(buf[CNT_End]!=0x01);
+    looplistchanged = looplist;
     cntfile->close();
 }
 
@@ -1071,11 +1072,11 @@ bool QCntLoopModel::setData(const QModelIndex &index, const QVariant &value, int
     int row = index.row();
     int column = index.column();
     if(column ==0)
-        looplist[row].startline = value.toInt();
+        looplistchanged[row].startline = value.toInt();
     if(column ==1)
-        looplist[row].endline= value.toInt();
+        looplistchanged[row].endline= value.toInt();
     if(column ==2)
-        looplist[row].numofloop= value.toInt();
+        looplistchanged[row].numofloop= value.toInt();
     emit dataChanged(index,index);
     emit datasValid(checkdatavalid());
     return TRUE;
@@ -1093,7 +1094,7 @@ bool QCntLoopModel::insertRows(int row,int count, const QModelIndex &parent){
         loop.startline = 0;
         loop.endline = 0;
         loop.numofloop = 0;
-        looplist.insert(row,loop);
+        looplistchanged.insert(row,loop);
     }
     endInsertRows();
     emit datasValid(checkdatavalid());
@@ -1104,45 +1105,41 @@ bool QCntLoopModel::removeRows(int row,int count, const QModelIndex &parent){
     Q_UNUSED(parent);
     beginRemoveRows(QModelIndex(),row,row+count-1);
     for(int i=0;i<count;i++){
-        looplist.removeAt(row);
+        looplistchanged.removeAt(row);
     }
     endRemoveRows();
     emit datasValid(checkdatavalid());
     return TRUE;
 }
 
-void QCntLoopModel::save(){
-    QFile *cntfile= patterndata->cntfile.data();
-    cntfile->open(QIODevice::ReadWrite);
+void QCntLoopModel::save(bool send){
     struct LoopType loop;
     unsigned short start,end,num;
-    for(int i=1;i<=patterndata->tatalcntrow;i++){
-        QDataStream stream(cntfile);
-        stream.setByteOrder(QDataStream::LittleEndian);
-        cntfile->seek(i*0x80+CNT_LoopStart);
-        stream<<(unsigned short)0;
-        stream<<(unsigned short)0;
-    }
     for(int i=0;i<looplist.size();i++){
         loop = looplist.at(i);
+        end = loop.endline;
+        patterndata->cntSetData(end-1,CNT_LoopStart,0,2);
+        patterndata->cntSetData(end-1,CNT_LoopNum,0,2);
+    }
+    for(int i=0;i<looplistchanged.size();i++){
+        loop = looplistchanged.at(i);
         start = loop.startline;
         end = loop.endline;
         num = loop.numofloop;
-        cntfile->seek(end*0x80+CNT_LoopStart);
-        cntfile->write((char*)&start,2);
-        cntfile->write((char*)&num,2);
+        patterndata->cntSetData(end-1,CNT_LoopStart,start,2);
+        patterndata->cntSetData(end-1,CNT_LoopNum,num,2);
     }
-    cntfile->close();
+    patterndata->Save(Md::HAVECNT,send?Md::HAVECNT:Md::HAVENO);
 }
 
 void QCntLoopModel::resetVal(){
+
 }
 
 bool QCntLoopModel::checkdatavalid(){
-    foreach(LoopType loop,looplist){
+    foreach(LoopType loop,looplistchanged){
         if(((loop.startline%2==0)||(loop.endline%2==1)
-        ||(loop.startline>loop.endline))
-            &&(loop.numofloop<2))
+        ||(loop.startline>loop.endline)))
         return FALSE;
     }
     return TRUE;

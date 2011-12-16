@@ -272,7 +272,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool insertRows(int row, int count,const QModelIndex &parent);
     bool removeRows(int row, int count,const QModelIndex &parent);
-    void save();
+    void save(bool send);
     void resetVal();
 signals:
     void datasValid(bool);
@@ -283,6 +283,7 @@ private:
         int numofloop;
     };
     QList<struct LoopType> looplist;
+    QList<struct LoopType> looplistchanged;
     QPatternData *patterndata;
     bool checkdatavalid();
 };

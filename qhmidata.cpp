@@ -27,10 +27,9 @@ QHMIData::QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent):
 }
 */
 
-
 void QHMIData::onParamChanged(){
 #if DUAL_SYSTEM
-    bool dankoulock = pparam->fechData(ItemHd_Xtcs,20);
+    bool dankoulock = pparam->fechData(SpaItemHd_Xtcs,20);
     if(this->dankoulock!=dankoulock)
         emit sigDankouLock(dankoulock);
 #endif

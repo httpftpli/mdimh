@@ -1,5 +1,6 @@
 #ifndef COMMUNICAT_H
 #define COMMUNICAT_H
+#include"namespace.h"
 
 #include "algorithm.h"
 #include <QThread>
@@ -114,7 +115,8 @@ public:
    int SendFile(QFile &file,unsigned short fileid,bool samehint,QWidget *parent);
    int SendShazuiKb(const QString &sazfilepath=QString());
    int SendParama(QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
-   int paramaUpdata();
+   int paramaUpdata(unsigned char id,unsigned short *buf,int len,bool halfwordorbyte);
+   int paramaUpdata(unsigned char yiyincunzhenshu,unsigned short chijvjiaozheng,unsigned short zongzhengshu);
    int IsInBoot();
    int SendBin(QFile &binfile,QWidget *parent=NULL);
    int SendBag(QString &bagfilename,QWidget *parent = NULL);

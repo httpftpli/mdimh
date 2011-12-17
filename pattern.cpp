@@ -233,6 +233,43 @@ void QPatternData::cntSetData(unsigned short row,unsigned char index,unsigned sh
 }
 
 
+int QPatternData::wrk_updata(WrkItemHd hd){
+    const WrkItemDsp wrkdsp =wrkItemDsp[hd] ;
+    switch(hd){
+    case WrkItemHd_DuMuZi:
+    case WrkItemHd_SuDuZi:
+    case WrkItemHd_ShaZuiTF:
+    case WrkItemHd_JuanBu:
+    case WrkItemHd_JuanBuFZ:
+    case WrkItemHd_LeftSongSa:
+    case WrkItemHd_RightSongSa:
+    case WrkItemHd_CJP_FanZen:
+    case WrkItemHd_CJP_BianZi:
+        return qsend->paramaUpdata(wrkdsp.runsendid,wrkbuf+wrkdsp.addr,wrkdsp.len,TRUE);
+        break;
+    case WrkItemHd_PzkSaZui:
+    case WrkItemHd_YTXTingFang:
+    case WrkItemHd_YTXXiuZen:
+        return qsend->paramaUpdata(wrkdsp.runsendid,wrkbuf+wrkdsp.addr,wrkdsp.len,FALSE);
+        break;
+    case WrkItemHd_ZanKaiPianSu:
+    case WrkItemHd_QiZenDian:{
+            paramaData.loadFile();
+            const SpaItemDsp spadsp  = spaItemDsp[SpaItemHd_Jqgzcs];
+            const WrkItemDsp qizendiandsp =wrkItemDsp[WrkItemHd_QiZenDian] ;
+            const WrkItemDsp ZanKaiPianSudsp =wrkItemDsp[WrkItemHd_ZanKaiPianSu] ;
+            unsigned short buf[spadsp.len];
+            for(int i=0;i<spadsp.len;i++){
+                buf[i]=htons(paramaData.spabuf[spadsp.addr+i]);
+            }
+            buf[qizendiandsp.offsetinbag] = wrkbuf[qizendiandsp.addr];
+            buf[ZanKaiPianSudsp.offsetinbag] = wrkbuf[ZanKaiPianSudsp.addr];
+            return qsend->paramaUpdata(qizendiandsp.runsendid,buf,spadsp.len,TRUE);
+            break;
+        }
+    }
+}
+
 
 void QPatternData::refreshBuf(Md::HAVEFILEFLAG flag){
     if((flag&Md::HAVEPAT)&&patbuf&&(!patModifiedRow.isEmpty())){
@@ -302,7 +339,7 @@ QPatternData::Result QPatternData::loadLoop(const QString &prmfilepath){
 
 }
 
-void QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag){
+int QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag){
     if(saveflag&Md::HAVESAZ){
         if(sazFilePath.isNull())
             sazFilePath = patternDirPath+'/'+patternName+".SAZ";
@@ -322,23 +359,31 @@ void QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag)
         }
         sazfile.close();
         if(downloadflag&Md::HAVESAZ)
-            sendShazuiKb();
+            return sendShazuiKb();
+        return Md::Ok;
     }
     if(saveflag&Md::HAVEPAT){
         if(!patModifiedRow.isEmpty()){
             patfile->open(QIODevice::ReadWrite);
+            int r;
             foreach(unsigned short row,patModifiedRow){
                 int c = tatalcolumn/2+tatalcolumn%2;
                 patfile->seek((row+1)*c);
                 patfile->write((char *)&(patbuf[row*c]),c);
                 if(downloadflag&Md::HAVEPAT){
-                     qSend.patUpdate(row+1,&patbuf[c*row],c); //download to mainboard
+                     r = qSend.patUpdate(row+1,&patbuf[c*row],c); //download to mainboard
+                     if(r!=Md::Ok)
+                         break;
                 }
             }
             patfile->flush();
             patfile->close();
-            patModifiedRow.clear();
-            emit patDirty(FALSE);
+            if(r==Md::Ok){
+                patModifiedRow.clear();
+                emit patDirty(FALSE);
+                return Md::Ok;
+            }
+            return r;
         }
     }
     if(saveflag&Md::HAVEWRK){
@@ -352,34 +397,46 @@ void QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag)
             }
             wrkfile->flush();
             wrkfile->close();
+            int r;
             if(downloadflag&Md::HAVEWRK){
-                int i = 0;
-                foreach(unsigned char bag, bags){
-                    i= i|(1<<(bag-1));
+                foreach(WrkItemHd hd, wrkModifiedHandle){
+                    r = wrk_updata(hd);
+                    if(r!=Md::Ok)
+                        break;
                 }
-                qSend.SendParama(*wrkfile,*paramaData.spafile,i,NULL);
             }
-            wrkModifiedHandle.clear();
-            emit wrkDirty(FALSE);
+            if(r==Md::Ok){
+                wrkModifiedHandle.clear();
+                emit wrkDirty(FALSE);
+                return Md::Ok;
+            }
+            return r;
         }
     }
     if(saveflag&Md::HAVECNT){
         if(!cntModifiedRow.isEmpty()){
             cntfile->open(QIODevice::ReadWrite);
+            int r;
             foreach(unsigned short row,cntModifiedRow){
                 cntfile->seek((row+1)*128);
                 cntfile->write((char *)&(cntbuf[row*128]),128);
                 if(downloadflag&Md::HAVECNT){
-                     qSend.cntUpdate(row+1,&cntbuf[128*row]); //download to mainboard
+                     r = qSend.cntUpdate(row+1,&cntbuf[128*row]); //download to mainboard
+                     if(r!=Md::Ok)
+                         break;
                 }
             }
             cntfile->flush();
             cntfile->close();
-            cntModifiedRow.clear();
-            emit cntDirty(FALSE);
+            if(r==Md::Ok){
+                cntModifiedRow.clear();
+                emit cntDirty(FALSE);
+                return Md::Ok;
+            }
+            return r;
         }
     }
-    return;
+    return Md::Ok;
 }
 
 int QPatternData::sendShazuiKb(){

@@ -13,7 +13,7 @@ FormXtcs2::FormXtcs2(QParam *paramdata, QWidget *parent) :
         _21_pushButton_2,_22_pushButton,_23_pushButton,_24_spinBox
     };
     for(int i=0;i<sizeof widget/sizeof widget[0];i++){
-        int val = param->fechData(ItemHd_Xtcs,i);
+        int val = param->fechData(SpaItemHd_Xtcs,i);
         signalmapper.setMapping(widget[i],widget[i]);
         switch(i){
         case 13:
@@ -53,21 +53,21 @@ void FormXtcs2::valeChanged(QWidget *obj){
     if(spinbox){
         int val = spinbox->value();
         int index = spinbox->property("index").toInt();
-        param->setData(ItemHd_Xtcs,index,val);
+        param->setData(SpaItemHd_Xtcs,index,val);
         return;
     }
     QDoubleSpinBox *doublespinbox = qobject_cast<QDoubleSpinBox *>(obj);
     if(doublespinbox){
         int val =doublespinbox->value()*10;
         int index = doublespinbox->property("index").toInt();
-        param->setData(ItemHd_Xtcs,index,val);
+        param->setData(SpaItemHd_Xtcs,index,val);
         return;
     }
     QPushButton *pushbutton = qobject_cast<QPushButton *>(obj);
     if(pushbutton){
         int val =pushbutton->isChecked();
         int index = pushbutton->property("index").toInt();
-        param->setData(ItemHd_Xtcs,index,val);
+        param->setData(SpaItemHd_Xtcs,index,val);
         return;
     }
 }

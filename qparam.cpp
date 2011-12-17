@@ -64,9 +64,9 @@ void  QParam::releaseBuf(){
 
 
 
-short QParam::fechData(ItemHd handle,int offset){
+short QParam::fechData(SpaItemHd handle,int offset){
     if(spabuf){
-        unsigned short addr = ITEM_DSP[handle].addr;
+        unsigned short addr = spaItemDsp[handle].addr;
         return spabuf[addr+offset];
     }
     return 0;
@@ -88,9 +88,9 @@ void QParam::setDankouLock(bool lock){
 }
 #endif
 
-void QParam::setData(ItemHd handle,int offset,short data){
+void QParam::setData(SpaItemHd handle,int offset,short data){
     if(spabuf){
-        unsigned short addr = ITEM_DSP[handle].addr;
+        unsigned short addr = spaItemDsp[handle].addr;
         spabuf[addr+offset] = data;
         modifyedItem.insert(handle);
         emit dirty(TRUE);
@@ -112,13 +112,29 @@ void QParam::refreshBuf(){
     return;
 }
 
-void QParam::save(bool isdownload){
+int QParam::updata(SpaItemHd hd){
+    const SpaItemDsp dsp = spaItemDsp[hd];
+    if(hd==SpaItemHd_Xtcs){
+        unsigned short buf[dsp.len];
+        for(int i=0;i<dsp.len;i++)
+            buf[i] = spabuf[dsp.addr+i];
+        const WrkItemDsp qizendiandsp =wrkItemDsp[WrkItemHd_QiZenDian] ;
+        const WrkItemDsp ZanKaiPianSudsp =wrkItemDsp[WrkItemHd_ZanKaiPianSu] ;
+        buf[qizendiandsp.offsetinbag] = patternData.wrkbuf[qizendiandsp.addr];
+        buf[ZanKaiPianSudsp.offsetinbag] = patternData.wrkbuf[ZanKaiPianSudsp.addr];
+        return qsend->paramaUpdata(qizendiandsp.runsendid,buf,dsp.len,TRUE);
+    }else{
+        return qsend->paramaUpdata(dsp.runsendid,(unsigned short *)(spabuf+dsp.addr),dsp.len,TRUE);
+    }
+}
+
+int QParam::save(bool isdownload){
     if(!spabuf||!modifyedItem.isEmpty())
-        return ;
+        return Md::Ok ;
     spafile->open(QIODevice::ReadWrite);
-    foreach(ItemHd handle,modifyedItem)   {
-        unsigned addr  = ITEM_DSP[handle].addr;
-        unsigned len = ITEM_DSP[handle].len;
+    foreach(SpaItemHd handle,modifyedItem)   {
+        unsigned addr  = spaItemDsp[handle].addr;
+        unsigned len = spaItemDsp[handle].len;
         spafile->seek(addr*2);
         spafile->write((char *)&spabuf[addr],len*2);
     }
@@ -127,12 +143,14 @@ void QParam::save(bool isdownload){
     emit dirty(FALSE);
     emit changed();
     if(isdownload){
-        unsigned short bagflag =0;
-        foreach(ItemHd handle,modifyedItem){
-            bagflag|=1<<(ITEM_DSP[handle].bag-1);
+        foreach(SpaItemHd hd,modifyedItem){
+            int r = updata(hd);
+            if(r!=Md::Ok)
+                return r;
         }
-        qsend->SendParama(*patternData.wrkfile,*spafile,bagflag,NULL);
     }
+    modifyedItem.clear();
+    return Md::Ok;
 }
 
 

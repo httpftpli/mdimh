@@ -39,11 +39,14 @@ namespace Md{
         BurnOK = 0x8000,
         FileSame = 0x10000,
         NotPatCntSaz = 0x20000,
-        FileNotExist = 0x40000
+        FileNotExist = 0x40000,
+        ParamUpdataFail = 0x80000
+
     };
     enum POS{FRONTLEFT= 0,FORNTRIGHT,REARLEFT,REARRIGHT};
     enum POS_FRONTREAR{POSFRONT=0,POSREAR};
     enum POS_LFETRIGHT{POSLEFT=0,POSRIGHT};
+
 
 
 }

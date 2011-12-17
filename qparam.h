@@ -12,6 +12,7 @@
 #define LENOFSPA 0x1000
 
  class QSend;
+ class QParam;
 
 const QVariant::Type XTCS_DATATYPE[]={
   QVariant::Int,    QVariant::Int,    QVariant::Int,
@@ -46,28 +47,29 @@ enum ParamAddr{
     Addr_Jqgzcs = Addr_Base+0x260, //Bag6 //共16个  :引塔夏纱嘴停
 };
 
-enum ItemHd {
-    ItemHd_Xtcs = 0,
-    ItemHd_Dmdmbc,
-    ItemHd_Spmdbc,
-    ItemHd_Bgzdmlwbc,
-    ItemHd_Ycwzxz,
-    ItemHd_Fzycwzxz,
-    ItemHd_Fzycwzxz_z,
-    ItemHd_Fzycwzxz_f,
-    ItemHd_Jqgzcs,
-    ItemHd_Guide
+enum SpaItemHd {
+    SpaItemHd_Xtcs = 0,
+    SpaItemHd_Dmdmbc,
+    SpaItemHd_Spmdbc,
+    SpaItemHd_Bgzdmlwbc,
+    SpaItemHd_Ycwzxz,
+    SpaItemHd_Fzycwzxz,
+    SpaItemHd_Fzycwzxz_z,
+    SpaItemHd_Fzycwzxz_f,
+    SpaItemHd_Jqgzcs,
+    SpaItemHd_Guide
 };
 
-struct ItemDsp{
-    ParamAddr addr;
+struct SpaItemDsp{
+    unsigned short addr;
+    unsigned char runsendid;
     unsigned short len;
-    unsigned char bag;
     unsigned short offsetinbag;
     short valrangebottom;
     short valrangetop;
     //short **valrange;
 };
+
 const unsigned short JQGZCS_RANGE[][2]={
     {10,100}, {20,60}, {5,30},  {4,20},  {6,12},
     {0,1000}, {0,127},  {0,1},   {0,99},  {0,99},  {0,99},
@@ -84,22 +86,29 @@ const unsigned short XTCS_RANGE[][2]={
 };
 
 
-const struct ItemDsp ITEM_DSP[] = {
- /*   ADDR             len |bag|offsetinbag|valrangetop|valrangebottom  */
-    {Addr_Xtcs,        24,  4,      0,          0,           0      },
-    {Addr_Dmdmbc,       8,  4,      24,        -200,         200    },
-    {Addr_Spmdbc,       8,  4,      32,        -200,         200    },
-    {Addr_Bgzdmlwbc,    8,  4,      40,        -200,         200    },
-    {Addr_Ycwzxz,      33,  4,      48,        -500,         500    },
-    {Addr_Fzycwzxz,    16,  4,      81,        -500,         500    },
-    {Addr_Fzycwzxz_z,  16,  4,      97,        -500,         500    },
-    {Addr_Fzycwzxz_f,  16,  4,      113,       -500,         500    },
-    {Addr_Jqgzcs ,     32,  1,      129,        0,            0,    }
+const struct SpaItemDsp spaItemDsp[SpaItemHd_Guide] = {
+ /*   ADDR            |runsendid | len |offsetinbag|valrangetop|valrangebottom  */
+    {Addr_Xtcs,          7,        29,     0,          0,           0      },
+#if DUAL_SYSTEM
+    {Addr_Dmdmbc,        8,         8,     0,        -200,         200    },
+    {Addr_Spmdbc,        9,         8,     0,        -200,         200    },
+    {Addr_Bgzdmlwbc,     10,        8,     0,        -200,         200    },
+#else
+    {Addr_Dmdmbc,        8,         4,     0,        -200,         200    },
+    {Addr_Spmdbc,        9,         4,     0,        -200,         200    },
+    {Addr_Bgzdmlwbc,     10,        4,     0,        -200,         200    },
+#endif
+    {Addr_Ycwzxz,        11,        33,    0,        -500,         500    },
+    {Addr_Fzycwzxz,      12,        16,    0,        -500,         500    },
+    {Addr_Fzycwzxz_z,    13,        16,    0,        -500,         500    },
+    {Addr_Fzycwzxz_f,    14,        16,    0,        -500,         500    },
+    {Addr_Jqgzcs ,        1,        50,    0,         0,            0,   }
 };
 
 
 class QParam : public QObject
 {
+    friend class QPatternData;
     Q_OBJECT
     public:
     enum HeadPosDir{BackLeft = 0,BackRight =1,FrontLeft =2,FrontRight =3};
@@ -112,21 +121,23 @@ class QParam : public QObject
     void  loadFile();
     void  releaseBuf();
     bool  setFile(const QString &spafilepath);
-    short fechData(ItemHd handle,int offset);
-    void setData(ItemHd handle,int offset,short data);
+    short fechData(SpaItemHd handle,int offset);
+    void setData(SpaItemHd handle,int offset,short data);
 #if DUAL_SYSTEM
     void setDankouLock(bool lock);  //send the dankoulock only set in the file ,
                                     // don't send to mainboard and emit signal
 #endif
     void refreshBuf();
-    void save(bool isdownload);
+    int save(bool isdownload);
     unsigned short duMu_BuGongZuo(HeadPosDir posdir);
 
 private:
     short *spabuf;
-    QSet<ItemHd> modifyedItem;
+    QSet<SpaItemHd> modifyedItem;
     unsigned short dumu_bugongzuo[4];
     QSend *qsend;
+    int updata(SpaItemHd hd);
+
 signals:
     void dirty(bool val);
     void changed();

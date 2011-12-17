@@ -701,6 +701,48 @@ int QSend::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent
     }
 }
 
+int QSend::paramaUpdata(unsigned char id,unsigned short *buf,int len,bool halfwordorbyte){
+    Q_ASSERT(len<500);
+    if(len>500)
+        len==500;
+    unsigned short packlen;
+    *(unsigned char *)(d_send+2) = 0x97;
+    *(unsigned char *)(d_send+3) = id;
+    if(halfwordorbyte){
+        for(int i=0;i<len;i++){
+            short val = buf[i];
+            *(unsigned short *)(d_send+4+i*2) = htons(val);
+        }
+        packlen =len*2+6+1;
+    }
+    else{
+        for(int i=0;i<len;i++)
+            *(unsigned char *)(d_send+4+i) = (char)(buf[i]);
+        packlen =len+6+1;
+    }
+    *(unsigned short *)d_send = htons(packlen);
+    unsigned short r;
+    if(!ProgramSend(r))
+        return Md::CommError;
+    if(r==0x55)
+        return Md::Ok;
+    return Md::ParamUpdataFail;
+}
+
+int QSend::paramaUpdata(unsigned char yiyincunzhenshu, unsigned short chijvjiaozheng,unsigned short zongzhengshu){
+    *(unsigned short *)d_send = htons(0x0b);
+    *(unsigned char *)(d_send+2) = 0xa0;
+    *(unsigned char *)(d_send+3) = yiyincunzhenshu;
+    *(unsigned char *)(d_send+5) = htons(chijvjiaozheng);
+    *(unsigned char *)(d_send+7) = htons(zongzhengshu);
+    unsigned short r;
+    if(!ProgramSend(r))
+        return Md::CommError;
+    if(r==0x55)
+        return Md::Ok;
+    return Md::ParamUpdataFail;
+}
+
 int  QSend::SendShazuiKb(const QString &sazfilepath){
     *(unsigned short *)d_send = htons(519);
     *(unsigned char *)(d_send+2) = 0x84;

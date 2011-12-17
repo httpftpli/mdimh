@@ -1347,11 +1347,11 @@ QVariant  QDMBCModel::data(const QModelIndex &index, int role) const{
         int column = index.column();
         switch(column){
         case 0:
-            return QString::number(param->fechData(ItemHd_Dmdmbc,row));
+            return QString::number(param->fechData(SpaItemHd_Dmdmbc,row));
         case 1:
-            return QString::number(param->fechData(ItemHd_Spmdbc,row));
+            return QString::number(param->fechData(SpaItemHd_Spmdbc,row));
         case 2:
-            return QString::number(param->fechData(ItemHd_Bgzdmlwbc,row));
+            return QString::number(param->fechData(SpaItemHd_Bgzdmlwbc,row));
         default:
             break;
         }
@@ -1370,13 +1370,13 @@ bool  QDMBCModel::setData(const QModelIndex &index, const QVariant &value, int r
         int val = value.toString().toInt();
         switch(column){
         case 0:
-            param->setData(ItemHd_Dmdmbc,row,val);
+            param->setData(SpaItemHd_Dmdmbc,row,val);
             break;
         case 1:
-            param->setData(ItemHd_Spmdbc,row,val);
+            param->setData(SpaItemHd_Spmdbc,row,val);
             break;
         case 2:
-            param->setData(ItemHd_Bgzdmlwbc,row,val);
+            param->setData(SpaItemHd_Bgzdmlwbc,row,val);
             break;
         default:
             break;
@@ -1461,7 +1461,7 @@ QVariant  QYCWZXZModel::data(const QModelIndex &index, int role) const{
             if(column==0)
                 return "0";
             else if(column==1)
-                return QString::number(paramadata->fechData(ItemHd_Ycwzxz,0));
+                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,0));
             else
                 return "";
         }else{
@@ -1469,19 +1469,19 @@ QVariant  QYCWZXZModel::data(const QModelIndex &index, int role) const{
             case 0:
                 return QString("R%1---").arg(row);
             case 1:
-                return QString::number(paramadata->fechData(ItemHd_Ycwzxz,row));
+                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,row));
             case 2:
                 return QString("L%1---").arg(row);
             case 3:
-                return QString::number(paramadata->fechData(ItemHd_Ycwzxz,row+8));
+                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,row+8));
             case 4:
                 return QString("R%1*--").arg(row-1);
             case 5:
-                return QString::number(paramadata->fechData(ItemHd_Ycwzxz,row+16));
+                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,row+16));
             case 6:
                 return QString("L%1*--").arg(row-1);
             case 7:
-                return QString::number(paramadata->fechData(ItemHd_Ycwzxz,row+24));
+                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,row+24));
             default:
                 break;
             }
@@ -1500,9 +1500,9 @@ bool  QYCWZXZModel::setData(const QModelIndex &index, const QVariant &value, int
     int column = index.column();
     int val = value.toString().toInt();
     if(0==role)
-        paramadata->setData(ItemHd_Ycwzxz,0,val);
+        paramadata->setData(SpaItemHd_Ycwzxz,0,val);
     else
-        paramadata->setData(ItemHd_Ycwzxz,column/2*8+row,val);
+        paramadata->setData(SpaItemHd_Ycwzxz,column/2*8+row,val);
     return TRUE;
 }
 
@@ -1560,15 +1560,15 @@ QVariant QFZYCWZXZModel::data(const QModelIndex &index, int role) const{
         case 0:
             return (1==row)?QString("0.0"):((row<10)?QString("R%1.0").arg(row-1):QString("L%1.0").arg(row-9));
         case 1:
-            return param->fechData(ItemHd_Fzycwzxz,row-1);
+            return param->fechData(SpaItemHd_Fzycwzxz,row-1);
         case 2:
             return (1==row)?QString("0.+"):((row<10)?QString("R%1.*").arg(row-1):QString("L%1.*").arg(row-9));
         case 3:
-            return param->fechData(ItemHd_Fzycwzxz_z,row-1);
+            return param->fechData(SpaItemHd_Fzycwzxz_z,row-1);
         case 4:
             return (1==row)?QString("0.-"):((row<10)?QString("R%1.-").arg(row-1):QString("L%1.-").arg(row-9));
         case 5:
-            return param->fechData(ItemHd_Fzycwzxz_f,row-1);
+            return param->fechData(SpaItemHd_Fzycwzxz_f,row-1);
         default:
             return QString();
         }
@@ -1596,13 +1596,13 @@ bool QFZYCWZXZModel::setData(const QModelIndex &index, const QVariant &value, in
     if(Qt::EditRole==role){
         switch(column){
         case 1:
-            param->setData(ItemHd_Fzycwzxz,row-1,value.toInt());
+            param->setData(SpaItemHd_Fzycwzxz,row-1,value.toInt());
             break;
         case 3:
-            param->setData(ItemHd_Fzycwzxz_z,row-1,value.toInt());
+            param->setData(SpaItemHd_Fzycwzxz_z,row-1,value.toInt());
             break;
         case 5:
-            param->setData(ItemHd_Fzycwzxz_f,row-1,value.toInt());
+            param->setData(SpaItemHd_Fzycwzxz_f,row-1,value.toInt());
             break;
         default:
             break;

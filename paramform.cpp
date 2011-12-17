@@ -241,8 +241,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             tableView_fzyc->setModel(fzycwzxzmodel);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
             tableView_fzyc->setItemDelegate(delegate);
-            delegate->setRange(ITEM_DSP[ItemHd_Fzycwzxz].valrangebottom,
-                               ITEM_DSP[ItemHd_Fzycwzxz].valrangetop
+            delegate->setRange(spaItemDsp[SpaItemHd_Fzycwzxz].valrangebottom,
+                               spaItemDsp[SpaItemHd_Fzycwzxz].valrangetop
                                );
             tableView_fzyc->verticalHeader()->setResizeMode(0,QHeaderView::ResizeToContents);
 

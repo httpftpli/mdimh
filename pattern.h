@@ -131,6 +131,7 @@ const struct WrkItemDsp wrkItemDsp[WrkItemHd_Guide]={
 
 
 class QPatternData : public QObject{
+    friend class QParam;
     Q_OBJECT
 public:
     enum FileState {
@@ -174,7 +175,7 @@ public:
     void cntSetData(unsigned short row,unsigned char index,unsigned short data,unsigned char len);
     Md::HAVEFILEFLAG loadStatus();
     Result loadLoop(const QString &prmfilepath);
-    void Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag=Md::HAVENO);
+    int Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag=Md::HAVENO);
     int sendShazuiKb();
 
 
@@ -252,6 +253,8 @@ private:
 
     int _azl(unsigned char data);
     int _hzl(unsigned char data);
+
+    int wrk_updata(WrkItemHd hd);
 
 };
 

@@ -1284,7 +1284,7 @@ void QRcv::ReadPendingDatagrams(){
             InterComm.WriteData(fun,data[0]);
             break;
         case 0x20:
-            if(12==len){
+            if((0x0e==len)||(0x0c==len)){
                 emit DataChanged(QHMIData::WBSR,(QByteArray((char *)data,4)));
                 emit DataChanged(QHMIData::ZXHJSQ,htoni(*(unsigned short*)(data+4)));
                 break;

@@ -84,8 +84,8 @@ class QHMIData: public QObject{
 
 public:
     enum DATATAG{
-                 GLWC,          //系统归零完成
-                 WBSR= 0,       //外部输入信号
+                 GLWC= 0,          //系统归零完成
+                 WBSR,       //外部输入信号
                  ZXHJSQ,
                  ZSD,           //指示灯（输出）
                  BJLL,          //步进罗拉（输出） unsigned char 1:ispersent,unsigned char 0:clockwise unsigned char percent
@@ -135,6 +135,7 @@ public:
                  GUARDIANS        //枚举类型最后一个，仅用于边界守护
 
              };
+    enum SysStat{SysIdle,SysRun,SysTest,SysReset,SysInParam};
 
     int dataBuf[GUARDIANS];
     QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent = 0);
@@ -193,6 +194,7 @@ public:
     void clearAlarm();
     Md::Result errorcode;
     int errorCode();
+    int TogSysStat(SysStat stat);
 
 public slots:
     void RequireData(unsigned short index);

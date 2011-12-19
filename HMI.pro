@@ -41,7 +41,6 @@ SOURCES += main.cpp\
     qshazuiexchform.cpp \
     qcnteditform.cpp \
     qparam.cpp \
-    formmovie.cpp \
     QProgressIndicator.cpp \
     formjqgzcs.cpp \
     formxtcs.cpp \
@@ -88,7 +87,6 @@ HEADERS  += \
     qshazuiexchform.h \
     qcnteditform.h \
     qparam.h \
-    formmovie.h \
     QProgressIndicator.h \
     formjqgzcs.h \
     formxtcs.h \
@@ -120,7 +118,6 @@ FORMS    += \
     qhuabanxhform.ui \
     qshazuiexchform.ui \
     qcnteditform.ui \
-    formmovie.ui \
     formjqgzcs.ui \
     formxtcs.ui \
     dialogsetfinishcount.ui \

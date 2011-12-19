@@ -130,6 +130,7 @@ class QParam : public QObject
     void refreshBuf();
     int save(bool isdownload);
     unsigned short duMu_BuGongZuo(HeadPosDir posdir);
+    int updataPivotal();
 
 private:
     short *spabuf;
@@ -137,6 +138,7 @@ private:
     unsigned short dumu_bugongzuo[4];
     QSend *qsend;
     int updata(SpaItemHd hd);
+
 
 signals:
     void dirty(bool val);

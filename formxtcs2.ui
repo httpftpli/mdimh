@@ -296,6 +296,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::NoButtons</enum>
+       </property>
        <property name="decimals">
         <number>1</number>
        </property>
@@ -367,11 +370,17 @@
      </item>
      <item row="11" column="2">
       <widget class="QSpinBox" name="_12_spinBox">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::NoButtons</enum>
        </property>
        <property name="maximum">
         <number>65535</number>
@@ -487,6 +496,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::NoButtons</enum>
        </property>
        <property name="minimum">
         <number>10</number>

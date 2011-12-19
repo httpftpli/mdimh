@@ -11,7 +11,8 @@ class machineexame : public QWidget, private Ui::machineexame
 public:
     explicit machineexame(QWidget *parent = 0);
 
-
+protected:
+    virtual void timerEvent ( QTimerEvent * event );
 signals:
     void DataChange(unsigned short index,QVariant Val);
 
@@ -33,9 +34,10 @@ private slots:
     void on_qMdPushButton_3_toggled(bool checked);
     void on_qMdPushButton_toggled(bool checked);
     void On_DataChanged(unsigned short,QVariant);
-    void On_timerout();
 private:
-QTimer timer;
+    unsigned long long timercount;
+    int timerid;
+
 
 
 };

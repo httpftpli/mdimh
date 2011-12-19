@@ -169,7 +169,6 @@ void QMdStyle::drawBronzeSpinBoxButton(SubControl which,
     buttonRect.setWidth((buttonRect.width() + 1) / 2);
 
     QStyleOption buttonOpt(*option);
-
     painter->save();
     painter->setClipRect(buttonRect, Qt::IntersectClip);
     if (!(option->activeSubControls & which))
@@ -179,7 +178,7 @@ void QMdStyle::drawBronzeSpinBoxButton(SubControl which,
     QStyleOption arrowOpt(buttonOpt);
     arrowOpt.rect = subControlRect(CC_SpinBox, option, which)
                     .adjusted(+3, +3, -3, -3);
-    if (arrowOpt.rect.isValid())
+    if(arrowOpt.rect.isValid())
         drawPrimitive(arrow, &arrowOpt, painter);
     painter->restore();
 }

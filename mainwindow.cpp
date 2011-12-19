@@ -23,6 +23,7 @@
 #include "dialogsetfinishcount.h"
 #include "dialogtingche.h"
 #include "formhead.h"
+#include "QTest"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -181,7 +182,6 @@ void MainWindow::on_qMdPushButton_2_clicked()
 {
     machineexame *machineexameform  = new machineexame;
     machineexameform->show();
-
 
 }
 

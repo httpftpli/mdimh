@@ -3,12 +3,11 @@
 #include "globaldata.h"
 #include "qhmidata.h"
 #include "qmdstyle.h"
-
-
+#include "qmdmessagebox.h"
 
 
 machineexame::machineexame(QWidget *parent) :
-    QWidget(parent){
+    QWidget(parent),timercount(0){
     setupUi(this);
 
 
@@ -22,8 +21,6 @@ machineexame::machineexame(QWidget *parent) :
     spinBox_5->setRange(1,100);
     spinBox_6->setPrefix("%");
     spinBox_6->setRange(1,100);
-    timer.setSingleShot(FALSE);
-    timer.start(250);
 
     QMdStyle *style1 = new QMdStyle();
     style1->setParent(spinBox);
@@ -55,15 +52,29 @@ machineexame::machineexame(QWidget *parent) :
 
     connect(this,SIGNAL(DataChange(unsigned short,QVariant)),
             &hmiData,SLOT(On_DataChanged_FromHMI(unsigned short,QVariant)));
-    connect(&hmiData,SIGNAL(DataChanged_ToHMI(unsigned short,QVariant)),this,SLOT(On_DataChanged(unsigned short,QVariant)));
+    connect(&hmiData,SIGNAL(DataChanged_ToHMI(unsigned short,QVariant)),this,
+            SLOT(On_DataChanged(unsigned short,QVariant)));
+    timerid  = startTimer(250);
 
-    connect(&timer,SIGNAL(timeout()),this,SLOT(On_timerout()));
             ////////////////////////
 }
 
-void machineexame::On_timerout(){
-   /* hmiData.RequireData(QHMIData::WBSR);*/
+void machineexame::timerEvent ( QTimerEvent * event ){
+    if(event->timerId() == timerid){
+        if(timercount++==0){
+            if(hmiData.TogSysStat(QHMIData::SysTest)!=Md::Ok){
+                killTimer(timerid);
+                timerid = 0;
+                QMdMessageBox box;
+                box.exec(tr("测试模式"),tr("进入测试模式失败"),QMessageBox::Warning,
+                         QMessageBox::Cancel,QMessageBox::Cancel);
+            }
+        }
+        hmiData.RequireData(QHMIData::WBSR);
+    }
 }
+
+
 
 void machineexame::On_DataChanged(unsigned short index,QVariant Val){
     switch(index){
@@ -223,6 +234,7 @@ void machineexame::on_qMdPushButton_8_clicked()
 {
 
     hide();
+    hmiData.TogSysStat(QHMIData::SysRun);
     delete this;
 }
 

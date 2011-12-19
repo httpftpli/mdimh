@@ -54,6 +54,8 @@ void FormXtcs2::valeChanged(QWidget *obj){
         int val = spinbox->value();
         int index = spinbox->property("index").toInt();
         param->setData(SpaItemHd_Xtcs,index,val);
+        if((index == 11)||(index ==12))
+            param->updataPivotal();
         return;
     }
     QDoubleSpinBox *doublespinbox = qobject_cast<QDoubleSpinBox *>(obj);
@@ -61,6 +63,8 @@ void FormXtcs2::valeChanged(QWidget *obj){
         int val =doublespinbox->value()*10;
         int index = doublespinbox->property("index").toInt();
         param->setData(SpaItemHd_Xtcs,index,val);
+        if(index == 7)
+            param->updataPivotal();
         return;
     }
     QPushButton *pushbutton = qobject_cast<QPushButton *>(obj);

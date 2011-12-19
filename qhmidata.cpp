@@ -219,7 +219,50 @@ void QHMIData::RequireData(unsigned short index){
     switch(index){
     case QHMIData::WBSR:
         psend->readDI();
+        break;
+    default:
+        break;
     }
+}
+
+int QHMIData::TogSysStat(SysStat stat){
+    unsigned char val;
+    switch(stat){
+    case SysIdle:
+        val =0x00;
+        break;
+    case SysRun:{
+            switch(customerId){
+            case 0x31:
+                val =0x0b;
+                break;
+            default:
+                val = 0x01;
+                break;
+            }
+            break;
+        }
+    case SysTest:
+        val = 0x02;
+        break;
+    case SysReset:{
+            switch(customerId){
+            case 0x31:
+                val =0x0a;
+                break;
+            default:
+                val = 0x03;
+                break;
+            }
+            break;
+        }
+    case SysInParam:
+        val = 0x04;
+        break;
+    default:
+        break;
+    }
+    return psend->TogSysStat(val);
 }
 
 void QHMIData::loadParam(const QString &inifilepath){
@@ -291,8 +334,10 @@ void QHMIData::saveSysCfgFile(){
     sysset.setValue("history/stoptime",stopTimeHistory);
     sysset.setValue("history/runtime",runTimeHistory);
     sysset.sync();
-    int r = QProcess::execute("sh quit.sh");
-    qDebug()<<"QProcess::executer"<<r;
+    QFile file(sysconfigfilename);
+    file.open(QIODevice::ReadOnly);
+    file.flush();
+    file.close();
 }
 
 int QHMIData::sendParamaInRun(){

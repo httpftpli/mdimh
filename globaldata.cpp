@@ -119,7 +119,7 @@ Md::Result sysInit(){
     }
 
     //////togle system/////////////////
-    commResult = qSend.TogSysStat(0x04);
+    commResult = qSend.TogSysStat(QHMIData::SysInParam);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("通讯错误,花型文件未成功下载"),Qt::AlignBottom);
         QTest::qWait(2000);
@@ -164,7 +164,7 @@ Md::Result sysInit(){
     //等待下位机响应/////////////////////////////////
     int i=0;
     for(i=0;i<3;i++) {
-        commResult = qSend.TogSysStat(0x04);
+        commResult = qSend.TogSysStat(QHMIData::SysInParam);
         if(commResult==Md::Ok)
             break;
     }

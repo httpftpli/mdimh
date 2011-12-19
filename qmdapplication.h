@@ -2,6 +2,7 @@
 #define QMDAPPLICATION_H
 #include <QApplication>
 #include <QPointer>
+#include<QProcess>
 
 class cSound;
 class FormMovie;
@@ -20,7 +21,7 @@ private:
     int timerid;
     int second;
     int scrprodelay;
-    QPointer<FormMovie> formmovie;
+    QProcess *screenprotect;
 };
 
 

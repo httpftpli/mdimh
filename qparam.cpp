@@ -128,6 +128,13 @@ int QParam::updata(SpaItemHd hd){
     }
 }
 
+int QParam::updataPivotal(){
+    unsigned char yiyincunzs =(unsigned char) fechData(SpaItemHd_Xtcs,7);
+    unsigned short chijvjiaozeng = fechData(SpaItemHd_Xtcs,11);
+    unsigned short hengjizhenshu = fechData(SpaItemHd_Xtcs,12);
+    return qsend->paramaUpdata(yiyincunzs,chijvjiaozeng,hengjizhenshu);
+}
+
 int QParam::save(bool isdownload){
     if(!spabuf||!modifyedItem.isEmpty())
         return Md::Ok ;

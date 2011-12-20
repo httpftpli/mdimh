@@ -54,7 +54,7 @@ machineexame::machineexame(QWidget *parent) :
             &hmiData,SLOT(On_DataChanged_FromHMI(unsigned short,QVariant)));
     connect(&hmiData,SIGNAL(DataChanged_ToHMI(unsigned short,QVariant)),this,
             SLOT(On_DataChanged(unsigned short,QVariant)));
-    timerid  = startTimer(250);
+    timerid  = startTimer(500);
 
             ////////////////////////
 }

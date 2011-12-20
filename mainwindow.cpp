@@ -14,7 +14,6 @@
 #include "qshazuiexchform.h"
 #include "qshazuikbform.h"
 #include "qcnteditform.h"
-#include "formmovie.h"
 #include "qmdmessagebox.h"
 #include "qhmidata.h"
 #include "data.h"

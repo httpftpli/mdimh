@@ -472,7 +472,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_22">
+        <widget class="QLabel" name="label_43">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -480,7 +480,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>绿指示灯</string>
+          <string>黄指示灯</string>
          </property>
         </widget>
        </item>
@@ -504,7 +504,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_43">
+        <widget class="QLabel" name="label_22">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -512,7 +512,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>黄指示灯</string>
+          <string>绿指示灯</string>
          </property>
         </widget>
        </item>

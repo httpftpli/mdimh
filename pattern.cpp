@@ -105,7 +105,7 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
             s1 = (unsigned char)(_s1>>8);
             cntfile->seek(i*128+83);
             stream>>_s2;
-            s2 = (unsigned char)(_s1>>8);
+            s2 = (unsigned char)(_s2>>8);
             s = s2|s1;//所在行的沙嘴（包系统1和系统2）
             shazuinew = shazui|s;
             snew = shazuinew^shazui;

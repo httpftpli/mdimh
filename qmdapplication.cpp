@@ -1,6 +1,5 @@
 #include "qmdapplication.h"
 #include "csound.h"
-#include "formmovie.h"
 #include <QDir>
 
 

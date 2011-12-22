@@ -24,7 +24,7 @@ void updateRomForm::on_qMdPushButton_17_clicked()
     QString str = lineEdit_2->text();
         int result;
         if(!str.isEmpty()){
-            result = qSend.SendBag(str,this);
+            result = qComm.SendBag(str,this);
         }
         QMdMessageBox box;
         box.setText(tr("下载固件"));
@@ -66,7 +66,7 @@ void updateRomForm::on_qMdPushButton_8_clicked()
         int result;
         if(!str.isEmpty()){
             QFile file(str);
-            result = qSend.SendBin(file,this);
+            result = qComm.SendBin(file,this);
         }
         QMdMessageBox box;
         box.setText(tr("下载固件"));

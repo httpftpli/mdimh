@@ -152,8 +152,8 @@ void MainWindow::onXtGuilingError(){
 
 void MainWindow::on_qMdPushButton_12_clicked()
 {
-    qRcv.quit();
-    qRcv.wait();
+    qComm.quit();
+    qComm.wait();
     hmiData.saveSysCfgFile();
     sysLog.save();
     close();

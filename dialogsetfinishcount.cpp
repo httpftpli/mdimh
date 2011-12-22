@@ -2,6 +2,7 @@
 
 DialogSetFinishCount::DialogSetFinishCount(QWidget *parent) :
     QDialog(parent){
+    setStyleSheet(QString());
     setupUi(this);
     spinBox->setStyle(&style);
     connect(pushButton,SIGNAL(clicked()),SLOT(accept()));

@@ -47,9 +47,9 @@ class QSysLogModel;
 /////////////////////////////////////
 class ProgramEncrypt{
 private:
-    static const unsigned char  EncryptTable[256];
+    static const char  EncryptTable[256];
 public:
-    void Decrypt(unsigned char *buf,unsigned short len);
+    void Decrypt(char *buf,unsigned short len);
 };
 
 

@@ -8,14 +8,14 @@
 #include "qparam.h"
 
 
-QHMIData::QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent):
-        QObject(parent),pparam(param),psend(send),prcv(rcv),speedlimit(0),
+QHMIData::QHMIData(QParam *param,QComm *qcomm,QObject *parent):
+        QObject(parent),pparam(param),pcomm(qcomm),speedlimit(0),
         alarmlimit(0),shazuiup(1),isruning(FALSE),isinitfinish(FALSE){
-    connect(prcv,SIGNAL(DataChanged(unsigned short,QVariant)),
+    connect(pcomm,SIGNAL(DataChangedFromCtrl(unsigned short,QVariant)),
                      SLOT(On_DataChanged_FromCtrl(unsigned short,QVariant)));
     connect(&timer700ms,SIGNAL(timeout()),SLOT(on_700mstimeout()));
 
-    connect(psend,SIGNAL(commTimerOut(unsigned char)),SLOT(on_CommTimerOut(unsigned char)));
+    connect(pcomm,SIGNAL(commTimerOut(unsigned char)),SLOT(on_CommTimerOut(unsigned char)));
     timer700ms.setInterval(1000);
     timer700ms.setSingleShot(FALSE);  
 }
@@ -48,7 +48,7 @@ void QHMIData::on_CommTimerOut(unsigned char code){
 }
 
 int QHMIData::pollSysVersion(){
-    return psend->pollSysVersion(mainboardversion,bagversion);
+    return pcomm->pollSysVersion(mainboardversion,bagversion);
 }
 
 QString QHMIData::mainboardVersion(){
@@ -74,7 +74,7 @@ QString QHMIData::fetchAlarm(){
 }
 
 void QHMIData::clearAlarm(){
-    psend->ClearError();
+    pcomm->ClearError();
 }
 
 void QHMIData::On_DataChanged_FromHMI(unsigned short index,QVariant Val){
@@ -84,27 +84,27 @@ void QHMIData::On_DataChanged_FromHMI(unsigned short index,QVariant Val){
     switch(index){
     case ZSD :
         temp_uchar = Val.toUInt();
-        qSend.LedTest(temp_uchar);
+        qComm.LedTest(temp_uchar);
         break;
     case YSS:
         temp_uchar = Val.toUInt();
-        qSend.RightMuslin(temp_uchar);
+        qComm.RightMuslin(temp_uchar);
         break;
     case ZSS:
         temp_uchar = Val.toUInt();
-        qSend.LeftMuslin( temp_uchar);
+        qComm.LeftMuslin( temp_uchar);
         break;
     case FZLL:
         temp_short =Val.toUInt();
-        qSend.AssistRollTest((unsigned char)(temp_short>>8),(unsigned char)temp_short);
+        qComm.AssistRollTest((unsigned char)(temp_short>>8),(unsigned char)temp_short);
         break;
     case BJLL:
         temp_long = Val.toUInt();
-        qSend.StepRollTest((unsigned char)(temp_long>>24),(unsigned char)(temp_long>>16),(unsigned char)(temp_long>>8));
+        qComm.StepRollTest((unsigned char)(temp_long>>24),(unsigned char)(temp_long>>16),(unsigned char)(temp_long>>8));
         break;
     case JTDJ:
         temp_long = Val.toUInt();
-        qSend.MainMotorTest((unsigned char)(temp_long>>8),(unsigned char)temp_long);
+        qComm.MainMotorTest((unsigned char)(temp_long>>8),(unsigned char)temp_long);
         break;
     }
 }
@@ -218,7 +218,7 @@ bool QHMIData::isRuning(){
 void QHMIData::RequireData(unsigned short index){
     switch(index){
     case QHMIData::WBSR:
-        psend->readDI();
+        pcomm->readDI();
         break;
     default:
         break;
@@ -262,7 +262,7 @@ int QHMIData::TogSysStat(SysStat stat){
     default:
         break;
     }
-    return psend->TogSysStat(val);
+    return pcomm->TogSysStat(val);
 }
 
 void QHMIData::loadParam(const QString &inifilepath){
@@ -341,7 +341,7 @@ void QHMIData::saveSysCfgFile(){
 }
 
 int QHMIData::sendParamaInRun(){
-    return  psend->sendParamaInRun(clothsetcount,clothfinishcount,
+    return  pcomm->sendParamaInRun(clothsetcount,clothfinishcount,
                                speedlimit,stopperone,
                                alarmlimit,dankoulock);
 }
@@ -349,7 +349,7 @@ int QHMIData::sendParamaInRun(){
 int QHMIData::setSpeedLimit(bool limit,bool send){
     int r=0;
     if(send)
-        r = psend->sendParamaInRun(clothsetcount,clothfinishcount,limit,
+        r = pcomm->sendParamaInRun(clothsetcount,clothfinishcount,limit,
                                  stopperone,alarmlimit,dankoulock);
     if(r==Md::Ok)
         speedlimit = limit;
@@ -360,7 +360,7 @@ int QHMIData::setSpeedLimit(bool limit,bool send){
 int QHMIData::setAlarmLimit(bool limit,bool send){
     int r=0;
     if(send)
-        r = psend->sendParamaInRun(clothsetcount,clothfinishcount,
+        r = pcomm->sendParamaInRun(clothsetcount,clothfinishcount,
                                    speedlimit,stopperone,limit,dankoulock);
     if(Md::Ok==r)
         alarmlimit = limit;
@@ -371,7 +371,7 @@ int QHMIData::setAlarmLimit(bool limit,bool send){
 int QHMIData::setShazuiUp(bool up,bool send){
     int r=0;
     if(send)
-        r = psend->sazuiDownUp(up);
+        r = pcomm->sazuiDownUp(up);
     if(Md::Ok==r)
         shazuiup = up;
     emit shazuiUp(shazuiup);
@@ -381,7 +381,7 @@ int QHMIData::setShazuiUp(bool up,bool send){
 int QHMIData::setStopPerOne(bool stop,bool send){
     int r=0;
     if(send)
-        r = psend->sendParamaInRun(clothsetcount,clothfinishcount,
+        r = pcomm->sendParamaInRun(clothsetcount,clothfinishcount,
                                    speedlimit,stop,alarmlimit,dankoulock);
     if(Md::Ok==r)
         stopperone = stop;
@@ -392,7 +392,7 @@ int QHMIData::setStopPerOne(bool stop,bool send){
 int QHMIData::setLineLock(bool lock,bool send){
     int r=0;
     if(send)
-        r = psend->lineLock(lock);
+        r = pcomm->lineLock(lock);
     if(Md::Ok==r)
         linelock = lock;
     emit lineLock(linelock);
@@ -403,7 +403,7 @@ int QHMIData::setLineLock(bool lock,bool send){
 int QHMIData::setDankouLock(bool lock,bool send){
     int r=0;
     if(send)
-        r = psend->sendParamaInRun(clothsetcount,clothfinishcount,
+        r = pcomm->sendParamaInRun(clothsetcount,clothfinishcount,
                                    speedlimit,stopperone,alarmlimit,lock);    
     if(Md::Ok==r)
         dankoulock = lock;
@@ -432,7 +432,7 @@ int QHMIData::xtGuiling(){
         code = 0x03;
         break;
     }
-    if(psend->TogSysStat(code)==Md::Ok){
+    if(pcomm->TogSysStat(code)==Md::Ok){
         emit xtRunOrGuiling(FALSE);
         xtrunorguiling = FALSE;
     }
@@ -452,7 +452,7 @@ void QHMIData::start(){
             break;
         }
         emit xtRunOrGuiling(TRUE);
-        psend->TogSysStat(code);
+        pcomm->TogSysStat(code);
     }else{
         xtGuiling();
     }
@@ -461,7 +461,7 @@ void QHMIData::start(){
 int QHMIData::setclothSetCount(unsigned short val,bool send){
     int r=0;
     if(send)
-        r = psend->sendParamaInRun(val,clothfinishcount,
+        r = pcomm->sendParamaInRun(val,clothfinishcount,
                                    speedlimit,stopperone,alarmlimit,dankoulock);
     if(Md::Ok==r)
         clothsetcount = val;
@@ -472,7 +472,7 @@ int QHMIData::setclothSetCount(unsigned short val,bool send){
 int QHMIData::setclothFinishCount(unsigned short val,bool send){
     int r=0;
     if(send)
-        r = psend->sendParamaInRun(clothsetcount,val,
+        r = pcomm->sendParamaInRun(clothsetcount,val,
                                    speedlimit,stopperone,alarmlimit,dankoulock);
     if(Md::Ok==r)
         clothfinishcount = val;

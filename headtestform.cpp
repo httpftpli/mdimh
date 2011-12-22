@@ -31,21 +31,21 @@ bool headTestForm::eventFilter(QObject *target, QEvent *event){
         if(static_cast<QMouseEvent *>(event)->button()==Qt::LeftButton){
             int i = str.right(3).left(2).toInt();
             bool temp = qobject_cast<QMdPushButton *>(target)->isChecked();
-            qSend.pinTest(1uLL<<i,((unsigned long long)!temp)<<i);
+            qComm.pinTest(1uLL<<i,((unsigned long long)!temp)<<i);
         }
     }//选针器
     if((str.right(1)=="S")&(event->type()==QEvent::MouseButtonPress)){
         if(static_cast<QMouseEvent *>(event)->button()==Qt::LeftButton){
             int i = str.right(3).left(2).toInt();
             bool temp = qobject_cast<QMdPushButton *>(target)->isChecked();
-            qSend.muslinMagneticTest((unsigned  short)1<<i,((unsigned short)!temp)<<i);
+            qComm.muslinMagneticTest((unsigned  short)1<<i,((unsigned short)!temp)<<i);
         }
     }//纱嘴
     if((str.right(1)=="J")&(event->type()==QEvent::MouseButtonPress)){
         if(static_cast<QMouseEvent *>(event)->button()==Qt::LeftButton){
             int i = str.right(3).left(2).toInt();
             bool temp = qobject_cast<QMdPushButton *>(target)->isChecked();
-            qSend.trigoneMagneticTest(1uL<<i,((unsigned long)!temp)<<i);
+            qComm.trigoneMagneticTest(1uL<<i,((unsigned long)!temp)<<i);
         }
     }//纱嘴
 

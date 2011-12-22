@@ -11,7 +11,7 @@
 
 #define LENOFSPA 0x1000
 
- class QSend;
+ class QComm;
  class QParam;
 
 const QVariant::Type XTCS_DATATYPE[]={
@@ -113,7 +113,7 @@ class QParam : public QObject
     public:
     enum HeadPosDir{BackLeft = 0,BackRight =1,FrontLeft =2,FrontRight =3};
 
-    explicit QParam(QSend *send,QObject *parent = 0);
+    explicit QParam(QComm *send,QObject *parent = 0);
     ~QParam();
     QSharedPointer<QFile> spafile;
     QString spafilepath;
@@ -136,7 +136,7 @@ private:
     short *spabuf;
     QSet<SpaItemHd> modifyedItem;
     unsigned short dumu_bugongzuo[4];
-    QSend *qsend;
+    QComm *pcomm;
     int updata(SpaItemHd hd);
 
 

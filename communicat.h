@@ -42,47 +42,12 @@
 
 #define  htoni(A) ntohi(A)
 
-class QInterComm{
-public:
-    QInterComm():packetrcved(FALSE){
-        pmutex = new QMutex;
-    }
-    ~QInterComm(){
-        delete pmutex;
-    }
-    void WriteAck(bool ackornot);
-    void WriteData(unsigned char funcode,unsigned short ackval1,unsigned short ackval2=0);
-    void WriteData(unsigned char *buf,unsigned char len);
-    void Clear();
-    bool Rcv(bool &isack,unsigned char &funcode,unsigned short &val1);
-    bool Rcv(bool &isack,unsigned char &funcode,unsigned short &val1,unsigned short &val2);
-    bool Rcv(bool &isack, char *buf,unsigned char &len);
-    bool IsAcked();
-    bool IsAcked(unsigned char &funcode,unsigned short &val);
-    bool IsAcked(unsigned short &val);
-    bool IsAcked(unsigned short &val1,unsigned short &val2);
-    bool IsAcked(char *buf ,unsigned char &len);
-private:
-   volatile bool packetrcved;
-   volatile bool isack;
-   volatile unsigned char funcode;
-   volatile unsigned short val,val2;
-   char buf[256];
-   volatile unsigned char len;
-    QMutex *pmutex;
-};
 
 
-
-class QSend :public QObject{
+class QComm :public QThread{
    Q_OBJECT
 public:
-   QSend(QObject *parent = 0);
-   void Send();
-   bool ProgramSend();
-   bool ProgramSend(unsigned short &ackval);
-   bool ProgramSend(char *buf,unsigned char &len);
-   bool __ProgramSend(unsigned short &ackval);
+   QComm(QObject *parent = 0);
    void MainMotorTest(unsigned char direction,unsigned char speedpercent);
    void DumuMotorTest(unsigned char motor,const unsigned char (&coord)[8]);
    void pinTest(unsigned long long pin, unsigned long long  stat);
@@ -96,7 +61,6 @@ public:
    void BedReposition();
    void LeftMuslin(unsigned char force,bool clockwise = TRUE);
    void RightMuslin(unsigned char force,bool clockwise = TRUE);
-   int ShoutDownSystem();
    int ReadAbsoluteNoOfPin(unsigned short &val);
    int ReadEncoder(unsigned short &val);
    int ReadHead();
@@ -112,7 +76,7 @@ public:
    int TogSysStat(unsigned char stat);
    int sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,
                     unsigned char OneStop,unsigned char alarmLimit,unsigned char DanKouLock);
-   int SendFile(QFile &file,unsigned short fileid,bool samehint,QWidget *parent);
+   int SendFile(const QString &filepath,unsigned short fileid,bool samehint,QWidget *parent);
    int SendShazuiKb(const QString &sazfilepath=QString());
    int SendParama(QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
    int paramaUpdata(unsigned char id,unsigned short *buf,int len,bool halfwordorbyte);
@@ -123,71 +87,54 @@ public:
    int checkCustomerId(unsigned short id);
 
 
-
-
-
 private:
+   QMutex mutex1,mutex2;
 #pragma pack(1)
-   unsigned char d_send[532];
+   char d_send[800];
 #pragma pack()
-  // char *p_d_send;
+   bool iswaitforack;
+   bool isacked;
+   bool interruppackrcved;
+   char sendfuncode;
+   char requirefuncode;
+   unsigned char witchsendbuf;
    QElapsedTimer time;
    QUdpSocket udpsocket;
-   unsigned char TIMEROFSEND;
-   long COMMTIMEOUT;
+   static const   unsigned char TIMEROFSEND = 3;
+   static const   long COMMTIMEOUT = 400;
+   QUdpSocket *pudpsocket;
+   QByteArray *rcvrawbuf;    //raw rcvbuf used to recieve ethernet data;
+   char ackbuf[256];
+   unsigned short ackbuflen;
+   char rcvbuf[256];         //used to save communication protocal data;
+   unsigned short rcvbuflen;           //used to save len of the rcvbuf
    void readshorts(QDataStream &stream,unsigned short * buf,int count);
    void readshorts(QDataStream &stream,unsigned char * buf,int count);
+   void acktoctrl(unsigned char fun,unsigned char data); //called by ReadPendingDatagrams ,
+                                                   //run in secondanary thread
+   bool writeackdata(char *buf,unsigned short len);
+   void checkwritercvdata(char *buf,unsigned short len);
+   void beforesend();
+   void terminatesend();
+   void send();
+   bool rcv(unsigned char funcode,unsigned char &val,unsigned short timeout);
+   bool programsend();
+   bool programsend(unsigned char &ackval1);
+   bool programsend(unsigned char &ackval1,unsigned char &ackval2);
+   bool programsend(unsigned char &ackval1,unsigned char &ackval2,
+                    unsigned char &ackval3);
+   bool programsend(char *buf,unsigned short &len);
 signals:
    void commTimerOut(unsigned char funcode);
-   void NotifyRcver(unsigned char fun,bool addordel);
    void CommFail();
-public slots:
-   void TimeOutSend();
-signals:
    void commPercent(int percent);
+   void DataChangedFromCtrl(unsigned short index,QVariant val);
+private slots:
+   void ReadPendingDatagrams(); //derection conneted by run(),run in the run thread
+protected:
+   virtual void run();
 
 };
-
-
-/*class QRcv :public QObject{
-    Q_OBJECT
-public:
-    void Rcv();
-protected:
-    virtual void run();
-public slots:
-    void On_NotifyRcver(unsigned char fun,bool addordel);
-    void ReadPendingDatagrams(); //derection conneted by run(),run in the run thread
-    void Ack(unsigned char fun,unsigned char data);
-private:
-    QUdpSocket *pudpsocket;
-    unsigned char funcode;
-
-signals:
-    void DataChanged(unsigned short index,QVariant val);
-};*/
-
-
-
-class QRcv :public QThread{
-    Q_OBJECT
-public:
-    QRcv():funcode(0){ }
-    void Rcv();
-protected:
-    virtual void run();
-public slots:
-    void On_NotifyRcver(unsigned char fun,bool addordel);
-    void ReadPendingDatagrams(); //derection conneted by run(),run in the run thread
-    void Ack(unsigned char fun,unsigned char data);
-private:
-    QUdpSocket *pudpsocket;
-    unsigned char funcode;
-
-signals:
-    void DataChanged(unsigned short index,QVariant val);
-};
-
 
 #endif
 

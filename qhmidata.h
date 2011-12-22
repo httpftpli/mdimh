@@ -84,8 +84,9 @@ class QHMIData: public QObject{
 
 public:
     enum DATATAG{
-                 GLWC= 0,          //系统归零完成
-                 WBSR,       //外部输入信号
+                 XTDD,           //system power down
+                 GLWC= 0,        //系统归零完成
+                 WBSR,          //外部输入信号
                  ZXHJSQ,
                  ZSD,           //指示灯（输出）
                  BJLL,          //步进罗拉（输出） unsigned char 1:ispersent,unsigned char 0:clockwise unsigned char percent
@@ -131,14 +132,14 @@ public:
 
                  CXBJZSZJTH,   //程序编辑中的沙嘴交/替换0x49
                  CXBJZ_CNT_GB,  //程序编辑中的CNT数据块改变0x4a
-                 DQZDJZT,       //当前主电机状态             
+                 DQZDJZT,       //当前主电机状态
                  GUARDIANS        //枚举类型最后一个，仅用于边界守护
 
              };
     enum SysStat{SysIdle,SysRun,SysTest,SysReset,SysInParam};
 
     int dataBuf[GUARDIANS];
-    QHMIData(QParam *param,QSend *send,QRcv *rcv,QObject *parent = 0);
+    QHMIData(QParam *param,QComm *send,QObject *parent = 0);
 
     bool patternVailable;
     unsigned short customerId;
@@ -163,7 +164,7 @@ public:
     int totalStopTime;
     int currentStopTime;
     int commResult;
-    QSend *psend;
+    QComm *pcomm;
     bool isInBoot;
     bool isRuning();
     void loadParam(const QString &inifilepath);
@@ -243,7 +244,6 @@ private:
     int timeid1s;
     bool isinitfinish;
     QTimer timer700ms;
-    QRcv *prcv;
     QParam *pparam;
     bool speedlimit;
     bool stopperone;

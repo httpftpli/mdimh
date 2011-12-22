@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     a.setMouseClickSound("resource/sound/click.wav");
     MainWindow w;
-    qRcv.start();
+    qComm.start();
     Md::Result r= sysInit();
     if(r!=Md::Ok){
         QMdMessageBox box;

@@ -2,7 +2,6 @@
 #include "main.h"
 #include "qhmidata.h"
 #include "communicat.h"
-#include <QMutex>
 #include "qparam.h"
 #include "pattern.h"
 #include "qmdmessagebox.h"
@@ -12,19 +11,15 @@
 #include <QFileDialog>
 #include <QTest>
 
-QSend qSend;
-QRcv  qRcv;
-QMutex mutex;
-QPatternData patternData(&qSend);
-QParam paramaData(&qSend);
-QHMIData hmiData(&paramaData,&qSend,&qRcv);
+QComm qComm;
+QPatternData patternData(&qComm);
+QParam paramaData(&qComm);
+QHMIData hmiData(&paramaData,&qComm);
 QSysLog sysLog;
 QProgressIndicator *ProgressIndiForm;
 
 
 Md::Result sysInit(){
-    QObject::connect(&qSend,SIGNAL(NotifyRcver(unsigned char,bool)),&qRcv,
-                     SLOT(On_NotifyRcver(unsigned char,bool)));
     QObject::connect(&hmiData,SIGNAL(hmi_finishCount(int)),&hmiData,
                      SLOT(on_clothFinish()));
     QObject::connect(&paramaData,SIGNAL(changed()),&hmiData,SLOT(onParamChanged()));
@@ -66,7 +61,7 @@ Md::Result sysInit(){
     paramaData.setFile(hmiData.spaFilePath);
     int commResult;
     /////poll valible rom////////////////
-    commResult  = qSend.IsInBoot();
+    commResult  = qComm.IsInBoot();
     if(commResult & Md::InBootState){
         box.setText(QObject::tr("初始化"));
         box.setIcon(QMessageBox::Question);
@@ -78,7 +73,7 @@ Md::Result sysInit(){
                    QObject::tr("打开文件"),QString("./rom"),QObject::tr("固件文件 (*.bin *.min)"));
             if(filename!=""){
                 QFile file(filename);
-                commResult = qSend.SendBin(file,splash);
+                commResult = qComm.SendBin(file,splash);
                 if(commResult == Md::Ok){
                     box.setText(QObject::tr("下载固件"));
                     box.setInformativeText(QObject::tr("下载成功"));
@@ -119,7 +114,7 @@ Md::Result sysInit(){
     }
 
     //////togle system/////////////////
-    commResult = qSend.TogSysStat(QHMIData::SysInParam);
+    commResult = qComm.TogSysStat(QHMIData::SysInParam);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("通讯错误,花型文件未成功下载"),Qt::AlignBottom);
         QTest::qWait(2000);
@@ -129,7 +124,7 @@ Md::Result sysInit(){
     splash->showMessage(QObject::tr("正在下载参数"),Qt::AlignBottom);
     QFile wrkfile(hmiData.wrkFilePath);
     QFile spafile(hmiData.spaFilePath);
-    commResult = qSend.SendParama(wrkfile,spafile,0xff);
+    commResult = qComm.SendParama(wrkfile,spafile,0xff);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("通讯错误,参数未成功下载"),Qt::AlignBottom);
         return Md::CommError;
@@ -142,29 +137,27 @@ Md::Result sysInit(){
         return Md::CommError;;
     }
     ///////下载cnt文件///////////////////////////////////
-    QObject::connect(&qSend,SIGNAL(commPercent(int)),splash,SLOT(showCntMessage(int)));
-    QFile cntfile(hmiData.cntFilePath);
-    commResult = qSend.SendFile(cntfile,0,TRUE,NULL);
+    QObject::connect(&qComm,SIGNAL(commPercent(int)),splash,SLOT(showCntMessage(int)),Qt::QueuedConnection);
+    commResult = qComm.SendFile(hmiData.cntFilePath,0,TRUE,NULL);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("下载CNT文件，通讯错误"),Qt::AlignBottom);
         QTest::qWait(2000);
         return Md::CommError;;
     }
-    QObject::disconnect(&qSend,SIGNAL(commPercent(int)),splash,SLOT(showCntMessage(int)));
-    QObject::connect(&qSend,SIGNAL(commPercent(int)),splash,SLOT(showPatMessage(int)));
-    QFile patfile(hmiData.patFilePath);
-    commResult = qSend.SendFile(patfile,0,TRUE,NULL);
+    QObject::disconnect(&qComm,SIGNAL(commPercent(int)),splash,SLOT(showCntMessage(int)));
+    QObject::connect(&qComm,SIGNAL(commPercent(int)),splash,SLOT(showPatMessage(int)),Qt::QueuedConnection);
+    commResult = qComm.SendFile(hmiData.patFilePath,0,TRUE,NULL);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("下载PAT文件，通讯错误"),Qt::AlignBottom);
         QTest::qWait(2000);
         return Md::CommError;
     }
-    QObject::disconnect(&qSend,SIGNAL(commPercent(int)),splash,SLOT(showPatMessage(int)));
+    QObject::disconnect(&qComm,SIGNAL(commPercent(int)),splash,SLOT(showPatMessage(int)));
 
     //等待下位机响应/////////////////////////////////
     int i=0;
     for(i=0;i<3;i++) {
-        commResult = qSend.TogSysStat(QHMIData::SysInParam);
+        commResult = qComm.TogSysStat(QHMIData::SysInParam);
         if(commResult==Md::Ok)
             break;
     }
@@ -181,7 +174,7 @@ Md::Result sysInit(){
         return Md::CommError;
     }
     if(hmiData.customerId!=0xffff){
-        commResult = qSend.checkCustomerId(hmiData.customerId);
+        commResult = qComm.checkCustomerId(hmiData.customerId);
         if(commResult==Md::CommError){
             splash->showMessage(QObject::tr("通讯错误,查询厂商ID失败"),Qt::AlignBottom);
             QTest::qWait(2000);

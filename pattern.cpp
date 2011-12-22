@@ -6,11 +6,11 @@
 #include "qparam.h"
 #include <QDir>
 
-QPatternData::QPatternData(QSend *s,QObject *parent):QObject(parent),
+QPatternData::QPatternData(QComm *s,QObject *parent):QObject(parent),
                             shaZuiKb(0),cntbuf(NULL),
                             patfile(NULL), wrkfile(NULL),
                             cntfile(NULL),patbuf(NULL),dumu_history(24),
-                            shazuiused_r(0),shazuiused_l(0),qsend(s){
+                            shazuiused_r(0),shazuiused_l(0),pcomm(s){
 
 }
 
@@ -245,12 +245,12 @@ int QPatternData::wrk_updata(WrkItemHd hd){
     case WrkItemHd_RightSongSa:
     case WrkItemHd_CJP_FanZen:
     case WrkItemHd_CJP_BianZi:
-        return qsend->paramaUpdata(wrkdsp.runsendid,wrkbuf+wrkdsp.addr,wrkdsp.len,TRUE);
+        return pcomm->paramaUpdata(wrkdsp.runsendid,wrkbuf+wrkdsp.addr,wrkdsp.len,TRUE);
         break;
     case WrkItemHd_PzkSaZui:
     case WrkItemHd_YTXTingFang:
     case WrkItemHd_YTXXiuZen:
-        return qsend->paramaUpdata(wrkdsp.runsendid,wrkbuf+wrkdsp.addr,wrkdsp.len,FALSE);
+        return pcomm->paramaUpdata(wrkdsp.runsendid,wrkbuf+wrkdsp.addr,wrkdsp.len,FALSE);
         break;
     case WrkItemHd_ZanKaiPianSu:
     case WrkItemHd_QiZenDian:{
@@ -264,7 +264,7 @@ int QPatternData::wrk_updata(WrkItemHd hd){
             }
             buf[qizendiandsp.offsetinbag] = wrkbuf[qizendiandsp.addr];
             buf[ZanKaiPianSudsp.offsetinbag] = wrkbuf[ZanKaiPianSudsp.addr];
-            return qsend->paramaUpdata(qizendiandsp.runsendid,buf,spadsp.len,TRUE);
+            return pcomm->paramaUpdata(qizendiandsp.runsendid,buf,spadsp.len,TRUE);
             break;
         }
     }
@@ -371,7 +371,7 @@ int QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag){
                 patfile->seek((row+1)*c);
                 patfile->write((char *)&(patbuf[row*c]),c);
                 if(downloadflag&Md::HAVEPAT){
-                     r = qSend.patUpdate(row+1,&patbuf[c*row],c); //download to mainboard
+                     r = qComm.patUpdate(row+1,&patbuf[c*row],c); //download to mainboard
                      if(r!=Md::Ok)
                          break;
                 }
@@ -421,7 +421,7 @@ int QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag){
                 cntfile->seek((row+1)*128);
                 cntfile->write((char *)&(cntbuf[row*128]),128);
                 if(downloadflag&Md::HAVECNT){
-                     r = qSend.cntUpdate(row+1,&cntbuf[128*row]); //download to mainboard
+                     r = qComm.cntUpdate(row+1,&cntbuf[128*row]); //download to mainboard
                      if(r!=Md::Ok)
                          break;
                 }
@@ -440,7 +440,7 @@ int QPatternData::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag){
 }
 
 int QPatternData::sendShazuiKb(){
-    return qsend->SendShazuiKb(sazFilePath);
+    return pcomm->SendShazuiKb(sazFilePath);
 }
 
 short QPatternData::wrk_fechData(WrkItemHd handle,int offset){

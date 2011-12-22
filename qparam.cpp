@@ -8,8 +8,8 @@
 
 
 
-QParam::QParam(QSend *send, QObject *parent):
-    QObject(parent),spabuf(NULL),qsend(send)
+QParam::QParam(QComm *send, QObject *parent):
+    QObject(parent),spabuf(NULL),pcomm(send)
 {
 
 }
@@ -122,9 +122,9 @@ int QParam::updata(SpaItemHd hd){
         const WrkItemDsp ZanKaiPianSudsp =wrkItemDsp[WrkItemHd_ZanKaiPianSu] ;
         buf[qizendiandsp.offsetinbag] = patternData.wrkbuf[qizendiandsp.addr];
         buf[ZanKaiPianSudsp.offsetinbag] = patternData.wrkbuf[ZanKaiPianSudsp.addr];
-        return qsend->paramaUpdata(qizendiandsp.runsendid,buf,dsp.len,TRUE);
+        return pcomm->paramaUpdata(qizendiandsp.runsendid,buf,dsp.len,TRUE);
     }else{
-        return qsend->paramaUpdata(dsp.runsendid,(unsigned short *)(spabuf+dsp.addr),dsp.len,TRUE);
+        return pcomm->paramaUpdata(dsp.runsendid,(unsigned short *)(spabuf+dsp.addr),dsp.len,TRUE);
     }
 }
 
@@ -132,7 +132,7 @@ int QParam::updataPivotal(){
     unsigned char yiyincunzs =(unsigned char) fechData(SpaItemHd_Xtcs,7);
     unsigned short chijvjiaozeng = fechData(SpaItemHd_Xtcs,11);
     unsigned short hengjizhenshu = fechData(SpaItemHd_Xtcs,12);
-    return qsend->paramaUpdata(yiyincunzs,chijvjiaozeng,hengjizhenshu);
+    return pcomm->paramaUpdata(yiyincunzs,chijvjiaozeng,hengjizhenshu);
 }
 
 int QParam::save(bool isdownload){

@@ -165,7 +165,7 @@ public:
 
 
     Q_DECLARE_FLAGS(FileStateFlag, FileState)
-    QPatternData(QSend *s,QObject *parent=0);
+    QPatternData(QComm *s,QObject *parent=0);
     ~QPatternData();
     Result setFile(const QString &cntfilepath,const QString &patfilepath, const QString &wrkfilepath,Md::HAVEFILEFLAG openflag=Md::HAVENO);
     Md::HAVEFILEFLAG loadFile(Md::HAVEFILEFLAG flag=Md::HAVEALL);
@@ -248,7 +248,7 @@ signals:
     void wrkDirty(bool val);
 private:
     unsigned char dumu_history;
-    QSend *qsend;
+    QComm *pcomm;
     unsigned char *cntbuf;    //用于载入整个CNT文件
 
     int _azl(unsigned char data);

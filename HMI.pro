@@ -31,8 +31,6 @@ SOURCES += main.cpp\
     syslogform.cpp \
     updateromform.cpp \
     pattern.cpp \
-    inputpanel.cpp \
-    qmdinputcontext.cpp \
     mdtableview/qmdtableview.cpp \
     calibrationtestwidget.cpp \
     calibration.cpp \
@@ -77,8 +75,6 @@ HEADERS  += \
     updateromform.h \
     pattern.h \
     namespace.h \
-    inputpanel.h \
-    qmdinputcontext.h \
     mdtableview/qmdtableview.h \
     calibrationtestwidget.h \
     calibration.h \

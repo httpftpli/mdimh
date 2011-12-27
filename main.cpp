@@ -7,7 +7,6 @@
 #include "data.h"
 #include "globaldata.h"
 #include "QFont"
-#include "qmdinputcontext.h"
 #include "qmdmessagebox.h"
 #include "qmdapplication.h"
 #include "qhmidata.h"
@@ -22,18 +21,12 @@ int main(int argc, char *argv[])
 #ifdef  Q_WS_X11
     QApplication::setStyle("plastique");
 #endif
-#ifdef  Q_WS_QWS
-    QMdInputContext inputcontext;
-    a.setInputContext(&inputcontext);
-    QWSServer::setCursorVisible(FALSE);
-#endif
     QTextCodec *textcode = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForCStrings(textcode);
     QTextCodec::setCodecForTr(textcode);
     QTextCodec::setCodecForLocale(textcode);
     QTextCodec::setCodecForCStrings(textcode);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
-    a.setMouseClickSound("resource/sound/click.wav");
     MainWindow w;
     qComm.start();
     Md::Result r= sysInit();
@@ -48,9 +41,6 @@ int main(int argc, char *argv[])
     AlarmForm alarmform(&hmiData);
     if(r==Md::Ok)
         hmiData.start();
-#ifdef  Q_WS_QWS
-    a.setscreenprodelay(30);
-#endif
     return a.exec();
 }
 

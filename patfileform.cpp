@@ -2,8 +2,6 @@
 #include "data.h"
 #include "globaldata.h"
 #include <QKeyEvent>
-#include <QInputContext>
-#include "qmdinputcontext.h"
 #include <QApplication>
 #include "qmdmessagebox.h"
 

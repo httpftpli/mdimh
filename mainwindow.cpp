@@ -205,8 +205,14 @@ void MainWindow::on_qMdPushButton_13_clicked()
 
 void MainWindow::on_qMdPushButton_4_clicked()
 {
-    headTestForm *headtestForm = new headTestForm;
+    headTestForm *headtestForm = new headTestForm(&qComm);
     headtestForm->show();
+    if(qComm.TogSysStat(0x02)==Md::Ok)
+        headtestForm->prepareToComm();
+    else{
+        QMdMessageBox box;
+        box.exec("测试模式","进入测试模式失败",QMessageBox::Warning,QMessageBox::Ok,QMessageBox::Ok);
+    }
 }
 
 void MainWindow::on_qMdPushButton_15_clicked()

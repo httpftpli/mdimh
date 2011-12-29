@@ -277,41 +277,107 @@ void  QComm::MainMotorTest(unsigned char direction,unsigned char speedpercent){
 }
 
 
-
-void QComm::DumuMotorTest(unsigned char motor,const unsigned char (&coord)[8]){
+bool QComm::DumuMotorTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,
+                   Md::POSFLAG_LFETRIGHT motor,unsigned short dumu){
+    unsigned char m = 0xff;
+    if(!(sys&Md::SYSTEM1))
+        m = m & 0xf0;
+    if(!(sys&Md::SYSTEM2))
+        m = m & 0x0f;
+    if(!(fr&Md::POSFRONT))
+        m = m & 0xcc;
+    if(!(fr&Md::POSREAR))
+        m = m & 0x33;
+    if(!(motor&Md::POSLEFT))
+        m = m & 0xaa;
+    if(!(motor&Md::POSRIGHT))
+        m = m & 0x55;
     *(unsigned short *)d_send = htons(23);       //len
     *(unsigned char *)(d_send+2) = (0x10);      //fun code
-    *(unsigned char *)(d_send+3) = (motor);
-    memcpy(d_send+4,coord,16);
-    unsigned char r;
-    programsend(r);
+    *(unsigned char *)(d_send+3) = m;
+    unsigned short val[8];
+    for(int i=0;i<8;i++){
+        val[i] = htons(dumu);
+    }
+    memcpy(d_send+4,val,16);
+    return programsend();
 }
 
-void QComm::pinTest( unsigned long long pin, unsigned long long  stat){
+bool QComm::DumuMotorTest(unsigned char motor,unsigned short val){
+    *(unsigned short *)d_send = htons(23);       //len
+    *(unsigned char *)(d_send+2) = (0x10);      //fun code
+    *(unsigned char *)(d_send+3) = motor;
+    for(int i=0;i<8;i++){
+        *(unsigned short *)(d_send+4+2*i) = htons(val);
+    }
+    return programsend();
+}
+
+bool QComm::pinTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,Md::POSFLAG_LFETRIGHT lf,
+             unsigned char pin,unsigned char val){
+    unsigned int pins = pin;
+    unsigned int pinss = pins+(pins<<8)+(pins<<16)+(pins<<24);
+    if(!(fr&Md::POSREAR))
+        pinss = pinss & 0x0000ffff;
+    if(!(fr&Md::POSFRONT))
+        pinss = pinss & 0xffff0000;
+    if(!(lf&Md::POSLEFT))
+        pinss = pinss & 0xff00ff00;
+    if(!(lf&Md::POSRIGHT))
+        pinss = pinss & 0x00ff00ff;
+    unsigned long long buf = 0;
+    if(sys&Md::SYSTEM1)
+        buf = pinss;
+    if(sys&Md::SYSTEM2)
+        buf = pinss+(long long)pinss<<32;
+
     *(unsigned short *)d_send = htons(22);       //len
     *(unsigned char *)(d_send+2) = (0x11);      //fun code
-    *(unsigned long long *)(d_send+3) = pin;
-    *(unsigned long long *)(d_send+11) = stat;
-    unsigned char r;
-    programsend(r);
+    *(unsigned long long *)(d_send+3) = buf;
+    *(unsigned long long *)(d_send+11) = (val==0)?0:0xffffffffffffffff;
+    return programsend();
 }
 
-void QComm::muslinMagneticTest(unsigned short muslinMag,unsigned short stat){
+bool QComm::shazuiTest(Md::SYSTEMFLAG sys,unsigned char shazui,unsigned char stat){
+    unsigned short shazuis = (unsigned short)shazui<<12+shazui;
+    if(!(sys&Md::SYSTEM1))
+        shazuis = shazuis & 0xff00;
+    if(!(sys&Md::SYSTEM2))
+        shazuis = shazuis & 0x00ff;
+
     *(unsigned short *)d_send = htons(10);       //len
     *(unsigned char *)(d_send+2) = (0x12);      //fun code
-    *(unsigned short  *)(d_send+3) = muslinMag;
-    *(unsigned short  *)(d_send+5) = stat;
-    unsigned char r;
-    programsend(r);
+    *(unsigned short  *)(d_send+3) = shazuis;
+    *(unsigned short  *)(d_send+5) = (stat==0)?0:0xffff;
+    return programsend();
 }
 
-void QComm::trigoneMagneticTest(unsigned long trigoneMag,unsigned long stat){
+bool QComm::shazuiTest(unsigned short shazui,unsigned char stat){
+    *(unsigned short *)d_send = htons(10);       //len
+    *(unsigned char *)(d_send+2) = (0x12);      //fun code
+    *(unsigned short  *)(d_send+3) = shazui;
+    *(unsigned short  *)(d_send+5) = (stat==0)?0:0xffff;
+    return programsend();
+}
+
+bool QComm::sanjiaoMagneticTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,
+                                unsigned char magnet,
+                                unsigned long stat){
+    unsigned long magnets = (unsigned long)magnet;
+    unsigned long magnetss = magnets<<24+magnets<<16+magnets<<8+magnets;
+    if(!(sys&Md::SYSTEM1))
+        magnetss = magnetss & 0xffff0000;
+    if(!(sys&Md::SYSTEM2))
+        magnetss = magnetss & 0x0000ffff;
+    if(!(fr&Md::POSREAR))
+        magnetss = magnetss & 0x00ff00ff;
+    if(!(fr&Md::POSREAR))
+        magnetss = magnetss & 0xff00ff00;
     *(unsigned short *)d_send = htons(14);       //len
     *(unsigned char *)(d_send+2) = (0x13);      //fun code
-    *(unsigned long  *)(d_send+3) = trigoneMag;
-    *(unsigned long  *)(d_send+7) = stat;
-    unsigned char r;
-    programsend(r);
+    *(unsigned long  *)(d_send+3) = magnetss;
+    *(unsigned long  *)(d_send+7) = (stat=0)?0:0xfffffffff;
+    return programsend();
 }
 
 int QComm::sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,

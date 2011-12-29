@@ -49,10 +49,15 @@ class QComm :public QThread{
 public:
    QComm(QObject *parent = 0);
    void MainMotorTest(unsigned char direction,unsigned char speedpercent);
-   void DumuMotorTest(unsigned char motor,const unsigned char (&coord)[8]);
-   void pinTest(unsigned long long pin, unsigned long long  stat);
-   void muslinMagneticTest(unsigned short muslinMag,unsigned short stat);
-   void trigoneMagneticTest(unsigned long trigoneMag,unsigned long stat);
+   bool DumuMotorTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,
+                      Md::POSFLAG_LFETRIGHT motor,unsigned short val);
+   bool DumuMotorTest(unsigned char motor, unsigned short val);
+   bool pinTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,Md::POSFLAG_LFETRIGHT lf,
+                unsigned char pin,unsigned char val);
+   bool shazuiTest(Md::SYSTEMFLAG sys,unsigned char shazui, unsigned char stat);
+   bool shazuiTest(unsigned short shazui, unsigned char stat);
+   bool sanjiaoMagneticTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr, unsigned char magnet,
+                            unsigned long stat);
    void bedMotorTest(unsigned char flag,unsigned short pos,unsigned short param);
    void StepRollTest(unsigned char flag,unsigned char derection,unsigned char rollpercent);
    void AssistRollTest(unsigned char derection,unsigned char rollpercent);

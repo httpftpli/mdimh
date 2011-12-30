@@ -86,22 +86,9 @@ public:
     enum DATATAG{
                  XTDD,           //system power down
                  GLWC= 0,        //系统归零完成
-                 WBSR,          //外部输入信号
                  ZXHJSQ,
-                 ZSD,           //指示灯（输出）
-                 BJLL,          //步进罗拉（输出） unsigned char 1:ispersent,unsigned char 0:clockwise unsigned char percent
-                 FZLL,          //辅助罗拉（输出）
-                 ZSS,           //左送纱（输出）
-                 YSS,           //右送纱（输出）
-                 JTDJ,           //机头电机（输出）
-                 YC,            //摇床（输出）
-                 QZDUDJ,        //前左度目电机（输出）
-                 QYDUDJ,        //前右度目电机（输出）
-                 HZDUDJ,        //后左度目电机（输出）
-                 HYDUDJ,        //后右度目电机（输出）
-                 XZQ,           //选针器（输出）
-                 SJDCT,         //三角电磁铁（输出）
 
+                 YC,            //摇床（输出）
                  RUN_LOOP_TOTAL,
                  RUN_LOOP_LEFT,
                  RUN_LOOP_STARTNO,
@@ -198,8 +185,6 @@ public:
     int TogSysStat(SysStat stat);
 
 public slots:
-    void RequireData(unsigned short index);
-    void On_DataChanged_FromHMI(unsigned short index,QVariant Val);
     void On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val);
     void on_patternChange( const QString &patternname, const  QString &cntfilepath, const QString &patfilepath,
                           const  QString &wrkfilepath , const QString &sazfilepath);

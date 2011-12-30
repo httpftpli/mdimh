@@ -6,7 +6,8 @@
 #include<QTest>
 
 headTestForm::headTestForm(QComm *com,QWidget *parent) :
-    QWidget(parent),qcom(com),inautotesting(FALSE){
+    QWidget(parent),pcom(com),inautotesting(FALSE),
+    timereventrecursion(FALSE){
     setupUi(this);
 
     //////////////////////////////////////
@@ -14,14 +15,19 @@ headTestForm::headTestForm(QComm *com,QWidget *parent) :
     QWidget *widget = new QWidget(this);
     widget->setFixedSize(620,600);
     QGridLayout *layout = new QGridLayout(widget);
-    head0 = new FormHeadTest(qcom,Md::SYSTEM1,Md::POSFRONT);
-    head1 = new FormHeadTest(qcom,Md::SYSTEM1,Md::POSREAR);
-    head2 = new FormHeadTest(qcom,Md::SYSTEM2,Md::POSFRONT);
-    head3= new FormHeadTest(qcom,Md::SYSTEM2,Md::POSREAR);
+    head0 = new FormHeadTest(pcom,Md::SYSTEM1,Md::POSFRONT);
+    head1 = new FormHeadTest(pcom,Md::SYSTEM1,Md::POSREAR);
+    head2 = new FormHeadTest(pcom,Md::SYSTEM2,Md::POSFRONT);
+    head3= new FormHeadTest(pcom,Md::SYSTEM2,Md::POSREAR);
     layout->addWidget(head1,0,0);
     layout->addWidget(head3,0,1);
     layout->addWidget(head0,1,0);
     layout->addWidget(head2,1,1);
+
+    head[0]=head0;
+    head[1]=head1;
+    head[2]=head2;
+    head[3]=head3;
 
     shazuibuttonarray[0] = pushButton_s00;
     shazuibuttonarray[1] = pushButton_s01;
@@ -51,10 +57,10 @@ headTestForm::headTestForm(QComm *com,QWidget *parent) :
     }
 
     connect(&signalmap,SIGNAL(mapped(int)),SLOT(shazuitest(int)));
-    connect(head0,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
-    connect(head1,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
-    connect(head2,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
-    connect(head3,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
+    //connect(head0,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
+    //connect(head1,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
+    //connect(head2,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
+    //connect(head3,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
     //////////////////////////////////////
 }
 
@@ -68,7 +74,11 @@ void headTestForm::prepareToComm()
         connect(shazuibuttonarray[i],SIGNAL(clicked()),&signalmap,SLOT(map()));
     }
     connect(pushButton_sauto,SIGNAL(clicked()),SLOT(shazuitestauto()));
+    connect(pushButton_pauto,SIGNAL(clicked()),SLOT(pinautotest()));
+    connect(pushButton_dauto,SIGNAL(clicked()),SLOT(dumutestauto()));
+    connect(pushButton_sjauto,SIGNAL(clicked()),SLOT(sanjiaotestauto()));
     connect(pushButton_autotest,SIGNAL(clicked()),SLOT(autotest()));
+    timerid = startTimer(800);
 }
 
 void headTestForm::shazuitest(int shazui)
@@ -78,8 +88,6 @@ void headTestForm::shazuitest(int shazui)
 
 
 void headTestForm::shazuitestauto(){
-    inautotesting = TRUE;
-    setDisabled(TRUE);
 #ifdef DUAL_SYSTEM
     const int NUM = 16;
 #else
@@ -87,26 +95,23 @@ void headTestForm::shazuitestauto(){
 #endif
     for(int i=0;i<NUM;i++){
         pcom->shazuiTest(1<<i,1);
-        QTest::qWait(500);
+        QTest::qWait(200);
     }
     for(int i=0;i<NUM;i++){
         pcom->shazuiTest(1<<i,0);
-        QTest::qWait(500);
+        QTest::qWait(200);
     }
-    inautotesting = FALSE;
-    setDisabled(FALSE);
 }
 
 void headTestForm::dumutestauto()
 {
-    inautotesting = TRUE;
-    setDisabled(TRUE);
-    if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,1)==FALSE)
+
+    if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,500)==FALSE)
         return
-    QTest::qWait(500);
+    QTest::qWait(200);
     if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,0)==FALSE)
         return
-    QTest::qWait(500);
+    QTest::qWait(200);
 #ifdef DUAL_SYSTEM
     const int NUM = 16;
 #else
@@ -115,43 +120,109 @@ void headTestForm::dumutestauto()
     for(int i=0;i<NUM;i++){
       if(pcom->DumuMotorTest(1<<i,500)==FALSE)
           break;
-      QTest::qWait(500);
+      QTest::qWait(200);
       if(pcom->DumuMotorTest(1<<i,0)==FALSE)
           break;
-      QTest::qWait(500);
+      QTest::qWait(200);
     }
-    inautotesting = FALSE;
-    setDisabled(FALSE);
+}
+
+void headTestForm::sanjiaotestauto()
+{
+    pcom->sanjiaoMagneticTest(0xffffffff,0);
+    QTest::qWait(100);
+    pcom->sanjiaoMagneticTest(0xffffffff,1);
+    QTest::qWait(100);
+    pcom->sanjiaoMagneticTest(0xffffffff,0);
+    QTest::qWait(100);
+    pcom->sanjiaoMagneticTest(0xffffffff,1);
+    QTest::qWait(100);
+    for(int i=0;i<6;i++){
+       pcom->sanjiaoMagneticTest(1<<i,0);
+       QTest::qWait(100);
+    }
+    for(int i=0;i<6;i++){
+       pcom->sanjiaoMagneticTest(0x100<<i,0);
+       QTest::qWait(100);
+    }
+#if DUAL_SYSTEM
+    for(int i=0;i<6;i++){
+       pcom->sanjiaoMagneticTest(0x10000<<i,0);
+       QTest::qWait(100);
+    }
+    for(int i=0;i<6;i++){
+       pcom->sanjiaoMagneticTest(0x1000000<<i,0);
+       QTest::qWait(100);
+    }
+#endif
+    for(int i=0;i<6;i++){
+       pcom->sanjiaoMagneticTest(1<<i,1);
+       QTest::qWait(100);
+    }
+    for(int i=0;i<6;i++){
+       pcom->sanjiaoMagneticTest(0x100<<i,1);
+       QTest::qWait(100);
+    }
+
+#if DUAL_SYSTEM
+    for(int i=0;i<6;i++){
+       pcom->sanjiaoMagneticTest(0x10000<<i,1);
+       QTest::qWait(100);
+    }
+    for(int i=0;i<6;i++){
+       pcom->sanjiaoMagneticTest(0x1000000<<i,1);
+       QTest::qWait(100);
+    }
+#endif
+}
+
+void headTestForm::pinautotest()
+{
+    pcom->pinTest(0xffffffffffffffff,0);
+    QTest::qWait(100);
+    pcom->pinTest(0xffffffffffffffff,1);
+    QTest::qWait(100);
+    pcom->pinTest(0xffffffffffffffff,0);
+    QTest::qWait(100);
+    pcom->pinTest(0xffffffffffffffff,1);
+    QTest::qWait(100);
+    for(int i=0;i<64;i++){
+       pcom->pinTest((unsigned long long)1<<i,0);
+       QTest::qWait(100);
+    }
+    for(int i=0;i<64;i++){
+       pcom->pinTest((unsigned long long)1<<i,1);
+       QTest::qWait(100);
+    }
 }
 
 void headTestForm::autotest()
 {
-    inautotesting = TRUE;
-    setDisabled(TRUE);
+
     /////////dumu test////////////////////////////////////////////
     if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,1)==FALSE)
         return
-    QTest::qWait(500);
+    QTest::qWait(200);
     if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,0)==FALSE)
         return
-    QTest::qWait(500);
+    QTest::qWait(200);
 #ifdef DUAL_SYSTEM
     const int NUM = 16;
 #else
     const int NUM = 8;
 #endif
     for(int i=0;i<NUM;i++){
-      if(pcom->DumuMotorTest(1<<i,500)==FALSE)
+      if(pcom->DumuMotorTest(1<<i,200)==FALSE)
           break;
-      QTest::qWait(500);
+      QTest::qWait(200);
       if(pcom->DumuMotorTest(1<<i,0)==FALSE)
           break;
-      QTest::qWait(500);
+      QTest::qWait(200);
     }
-     /////////dumu test finish///////////////////////////////////////////
-    inautotesting = TRUE;
-    setDisabled(FALSE);
-
+    /////////dumu test finish///////////////////////////////////////////
+    pinautotest();
+    shazuitestauto();
+    sanjiaotestauto();
 }
 
 
@@ -159,4 +230,60 @@ void headTestForm::on_pushButton_cancle_clicked()
 {
     hide();
     deleteLater();
+}
+
+void headTestForm::setshazuival(unsigned short val)
+{
+    unsigned char shazuival1 = val & 0xff;
+    for(int i=0;i,8;i++){
+        shazuibuttonarray[i]->setChecked(shazuival1&(1<<i));
+    }
+#if DUAL_SYSTEM
+    unsigned char shazuival2 = (val & 0xff00)>>8;
+    for(int i=0;i,8;i++){
+        shazuibuttonarray[i+8]->setChecked(shazuival2&(1<<i));
+    }
+#endif
+}
+
+void headTestForm::timerEvent(QTimerEvent *e)
+{
+    //because of possible recursion call ,avoid from
+    // stack overflow, add bool field "timereventrecursion"
+    //to avod recursion call
+    if(timereventrecursion)
+        return;
+    timereventrecursion = TRUE;
+
+    if(e->timerId()==timerid){
+        char buf[100];
+        unsigned short len;
+        if(pcom->ReadHead(buf,len)!=Md::Ok){
+            timereventrecursion = FALSE;
+            return;
+        }
+
+       ///////////head///////////////////
+#if DUAL_SYSTEM
+        const unsigned char NUM=4;
+#else
+        const unsigned char NUM=2;
+#endif
+        for(int i=0;i<NUM;i++){
+            unsigned char dumuprobe = buf[0]&(0x03<<i);
+            unsigned char sanjiao = buf[1+i];
+            unsigned char lpin = buf[7+2*i];
+            unsigned char rpin = buf[8+2*i];
+            unsigned short ldumuval = *(unsigned short*)(buf+15+4*i);
+            unsigned short rdumuval = *(unsigned short*)(buf+15+4*i);
+            head[i]->setHeadData(dumuprobe,sanjiao,lpin,rpin,ldumuval,rdumuval);
+        }
+        /////////shazui////////////////
+        unsigned short shazui = buf[5]+(buf[6]<<8);
+        setshazuival(shazui);
+        /////////yajiao///////////////
+
+    }
+
+    timereventrecursion = FALSE;
 }

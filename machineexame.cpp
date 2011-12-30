@@ -4,10 +4,13 @@
 #include "qhmidata.h"
 #include "qmdstyle.h"
 #include "qmdmessagebox.h"
+#include "communicat.h"
+#include "mdLabel/qmdlabel.h"
 
 
-machineexame::machineexame(QWidget *parent) :
-    QWidget(parent),timercount(0){
+machineexame::machineexame(QComm *comm, QWidget *parent) :
+    QWidget(parent),timercount(0),timereventrecursion(FALSE),
+    pcomm(comm){
     setupUi(this);
 
 
@@ -21,6 +24,41 @@ machineexame::machineexame(QWidget *parent) :
     spinBox_5->setRange(1,100);
     spinBox_6->setPrefix("%");
     spinBox_6->setRange(1,100);
+
+    wlabel[0] = label_w0;
+    wlabel[1] = label_w1;
+    wlabel[2] = label_w2;
+    wlabel[3] = label_w3;
+    wlabel[4] = label_w4;
+    wlabel[5] = label_w5;
+    wlabel[6] = label_w6;
+    wlabel[7] = label_w7;
+    wlabel[8] = label_w8;
+    wlabel[9] = label_w9;
+    wlabel[10] = label_w10;
+    wlabel[11] = label_w11;
+    wlabel[12] = label_w12;
+    wlabel[13] = label_w13;
+    wlabel[14] = label_w14;
+    wlabel[15] = label_w15;
+    wlabel[16] = label_w16;
+    wlabel[17] = label_w17;
+    wlabel[18] = label_w18;
+    wlabel[19] = label_w19;
+    wlabel[20] = label_w20;
+    wlabel[21] = label_w21;
+    wlabel[22] = label_w22;
+    wlabel[23] = label_w23;
+    wlabel[24] = label_w24;
+    wlabel[25] = label_w25;
+    wlabel[26] = label_w26;
+    //wlabel[27] = label_w27;
+    //wlabel[28] = label_w28;
+    //wlabel[29] = label_w29;
+    //wlabel[30] = label_w30;
+    //wlabel[31] = label_w31;
+    // wlabel[32] = label_w32;
+
 
     QMdStyle *style1 = new QMdStyle();
     style1->setParent(spinBox);
@@ -50,54 +88,46 @@ machineexame::machineexame(QWidget *parent) :
     style7->setParent(spinBox_7);
     spinBox_7->setStyle(style7);
 
-    connect(this,SIGNAL(DataChange(unsigned short,QVariant)),
-            &hmiData,SLOT(On_DataChanged_FromHMI(unsigned short,QVariant)));
     connect(&hmiData,SIGNAL(DataChanged_ToHMI(unsigned short,QVariant)),this,
             SLOT(On_DataChanged(unsigned short,QVariant)));
-    timerid  = startTimer(500);
-
-            ////////////////////////
+    ////////////////////////
 }
 
+void machineexame::prepareTest()
+{
+
+    timerid  = startTimer(500);
+}
+
+
 void machineexame::timerEvent ( QTimerEvent * event ){
+    //because of possible recursion call ,avoid from
+    // stack overflow, add bool field "timereventrecursion"
+    //to avod recursion call
+    if(timereventrecursion)
+        return;
+    timereventrecursion = TRUE;
+
     if(event->timerId() == timerid){
-        if(timercount++==0){
-            if(hmiData.TogSysStat(QHMIData::SysTest)!=Md::Ok){
-                killTimer(timerid);
-                timerid = 0;
-                QMdMessageBox box;
-                box.exec(tr("测试模式"),tr("进入测试模式失败"),QMessageBox::Warning,
-                         QMessageBox::Cancel,QMessageBox::Cancel);
-            }
+        char buf[16];
+        unsigned char len;
+        if(!pcomm->readDI(buf,len)){
+            timereventrecursion = FALSE;
+            return;
         }
-        hmiData.RequireData(QHMIData::WBSR);
+        for(int i=0;i<26;i++){
+            bool temp = (buf[INPUT_MAP[i][0]]&(1<<INPUT_MAP[cnt][1]))==0;
+            lable->setText(temp^(wlabel[i]->LogicReverse())?"闭合":"断开");
+        }
     }
+    timereventrecursion = FALSE;
+    return;
 }
 
 
 
 void machineexame::On_DataChanged(unsigned short index,QVariant Val){
-    switch(index){
-    case QHMIData::WBSR:{
-        int row =  (reinterpret_cast<QGridLayout *>(groupBox->layout()))->rowCount();
-        int colum = (reinterpret_cast<QGridLayout *>(groupBox->layout()))->columnCount();
-        int cnt = 0;
-        QMdLabel *lable;
-        bool temp ;
-        for(int i=1;i<colum;i=i+3){
-            for(int j=0;j<row;j++){
-                if ((reinterpret_cast<QGridLayout *> (groupBox->layout()))->itemAtPosition(j,i)!=NULL){
-                   lable = reinterpret_cast<QMdLabel *>((reinterpret_cast<QGridLayout *>(groupBox->layout()))->itemAtPosition(j,i)->widget());
-                   temp = ((Val.toByteArray().at(INPUT_MAP[cnt][0]))&(1<<INPUT_MAP[cnt][1]))==0;
-                   lable->setText(temp^(lable->LogicReverse())?"闭合":"断开");
-                   cnt++;
-                   if(25==cnt)
-                       break;
-                }
-            }
 
-        }
-    }
         break;
     case QHMIData::ZXHJSQ:
         label_60->setText(QString::number(hmiData.dataBuf[QHMIData::ZXHJSQ]));

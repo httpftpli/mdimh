@@ -4,12 +4,16 @@
 #include "ui_machineexame.h"
 #include<QTimer>
 
+
+class QMdLabel;
+class QComm;
 class machineexame : public QWidget, private Ui::machineexame
 {
     Q_OBJECT
 
 public:
-    explicit machineexame(QWidget *parent = 0);
+    explicit machineexame(QComm *comm,QWidget *parent = 0);
+    void prepareTest();
 
 protected:
     virtual void timerEvent ( QTimerEvent * event );
@@ -19,6 +23,7 @@ signals:
 private slots:
 
     void on_qMdPushButton_8_clicked();
+
     void on_qMdPushButton_11_clicked();
     void on_qMdPushButton_10_clicked();
     void on_spinBox_5_valueChanged(int );
@@ -34,9 +39,13 @@ private slots:
     void on_qMdPushButton_3_toggled(bool checked);
     void on_qMdPushButton_toggled(bool checked);
     void On_DataChanged(unsigned short,QVariant);
+
+
 private:
-    unsigned long long timercount;
     int timerid;
+    bool timereventrecursion;
+    QComm *pcomm;
+    QMdLabel wlabel[32];
 
 
 

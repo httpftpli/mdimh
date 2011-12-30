@@ -66,6 +66,28 @@ void FormHeadTest::prepareToComm()
     connect(pushButton_sauto,SIGNAL(clicked()),SLOT(sanjiaotestauto()));
 }
 
+void FormHeadTest::setHeadData(unsigned char dumuprobe, unsigned char sanjiao,
+                               unsigned char lpin,unsigned char rpin,
+                               unsigned short ldumuval,unsigned short rdumuval)
+{
+    if(dumuprobe&0x01)
+        label_d0->setStyleSheet("background-color:red");
+    else
+        label_d0->setStyleSheet("background-color:gray");
+    if(dumuprobe&0x02)
+        label_d1->setStyleSheet("background-color:red");
+    else
+        label_d1->setStyleSheet("background-color:gray");
+    for(int i=0;i<6;i++)
+        sanjiaoarray[i]->setChecked(sanjiao&(1<<i));
+    for(int i=0;i<8;i++)
+        leftpinarray[i]->setChecked(lpin&(1<<i));
+    for(int i=0;i<8;i++)
+        rightpinarray[i]->setChecked(rpin&(1<<i));
+    pushButton_d0->setText(QString::number(ldumuval));
+    pushButton_d1->setText(QString::number(rdumuval));
+}
+
 void FormHeadTest::lpintest(int pin)
 {
     pcom->pinTest(sys,fr,Md::POSLEFT,1<<pin,leftpinarray[pin]->isChecked());
@@ -89,49 +111,50 @@ void FormHeadTest::dumutest(int dumu)
 
 void FormHeadTest::lpingtestauto()
 {
-    emit autoTesting(TRUE);
+    //emit autoTesting(TRUE);
     for(int i=0;i<8;i++){
         if(pcom->pinTest(sys,fr,Md::POSLEFT,1<<i,1)==FALSE)
             break;
-        QTest::qWait(500);
+        QTest::qWait(100);
     }
     for(int i=0;i<8;i++){
         if(pcom->pinTest(sys,fr,Md::POSLEFT,1<<i,0)==FALSE)
             break;
-        QTest::qWait(500);
+        QTest::qWait(100);
     }
-    emit autoTesting(FALSE);
+    //emit autoTesting(FALSE);
 }
 
 void FormHeadTest::rpingtestauto()
 {
-    emit autoTesting(TRUE);
+    //emit autoTesting(TRUE);
     for(int i=0;i<8;i++){
         if(pcom->pinTest(sys,fr,Md::POSRIGHT,1<<i,1)==FALSE)
             break;
-        QTest::qWait(500);
+        QTest::qWait(100);
     }
     for(int i=0;i<8;i++){
         if(pcom->pinTest(sys,fr,Md::POSRIGHT,1<<i,0)==FALSE)
             break;
-        QTest::qWait(500);
+        QTest::qWait(100);
     }
-    emit autoTesting(FALSE);
+    //emit autoTesting(FALSE);
 }
 
 void FormHeadTest::sanjiaotestauto()
 {
-    emit autoTesting(TRUE);
+
+    //emit autoTesting(TRUE);
     for(int i=0;i<6;i++){
         if(pcom->sanjiaoMagneticTest(sys,fr,1<<i,1)==FALSE)
             break;
-        QTest::qWait(500);
+        QTest::qWait(100);
     }
     for(int i=0;i<6;i++){
         if(pcom->sanjiaoMagneticTest(sys,fr,1<<i,0)==FALSE)
             break;
-        QTest::qWait(500);
+        QTest::qWait(100);
     }
-    emit autoTesting(FALSE);
+    //emit autoTesting(FALSE);
 }
 

@@ -16,23 +16,32 @@ public:
 signals:
     void autoTesting(bool);
 
+protected:
+    virtual void timerEvent(QTimerEvent *);
+
 private slots:
     void shazuitest( int shazui);
     void shazuitestauto();
     void dumutestauto();
+    void sanjiaotestauto();
+    void pinautotest();
     void autotest();
     void on_pushButton_cancle_clicked();
 
 private:
-    QComm *qcom;
     FormHeadTest *head0;
     FormHeadTest *head1;
     FormHeadTest *head2;
     FormHeadTest *head3;
+    FormHeadTest *head[4];
     QSignalMapper signalmap;
     QPushButton *shazuibuttonarray[16];
     QComm *pcom;
     bool inautotesting;
+    int timerid;
+    bool timereventrecursion;
+
+    void setshazuival(unsigned short val);
 
 };
 

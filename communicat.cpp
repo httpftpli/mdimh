@@ -157,6 +157,8 @@ bool QComm::programsend(char *buf, unsigned short &len){
             if(isacked){
                 isacked = FALSE;
                 iswaitforack = FALSE;
+                len = ackbuflen;
+                memcpy(buf,ackbuf,ackbuflen);
                 mutex1.unlock();
                 return TRUE;
             }
@@ -338,6 +340,16 @@ bool QComm::pinTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,Md::POSFLAG_LFET
     return programsend();
 }
 
+bool QComm::pinTest(unsigned long long pin, unsigned char stat)
+{
+    *(unsigned short *)d_send = htons(22);       //len
+    *(unsigned char *)(d_send+2) = (0x11);      //fun code
+    *(unsigned long long *)(d_send+3) = pin;
+    *(unsigned long long *)(d_send+11) = (stat==0)?0:0xffffffffffffffff;
+    return programsend();
+}
+
+
 bool QComm::shazuiTest(Md::SYSTEMFLAG sys,unsigned char shazui,unsigned char stat){
     unsigned short shazuis = (unsigned short)shazui<<12+shazui;
     if(!(sys&Md::SYSTEM1))
@@ -346,37 +358,45 @@ bool QComm::shazuiTest(Md::SYSTEMFLAG sys,unsigned char shazui,unsigned char sta
         shazuis = shazuis & 0x00ff;
 
     *(unsigned short *)d_send = htons(10);       //len
-    *(unsigned char *)(d_send+2) = (0x12);      //fun code
+    *(unsigned char *)(d_send+2) = 0x12;      //fun code
     *(unsigned short  *)(d_send+3) = shazuis;
     *(unsigned short  *)(d_send+5) = (stat==0)?0:0xffff;
     return programsend();
 }
 
 bool QComm::shazuiTest(unsigned short shazui,unsigned char stat){
-    *(unsigned short *)d_send = htons(10);       //len
-    *(unsigned char *)(d_send+2) = (0x12);      //fun code
+    *(unsigned short *)(d_send) = htons(10);       //len
+    *(unsigned char *)(d_send+2) = 0x12;      //fun code
     *(unsigned short  *)(d_send+3) = shazui;
     *(unsigned short  *)(d_send+5) = (stat==0)?0:0xffff;
     return programsend();
 }
 
 bool QComm::sanjiaoMagneticTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,
-                                unsigned char magnet,
-                                unsigned long stat){
+                         unsigned char magnet,unsigned long stat){
     unsigned long magnets = (unsigned long)magnet;
-    unsigned long magnetss = magnets<<24+magnets<<16+magnets<<8+magnets;
+    unsigned long magnetss = (magnets<<24)+(magnets<<16)+(magnets<<8)+magnets;
     if(!(sys&Md::SYSTEM1))
         magnetss = magnetss & 0xffff0000;
     if(!(sys&Md::SYSTEM2))
         magnetss = magnetss & 0x0000ffff;
     if(!(fr&Md::POSREAR))
         magnetss = magnetss & 0x00ff00ff;
-    if(!(fr&Md::POSREAR))
+    if(!(fr&Md::POSFRONT))
         magnetss = magnetss & 0xff00ff00;
     *(unsigned short *)d_send = htons(14);       //len
     *(unsigned char *)(d_send+2) = (0x13);      //fun code
     *(unsigned long  *)(d_send+3) = magnetss;
-    *(unsigned long  *)(d_send+7) = (stat=0)?0:0xfffffffff;
+    *(unsigned long  *)(d_send+7) = (stat==0)?0:0xfffffffff;
+    return programsend();
+}
+
+bool QComm::sanjiaoMagneticTest(unsigned int sanjiao,unsigned char stat){
+
+    *(unsigned short *)d_send = htons(14);       //len
+    *(unsigned char *)(d_send+2) = (0x13);      //fun code
+    *(unsigned long  *)(d_send+3) = sanjiao;
+    *(unsigned long  *)(d_send+7) = (stat==0)?0:0xfffffffff;
     return programsend();
 }
 
@@ -436,12 +456,11 @@ void QComm::LedTest(unsigned char ledstat){
     programsend(r);
 }
 
-void QComm::readDI(){
+int QComm::readDI(char *buf,unsigned char &len){
     *(unsigned short *)d_send = htons(7);       //len
     *(unsigned char *)(d_send+2) = 0x20;      //fun code
     *(unsigned char *)(d_send+3) = 0x55;
-    unsigned char r;
-    programsend(r);
+    return programsend(buf,len);
 }
 
 
@@ -499,14 +518,11 @@ int QComm::ReadEncoder(unsigned short &val){
 }
 
 
-
-int QComm::ReadHead(){
+int QComm::ReadHead(char *buf, unsigned short &len){
     *(unsigned short *)d_send = htons(7);       //len
     *(unsigned char *)(d_send+2) = (0x24);      //fun code
     *(unsigned char *)(d_send+3) = 0x55;
-    unsigned char r;
-    programsend(r);
-    return Md::Ok;
+    return programsend(buf,len);
 }
 
 int QComm::TogSysStat(unsigned char stat){
@@ -1106,19 +1122,6 @@ void QComm::ReadPendingDatagrams(){
         char *data = (char*)(rcvrawbuf->data()+3);
 
         switch(fun){
-        case 0x20:
-            if((0x0e==len)||(0x0c==len)){
-                emit DataChangedFromCtrl(QHMIData::WBSR,(QByteArray((char *)data,4)));
-                emit DataChangedFromCtrl(QHMIData::ZXHJSQ,htoni(*(unsigned short*)(data+4)));
-                writeackdata(data,len-6);
-                break;
-            }
-            else
-                return;
-        case 0x24:
-            /////////////////////////////////////////////
-            break;
-
         case 0x40:
             if((data[0]==0xaa)||(data[0]==0xbb)){
                 emit DataChangedFromCtrl(QHMIData::GLWC,data[0]);  //系统归零完成
@@ -1156,6 +1159,7 @@ void QComm::ReadPendingDatagrams(){
         case 0x4b:
             if(0x55==*data)
                 writeackdata(data,1);
+            //////////////////////////////////////
             break;
         default:
             if(writeackdata(data,len-6))

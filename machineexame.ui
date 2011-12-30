@@ -297,7 +297,7 @@
      </spacer>
     </item>
     <item row="0" column="1">
-     <widget class="QMdLabel" name="label_2">
+     <widget class="QMdLabel" name="label_w0">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -307,61 +307,61 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QMdLabel" name="label_3"/>
+     <widget class="QMdLabel" name="label_w1"/>
     </item>
     <item row="2" column="1">
-     <widget class="QMdLabel" name="label_5"/>
+     <widget class="QMdLabel" name="label_w2"/>
     </item>
     <item row="3" column="1">
-     <widget class="QMdLabel" name="label_7"/>
+     <widget class="QMdLabel" name="label_w3"/>
     </item>
     <item row="4" column="1">
-     <widget class="QMdLabel" name="label_9"/>
+     <widget class="QMdLabel" name="label_w4"/>
     </item>
     <item row="5" column="1">
-     <widget class="QMdLabel" name="label_11"/>
+     <widget class="QMdLabel" name="label_w5"/>
     </item>
     <item row="6" column="1">
-     <widget class="QMdLabel" name="label_21"/>
+     <widget class="QMdLabel" name="label_w6"/>
     </item>
     <item row="7" column="1">
-     <widget class="QMdLabel" name="label_32"/>
+     <widget class="QMdLabel" name="label_w7"/>
     </item>
     <item row="9" column="1">
-     <widget class="QMdLabel" name="label_20"/>
+     <widget class="QMdLabel" name="label_w8"/>
     </item>
     <item row="10" column="1">
-     <widget class="QMdLabel" name="label_19"/>
+     <widget class="QMdLabel" name="label_w9"/>
     </item>
     <item row="9" column="4">
-     <widget class="QMdLabel" name="label_13"/>
+     <widget class="QMdLabel" name="label_w18"/>
     </item>
     <item row="7" column="4">
-     <widget class="QMdLabel" name="label_24"/>
+     <widget class="QMdLabel" name="label_w17"/>
     </item>
     <item row="6" column="4">
-     <widget class="QMdLabel" name="label_26"/>
+     <widget class="QMdLabel" name="label_w16"/>
     </item>
     <item row="5" column="4">
-     <widget class="QMdLabel" name="label_28"/>
+     <widget class="QMdLabel" name="label_w15"/>
     </item>
     <item row="4" column="4">
-     <widget class="QMdLabel" name="label_30"/>
+     <widget class="QMdLabel" name="label_w14"/>
     </item>
     <item row="3" column="4">
-     <widget class="QMdLabel" name="label_34"/>
+     <widget class="QMdLabel" name="label_w13"/>
     </item>
     <item row="2" column="4">
-     <widget class="QMdLabel" name="label_36"/>
+     <widget class="QMdLabel" name="label_w12"/>
     </item>
     <item row="1" column="4">
-     <widget class="QMdLabel" name="label_38"/>
+     <widget class="QMdLabel" name="label_w11"/>
     </item>
     <item row="0" column="4">
-     <widget class="QMdLabel" name="label_40"/>
+     <widget class="QMdLabel" name="label_w10"/>
     </item>
     <item row="10" column="4">
-     <widget class="QMdLabel" name="label_42">
+     <widget class="QMdLabel" name="label_w19">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -371,25 +371,25 @@
      </widget>
     </item>
     <item row="1" column="7">
-     <widget class="QMdLabel" name="label_48"/>
+     <widget class="QMdLabel" name="label_w21"/>
     </item>
     <item row="2" column="7">
-     <widget class="QMdLabel" name="label_50"/>
+     <widget class="QMdLabel" name="label_w22"/>
     </item>
     <item row="3" column="7">
-     <widget class="QMdLabel" name="label_52"/>
+     <widget class="QMdLabel" name="label_w23"/>
     </item>
     <item row="4" column="7">
-     <widget class="QMdLabel" name="label_54"/>
+     <widget class="QMdLabel" name="label_w24"/>
     </item>
     <item row="5" column="7">
-     <widget class="QMdLabel" name="label_58"/>
+     <widget class="QMdLabel" name="label_w25"/>
     </item>
     <item row="6" column="7">
-     <widget class="QMdLabel" name="label_60"/>
+     <widget class="QMdLabel" name="label_w26"/>
     </item>
     <item row="0" column="7">
-     <widget class="QMdLabel" name="label_46">
+     <widget class="QMdLabel" name="label_w20">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
         <horstretch>0</horstretch>

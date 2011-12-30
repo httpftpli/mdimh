@@ -14,6 +14,10 @@ public:
     explicit FormHeadTest(QComm *com, Md::SYSTEMFLAG sys,
                           Md::POSFLAG_FRONTREAR r,QWidget *parent = 0);
     void prepareToComm();
+    void setHeadData(unsigned char dumuprobe,unsigned char sanjiao,
+                     unsigned char lpin,unsigned char rpin, unsigned short ldumuval, unsigned short rdumuval);
+
+
 signals:
     void autoTesting(bool);
 
@@ -27,6 +31,7 @@ private:
     QSignalMapper lpsignalmap,rpsignalmap,sanjiaosignalmap,dumusignalmap;
 
 
+
 private slots:
     void lpintest( int pin);
     void rpintest( int pin);
@@ -35,6 +40,7 @@ private slots:
     void lpingtestauto();
     void rpingtestauto();
     void sanjiaotestauto();
+
 
 };
 

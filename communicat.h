@@ -54,21 +54,23 @@ public:
    bool DumuMotorTest(unsigned char motor, unsigned short val);
    bool pinTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,Md::POSFLAG_LFETRIGHT lf,
                 unsigned char pin,unsigned char val);
+   bool pinTest(unsigned long long pin,unsigned char stat);
    bool shazuiTest(Md::SYSTEMFLAG sys,unsigned char shazui, unsigned char stat);
    bool shazuiTest(unsigned short shazui, unsigned char stat);
    bool sanjiaoMagneticTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr, unsigned char magnet,
                             unsigned long stat);
+   bool sanjiaoMagneticTest(unsigned int sanjiao,unsigned char stat);
    void bedMotorTest(unsigned char flag,unsigned short pos,unsigned short param);
    void StepRollTest(unsigned char flag,unsigned char derection,unsigned char rollpercent);
    void AssistRollTest(unsigned char derection,unsigned char rollpercent);
    void LedTest(unsigned char ledstat);
-   void readDI();
+   int readDI(char *buf, unsigned char &len);
    void BedReposition();
    void LeftMuslin(unsigned char force,bool clockwise = TRUE);
    void RightMuslin(unsigned char force,bool clockwise = TRUE);
    int ReadAbsoluteNoOfPin(unsigned short &val);
    int ReadEncoder(unsigned short &val);
-   int ReadHead();
+   int ReadHead(char *buf,unsigned short &len);
    void ClearError();
    int lineLock(bool lock);
    int goToLine(unsigned short line);

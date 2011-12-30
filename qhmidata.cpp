@@ -77,37 +77,6 @@ void QHMIData::clearAlarm(){
     pcomm->ClearError();
 }
 
-void QHMIData::On_DataChanged_FromHMI(unsigned short index,QVariant Val){
-    unsigned char temp_uchar;
-    unsigned short temp_short;
-    unsigned long temp_long;
-    switch(index){
-    case ZSD :
-        temp_uchar = Val.toUInt();
-        qComm.LedTest(temp_uchar);
-        break;
-    case YSS:
-        temp_uchar = Val.toUInt();
-        qComm.RightMuslin(temp_uchar);
-        break;
-    case ZSS:
-        temp_uchar = Val.toUInt();
-        qComm.LeftMuslin( temp_uchar);
-        break;
-    case FZLL:
-        temp_short =Val.toUInt();
-        qComm.AssistRollTest((unsigned char)(temp_short>>8),(unsigned char)temp_short);
-        break;
-    case BJLL:
-        temp_long = Val.toUInt();
-        qComm.StepRollTest((unsigned char)(temp_long>>24),(unsigned char)(temp_long>>16),(unsigned char)(temp_long>>8));
-        break;
-    case JTDJ:
-        temp_long = Val.toUInt();
-        qComm.MainMotorTest((unsigned char)(temp_long>>8),(unsigned char)temp_long);
-        break;
-    }
-}
 
 void QHMIData::On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val){
     switch(index){
@@ -215,15 +184,6 @@ bool QHMIData::isRuning(){
     return isruning;
 }
 
-void QHMIData::RequireData(unsigned short index){
-    switch(index){
-    case QHMIData::WBSR:
-        pcomm->readDI();
-        break;
-    default:
-        break;
-    }
-}
 
 int QHMIData::TogSysStat(SysStat stat){
     unsigned char val;

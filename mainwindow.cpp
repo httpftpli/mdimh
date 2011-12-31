@@ -179,8 +179,14 @@ void MainWindow::on_qMdPushButton_3_clicked()
 
 void MainWindow::on_qMdPushButton_2_clicked()
 {
-    machineexame *machineexameform  = new machineexame;
+    machineexame *machineexameform  = new machineexame(&qComm);
     machineexameform->show();
+    if(qComm.TogSysStat(0x02)==Md::Ok)
+        machineexameform->prepareToComm();
+    else{
+        QMdMessageBox box;
+        box.exec("测试模式","进入测试模式失败",QMessageBox::Warning,QMessageBox::Ok,QMessageBox::Ok);
+    }
 
 }
 

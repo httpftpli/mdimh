@@ -297,12 +297,11 @@ bool QComm::DumuMotorTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,
     *(unsigned short *)d_send = htons(23);       //len
     *(unsigned char *)(d_send+2) = (0x10);      //fun code
     *(unsigned char *)(d_send+3) = m;
-    unsigned short val[8];
     for(int i=0;i<8;i++){
-        val[i] = htons(dumu);
+        *(unsigned short*)(d_send+4+i*2) = htons(dumu);
     }
-    memcpy(d_send+4,val,16);
-    return programsend();
+    send();
+    return TRUE;
 }
 
 bool QComm::DumuMotorTest(unsigned char motor,unsigned short val){
@@ -312,7 +311,8 @@ bool QComm::DumuMotorTest(unsigned char motor,unsigned short val){
     for(int i=0;i<8;i++){
         *(unsigned short *)(d_send+4+2*i) = htons(val);
     }
-    return programsend();
+    send();
+    return TRUE;
 }
 
 bool QComm::pinTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,Md::POSFLAG_LFETRIGHT lf,
@@ -421,7 +421,7 @@ void QComm::bedMotorTest(unsigned char flag,unsigned short pos,unsigned short pa
 
 }
 
-void QComm::StepRollTest(unsigned char flag,unsigned char derection,unsigned char rollpercent){
+void QComm::rollTest(unsigned char flag,unsigned char derection,unsigned char rollpercent){
     *(unsigned short *)d_send = htons(9);       //len
     *(unsigned char *)(d_send+2) = (0x16);      //fun code
     *(unsigned char *)(d_send+3) = (flag);
@@ -460,7 +460,7 @@ int QComm::readDI(char *buf,unsigned char &len){
     *(unsigned short *)d_send = htons(7);       //len
     *(unsigned char *)(d_send+2) = 0x20;      //fun code
     *(unsigned char *)(d_send+3) = 0x55;
-    return programsend(buf,len);
+    return programsend(buf,(unsigned short &)len);
 }
 
 

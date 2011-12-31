@@ -106,12 +106,12 @@ void headTestForm::shazuitestauto(){
 void headTestForm::dumutestauto()
 {
 
-    if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,500)==FALSE)
+    /*if(pcom->DumuMotorTest(0xff,500)==FALSE)
         return
-    QTest::qWait(200);
-    if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,0)==FALSE)
+    QTest::qWait(1000);
+    if(pcom->DumuMotorTest(0xff,0)==FALSE)
         return
-    QTest::qWait(200);
+    QTest::qWait(1000);*/
 #ifdef DUAL_SYSTEM
     const int NUM = 16;
 #else
@@ -120,10 +120,10 @@ void headTestForm::dumutestauto()
     for(int i=0;i<NUM;i++){
       if(pcom->DumuMotorTest(1<<i,500)==FALSE)
           break;
-      QTest::qWait(200);
+      QTest::qWait(300);
       if(pcom->DumuMotorTest(1<<i,0)==FALSE)
           break;
-      QTest::qWait(200);
+      QTest::qWait(300);
     }
 }
 

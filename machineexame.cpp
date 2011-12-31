@@ -9,11 +9,9 @@
 
 
 machineexame::machineexame(QComm *comm, QWidget *parent) :
-    QWidget(parent),timercount(0),timereventrecursion(FALSE),
+    QWidget(parent),timereventrecursion(FALSE),
     pcomm(comm){
     setupUi(this);
-
-
     /////////////////////
     setWindowFlags(Qt::FramelessWindowHint);
     spinBox->setSuffix("%");
@@ -88,15 +86,22 @@ machineexame::machineexame(QComm *comm, QWidget *parent) :
     style7->setParent(spinBox_7);
     spinBox_7->setStyle(style7);
 
-    connect(&hmiData,SIGNAL(DataChanged_ToHMI(unsigned short,QVariant)),this,
-            SLOT(On_DataChanged(unsigned short,QVariant)));
+    zsdsignalmap.setMapping(pushButton_zsdred,1);
+    zsdsignalmap.setMapping(pushButton_zsdyellow,2);
+    zsdsignalmap.setMapping(pushButton_zsdgreen,3);
+    connect(&zsdsignalmap,SIGNAL(mapped(int)),SLOT(zsdtest(int)));
     ////////////////////////
 }
 
-void machineexame::prepareTest()
+void machineexame::prepareToComm()
 {
-
     timerid  = startTimer(500);
+    connect(pushButton_zsdred,SIGNAL(clicked()),&zsdsignalmap,SLOT(map()));
+    connect(pushButton_zsdgreen,SIGNAL(clicked()),&zsdsignalmap,SLOT(map()));
+    connect(pushButton_zsdyellow,SIGNAL(clicked()),&zsdsignalmap,SLOT(map()));
+    connect(pushButton_luola,SIGNAL(clicked()),SLOT(luolaTest()));
+    connect(pushButton_fuzuluola,SIGNAL(clicked()),SLOT(fuzuLuolaTest()));
+    connect(pushButton_jt,SIGNAL(toggled(bool)),SLOT(headTest(bool)));
 }
 
 
@@ -116,8 +121,8 @@ void machineexame::timerEvent ( QTimerEvent * event ){
             return;
         }
         for(int i=0;i<26;i++){
-            bool temp = (buf[INPUT_MAP[i][0]]&(1<<INPUT_MAP[cnt][1]))==0;
-            lable->setText(temp^(wlabel[i]->LogicReverse())?"闭合":"断开");
+            bool temp = (buf[INPUT_MAP[i][0]]&(1<<INPUT_MAP[i][1]))==0;
+            wlabel[i]->setText(temp^(wlabel[i]->LogicReverse())?"闭合":"断开");
         }
     }
     timereventrecursion = FALSE;
@@ -126,141 +131,71 @@ void machineexame::timerEvent ( QTimerEvent * event ){
 
 
 
-void machineexame::On_DataChanged(unsigned short index,QVariant Val){
 
-        break;
-    case QHMIData::ZXHJSQ:
-        label_60->setText(QString::number(hmiData.dataBuf[QHMIData::ZXHJSQ]));
-        break;
-    default:
-        break;
-    }
-}
-
-
-void machineexame::on_qMdPushButton_toggled(bool checked)
+void machineexame::zsdtest(int zsd)
 {
-    if(checked){
-        emit DataChange(QHMIData::ZSD,(unsigned char)1);
-
-    }
+    pcomm->LedTest(zsd);
 }
 
-void machineexame::on_qMdPushButton_3_toggled(bool checked)
-{
-    if(checked){
-        emit DataChange(QHMIData::ZSD,(unsigned char)3);
-    }
-}
 
-void machineexame::on_qMdPushButton_2_toggled(bool checked)
-{
-    if(checked){
-        emit DataChange(QHMIData::ZSD,(unsigned char)2);
-    }
-}
 
-void machineexame::on_qMdPushButton_4_toggled(bool checked)
+void machineexame::on_pushButton_4_toggled(bool checked)
 {
     if(!checked){
-        qMdPushButton_4->setText("脉冲数");
+        pushButton_4->setText("脉冲数");
         spinBox->setSuffix("个脉冲");
         spinBox->setPrefix("");
         spinBox->setRange(1,255);
+        luolapulsorpercent = 1;
     }
     else{
-        qMdPushButton_4->setText("百分比");
+        pushButton_4->setText("百分比");
         spinBox->setSuffix("");
         spinBox->setPrefix("%");
         spinBox->setRange(1,100);
-
+        luolapulsorpercent = 2;
     }
-
 }
 
-void machineexame::on_qMdPushButton_6_toggled(bool checked)
+void machineexame::on_pushButton_6_toggled(bool checked)
+{
+     pushButton_6->setText(checked?"反向(张开)":"正向(闭合)");
+     luoladir = checked?2:1;
+}
+
+void machineexame::on_pushButton_5_toggled(bool checked)
+{
+    pushButton_5->setText(checked?"反向(张开)":"正向(闭合)");
+    fuzuluoladir = checked?2:1;
+}
+
+
+void machineexame::on_pushButton_7_toggled(bool checked)
 {
     if(checked)
-        qMdPushButton_6->setText("反向");
+        pushButton_7->setText("右行");
     else
-        qMdPushButton_6->setText("正向");
-
-}
-
-void machineexame::on_qMdPushButton_5_toggled(bool checked)
-{
-    if(!checked)
-        qMdPushButton_5->setText("反向(张开)");
-    else
-        qMdPushButton_5->setText("正向(闭合)");
+        pushButton_7->setText("左行");
+    mainmotorspeed = checked?2:1;
 
 }
 
 
-void machineexame::on_qMdPushButton_7_toggled(bool checked)
-{
-    if(checked)
-        qMdPushButton_7->setText("右行");
-    else
-        qMdPushButton_7->setText("左行");
-
-}
-
-void machineexame::on_spinBox_valueChanged(int  )
-{
-
-}
-
-void machineexame::on_spinBox_2_valueChanged(int )
-{
-
-}
-
-void machineexame::on_spinBox_6_valueChanged(int val)
-{
-    emit DataChange(QHMIData::ZSS,(unsigned char) (val));
-}
-
-void machineexame::on_spinBox_5_valueChanged(int val)
-{
-    emit DataChange(QHMIData::YSS,(unsigned char)(val));
-}
-
-void machineexame::on_qMdPushButton_9_toggled(bool checked)
+void machineexame::headTest(bool checked)
 {
     if(checked){
-        qMdPushButton_9->setText("启动");
-        emit DataChange(QHMIData::JTDJ,(unsigned short)((((unsigned char)qMdPushButton_7->isChecked())+1)<<8|
-                                                        (unsigned char)spinBox_3->value())
-                       );
+        pushButton_jt->setText("启动");
+        pcomm->MainMotorTest(mainmotordir,mainmotorspeed);
 
     }
     else{
-        qMdPushButton_9->setText("停车");
-        emit DataChange(QHMIData::JTDJ,(unsigned short)0);
+        pushButton_jt->setText("停车");
+        pcomm->MainMotorTest(0,0);
     }
-
 }
 
 
-void machineexame::on_qMdPushButton_10_clicked()
-{
-    emit DataChange(QHMIData::BJLL,(unsigned int)((unsigned char)qMdPushButton_4->isChecked()<<24|
-                                                  (unsigned char)qMdPushButton_6->isChecked()<<16|
-                                                  (unsigned char)spinBox_3->value()<<8
-                                                 )
-                    );
-}
-
-void machineexame::on_qMdPushButton_11_clicked()
-{
-    emit DataChange(QHMIData::FZLL,(unsigned short)((unsigned char)qMdPushButton_5->isChecked()<<8|
-                                                    (unsigned char)spinBox_2->value()
-                                                   )
-                    );
-}
-
-void machineexame::on_qMdPushButton_8_clicked()
+void machineexame::on_pushButton_cancle_clicked()
 {
 
     hide();
@@ -268,3 +203,29 @@ void machineexame::on_qMdPushButton_8_clicked()
     delete this;
 }
 
+
+void machineexame::on_spinBox_3_valueChanged(int arg1)
+{
+    mainmotorspeed = arg1;
+}
+
+
+void machineexame::on_spinBox_valueChanged(int arg1)
+{
+    luolaval = arg1;
+}
+
+void machineexame::on_spinBox_2_valueChanged(int arg1)
+{
+    fuzuluolaval = arg1;
+}
+
+void machineexame::luolaTest()
+{
+    pcomm->rollTest(luolapulsorpercent,luoladir,luolaval);
+}
+
+void machineexame::fuzuLuolaTest()
+{
+    pcomm->AssistRollTest(fuzuluoladir,fuzuluolaval);
+}

@@ -61,7 +61,7 @@ public:
                             unsigned long stat);
    bool sanjiaoMagneticTest(unsigned int sanjiao,unsigned char stat);
    void bedMotorTest(unsigned char flag,unsigned short pos,unsigned short param);
-   void StepRollTest(unsigned char flag,unsigned char derection,unsigned char rollpercent);
+   void rollTest(unsigned char flag,unsigned char derection,unsigned char rollpercent);
    void AssistRollTest(unsigned char derection,unsigned char rollpercent);
    void LedTest(unsigned char ledstat);
    int readDI(char *buf, unsigned char &len);
@@ -126,6 +126,7 @@ private:
    void send();
    bool rcv(unsigned char funcode,unsigned char &val,unsigned short timeout);
    bool programsend();
+
    bool programsend(unsigned char &ackval1);
    bool programsend(unsigned char &ackval1,unsigned char &ackval2);
    bool programsend(unsigned char &ackval1,unsigned char &ackval2,

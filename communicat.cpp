@@ -29,8 +29,10 @@ bool QComm::programsend(){
     time.start();
     while(iswaitforack){
         QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-        if(time.hasExpired(COMMTIMEOUT))
+        if(time.hasExpired(COMMTIMEOUT)){
+            emit commTimerOut(d_send[2]);
             return Md::CommError;
+        }
     }
     beforesend();
     for(int i =0;i< TIMEROFSEND;i++){
@@ -50,14 +52,17 @@ bool QComm::programsend(){
         }
     }
     terminatesend();
+    emit commTimerOut(d_send[2]);
     return FALSE;
 }
 
  bool QComm::programsend(unsigned char &ackval){
      while(iswaitforack){
          QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-         if(time.hasExpired(COMMTIMEOUT))
+         if(time.hasExpired(COMMTIMEOUT)){
+             emit commTimerOut(d_send[2]);
              return Md::CommError;
+         }
      }
      beforesend();
      for(int i =0;i< TIMEROFSEND;i++){
@@ -78,14 +83,17 @@ bool QComm::programsend(){
          }
      }
      terminatesend();
+     emit commTimerOut(d_send[2]);
      return FALSE;
  }
 
  bool QComm::programsend(unsigned char &ackval1,unsigned char &ackval2){
      while(iswaitforack){
          QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-         if(time.hasExpired(COMMTIMEOUT))
+         if(time.hasExpired(COMMTIMEOUT)){
+             emit commTimerOut(d_send[2]);
              return Md::CommError;
+         }
      }
      beforesend();
      for(int i =0;i< TIMEROFSEND;i++){
@@ -107,6 +115,7 @@ bool QComm::programsend(){
          }
      }
      terminatesend();
+     emit commTimerOut(d_send[2]);
      return FALSE;
  }
 
@@ -114,8 +123,10 @@ bool QComm::programsend(unsigned char &ackval1,unsigned char &ackval2,
                   unsigned char &ackval3){
     while(iswaitforack){
         QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-        if(time.hasExpired(COMMTIMEOUT))
+        if(time.hasExpired(COMMTIMEOUT)){
+            emit commTimerOut(d_send[2]);
             return Md::CommError;
+        }
     }
      beforesend();
      for(int i =0;i< TIMEROFSEND;i++){
@@ -138,14 +149,17 @@ bool QComm::programsend(unsigned char &ackval1,unsigned char &ackval2,
          }
      }
      terminatesend();
+     emit commTimerOut(d_send[2]);
      return FALSE;
  }
 
 bool QComm::programsend(char *buf, unsigned short &len){
     while(iswaitforack){
         QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-        if(time.hasExpired(COMMTIMEOUT))
+        if(time.hasExpired(COMMTIMEOUT)){
+            emit commTimerOut(d_send[2]);
             return Md::CommError;
+        }
     }
     beforesend();
     for(int i =0;i< TIMEROFSEND;i++){
@@ -167,6 +181,7 @@ bool QComm::programsend(char *buf, unsigned short &len){
         }
     }
     terminatesend();
+    emit commTimerOut(d_send[2]);
     return FALSE;
 }
 
@@ -331,12 +346,12 @@ bool QComm::pinTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,Md::POSFLAG_LFET
     if(sys&Md::SYSTEM1)
         buf = pinss;
     if(sys&Md::SYSTEM2)
-        buf = pinss+(long long)pinss<<32;
+        buf = pinss+((long long)pinss<<32);
 
     *(unsigned short *)d_send = htons(22);       //len
     *(unsigned char *)(d_send+2) = (0x11);      //fun code
     *(unsigned long long *)(d_send+3) = buf;
-    *(unsigned long long *)(d_send+11) = (val==0)?0:0xffffffffffffffff;
+    *(unsigned long long *)(d_send+11) = (val==0)?0:0xffffffffffffffffuLL;
     return programsend();
 }
 
@@ -345,13 +360,13 @@ bool QComm::pinTest(unsigned long long pin, unsigned char stat)
     *(unsigned short *)d_send = htons(22);       //len
     *(unsigned char *)(d_send+2) = (0x11);      //fun code
     *(unsigned long long *)(d_send+3) = pin;
-    *(unsigned long long *)(d_send+11) = (stat==0)?0:0xffffffffffffffff;
+    *(unsigned long long *)(d_send+11) = (stat==0)?0:0xffffffffffffffffuLL;
     return programsend();
 }
 
 
 bool QComm::shazuiTest(Md::SYSTEMFLAG sys,unsigned char shazui,unsigned char stat){
-    unsigned short shazuis = (unsigned short)shazui<<12+shazui;
+    unsigned short shazuis = ((unsigned short)shazui<<8)+shazui;
     if(!(sys&Md::SYSTEM1))
         shazuis = shazuis & 0xff00;
     if(!(sys&Md::SYSTEM2))
@@ -387,7 +402,7 @@ bool QComm::sanjiaoMagneticTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,
     *(unsigned short *)d_send = htons(14);       //len
     *(unsigned char *)(d_send+2) = (0x13);      //fun code
     *(unsigned long  *)(d_send+3) = magnetss;
-    *(unsigned long  *)(d_send+7) = (stat==0)?0:0xfffffffff;
+    *(unsigned long  *)(d_send+7) = (stat==0)?0:0xffffffffL;
     return programsend();
 }
 
@@ -396,7 +411,7 @@ bool QComm::sanjiaoMagneticTest(unsigned int sanjiao,unsigned char stat){
     *(unsigned short *)d_send = htons(14);       //len
     *(unsigned char *)(d_send+2) = (0x13);      //fun code
     *(unsigned long  *)(d_send+3) = sanjiao;
-    *(unsigned long  *)(d_send+7) = (stat==0)?0:0xfffffffff;
+    *(unsigned long  *)(d_send+7) = (stat==0)?0:0xffffffffL;
     return programsend();
 }
 
@@ -1140,7 +1155,6 @@ void QComm::ReadPendingDatagrams(){
         case 0x42:   //up rcv system power down
             if(0x07==len){
                 emit DataChangedFromCtrl(QHMIData::XTDD,0x55);
-                acktoctrl(fun,0x55);
             }
             break;
         case 0x21:   //上发 机头相对针数

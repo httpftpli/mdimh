@@ -161,14 +161,21 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val)
         break;
     }
     case QHMIData::GLWC:{
-            int val = Val.toInt();
-            if(0xaa==val){
-                emit xtRunOrGuiling(TRUE);
-                xtrunorguiling = TRUE;
-            }
-            else if(0xbb==val)
-                emit xtGuilingError();
+        int val = Val.toInt();
+        if(0xaa==val){
+            emit xtRunOrGuiling(TRUE);
+            xtrunorguiling = TRUE;
         }
+        else if(0xbb==val)
+            emit xtGuilingError();
+        break;
+    }
+    case QHMIData::XTDD:{
+        int val = Val.toInt();
+        if(0x55==val)
+            emit powerDown();
+        break;
+    }
     default:
         emit DataChanged_ToHMI(index,Val);
         break;
@@ -222,7 +229,17 @@ int QHMIData::TogSysStat(SysStat stat){
     default:
         break;
     }
-    return pcomm->TogSysStat(val);
+    int r = pcomm->TogSysStat(val);
+    if(Md::Ok!=r)
+        return r;
+    switch(stat){
+    case SysRun:
+        timer700ms.start();
+    default:
+        timer700ms.stop();
+        break;
+    }
+    return Md::Ok;
 }
 
 void QHMIData::loadParam(const QString &inifilepath){

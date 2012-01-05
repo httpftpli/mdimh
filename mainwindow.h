@@ -59,10 +59,13 @@ private slots:
     void on_qMdPushButton_2_clicked();
     void on_qMdPushButton_3_clicked();
     void on_qMdPushButton_clicked();
-    void on_qMdPushButton_12_clicked();
     void onXtGuilingError();
     void onHmidataRuning(bool);
+    void onPowerDown();
 
+    void on_qMdPushButton_12_toggled(bool checked);
+
+    void on_pushButton_13_clicked();
 
 private:
     QStringList azllist,hzllist;

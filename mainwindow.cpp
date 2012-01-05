@@ -79,6 +79,7 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(alarmLimit(bool)),qMdPushButton_10,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(shazuiUp(bool)),qMdPushButton_11,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(runing(bool)),SLOT(onHmidataRuning(bool)));
+    connect(&hmiData,SIGNAL(powerDown()),SLOT(onPowerDown()));
     azllist<<tr("空")<<tr("翻针")<<tr("编织");
     hzllist<<tr("空")<<tr("吊目")<<tr("接针")<<tr("吊目2")<<tr("编松2");
 #if DUAL_SYSTEM
@@ -105,6 +106,17 @@ void MainWindow::onHmidataRuning(bool val){
         }
     }
     qMdPushButton_11->setDisabled(val);//shazui updown
+}
+
+void MainWindow::onPowerDown()
+{
+    hmiData.saveSysCfgFile();
+    sysLog.save();
+    qComm.quit();
+    qComm.wait();
+    QMdMessageBox box;
+    box.exec(tr("系统关机"),tr("正在关机"),QMessageBox::Information,
+             QMessageBox::NoButton,QMessageBox::NoButton);
 }
 
 void MainWindow::Timeout1s(){
@@ -150,14 +162,7 @@ void MainWindow::onXtGuilingError(){
     box.exec(tr("系统归零"),tr("归零错误"),QMessageBox::Warning,QMessageBox::Cancel,QMessageBox::Cancel);
 }
 
-void MainWindow::on_qMdPushButton_12_clicked()
-{
-    qComm.quit();
-    qComm.wait();
-    hmiData.saveSysCfgFile();
-    sysLog.save();
-    close();
-}
+
 
 void MainWindow::on_qMdPushButton_clicked()
 {   QFormFile *formfile = new QFormFile;
@@ -179,9 +184,9 @@ void MainWindow::on_qMdPushButton_3_clicked()
 
 void MainWindow::on_qMdPushButton_2_clicked()
 {
-    machineexame *machineexameform  = new machineexame(&qComm);
+    machineexame *machineexameform  = new machineexame(&qComm,&hmiData);
     machineexameform->show();
-    if(qComm.TogSysStat(0x02)==Md::Ok)
+    if(hmiData.TogSysStat(QHMIData::SysTest)==Md::Ok)
         machineexameform->prepareToComm();
     else{
         QMdMessageBox box;
@@ -211,9 +216,9 @@ void MainWindow::on_qMdPushButton_13_clicked()
 
 void MainWindow::on_qMdPushButton_4_clicked()
 {
-    headTestForm *headtestForm = new headTestForm(&qComm);
+    headTestForm *headtestForm = new headTestForm(&qComm,&hmiData);
     headtestForm->show();
-    if(qComm.TogSysStat(0x02)==Md::Ok)
+    if(hmiData.TogSysStat(QHMIData::SysTest)==Md::Ok)
         headtestForm->prepareToComm();
     else{
         QMdMessageBox box;
@@ -404,3 +409,19 @@ void MainWindow::on_qMdPushButton_10_clicked(bool checked)
     hmiData.setAlarmLimit(checked,TRUE);
 }
 
+
+
+
+void MainWindow::on_qMdPushButton_12_toggled(bool checked)
+{
+    qComm.rollTest(0,checked,0);
+}
+
+void MainWindow::on_pushButton_13_clicked()
+{
+    qComm.quit();
+    qComm.wait();
+    hmiData.saveSysCfgFile();
+    sysLog.save();
+    close();
+}

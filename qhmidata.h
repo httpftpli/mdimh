@@ -84,11 +84,11 @@ class QHMIData: public QObject{
 
 public:
     enum DATATAG{
-                 XTDD,           //system power down
-                 GLWC= 0,        //系统归零完成
+                 XTDD= 0 ,          //system power down
+                 GLWC,        //系统归零完成
                  ZXHJSQ,
 
-                 YC,            //摇床（输出）
+
                  RUN_LOOP_TOTAL,
                  RUN_LOOP_LEFT,
                  RUN_LOOP_STARTNO,
@@ -204,6 +204,7 @@ signals:
     void hmi_loopTatal(int val);
     void hmi_jitouxiangduizhengshu(int val);
     void xtRunOrGuiling(bool val);
+    void powerDown();
     void xtGuilingError();
     void Sig_tatalPatLine(int line);
     void clothSetCountChanged(int val);

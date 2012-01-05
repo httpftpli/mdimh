@@ -8,12 +8,13 @@
 
 class QMdLabel;
 class QComm;
+class QHMIData;
 class machineexame : public QWidget, private Ui::machineexame
 {
     Q_OBJECT
 
 public:
-    explicit machineexame(QComm *comm,QWidget *parent = 0);
+    explicit machineexame(QComm *comm,QHMIData *data, QWidget *parent = 0);
     void prepareToComm();
 
 protected:
@@ -40,6 +41,7 @@ private:
     int timerid;
     bool timereventrecursion;
     QComm *pcomm;
+    QHMIData *hmidata;
     QMdLabel *wlabel[32];
     QSignalMapper zsdsignalmap;
 

@@ -8,9 +8,9 @@
 #include "mdLabel/qmdlabel.h"
 
 
-machineexame::machineexame(QComm *comm, QWidget *parent) :
+machineexame::machineexame(QComm *comm, QHMIData *data,QWidget *parent) :
     QWidget(parent),timereventrecursion(FALSE),
-    pcomm(comm){
+    pcomm(comm),hmidata(data){
     setupUi(this);
     /////////////////////
     setWindowFlags(Qt::FramelessWindowHint);
@@ -197,7 +197,6 @@ void machineexame::headTest(bool checked)
 
 void machineexame::on_pushButton_cancle_clicked()
 {
-
     hide();
     hmiData.TogSysStat(QHMIData::SysRun);
     delete this;

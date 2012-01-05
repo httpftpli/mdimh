@@ -11,7 +11,7 @@ class headTestForm : public QWidget, private Ui::headTestForm
     Q_OBJECT
 
 public:
-    explicit headTestForm(QComm *com , QWidget *parent= 0);
+    explicit headTestForm(QComm *com , QHMIData *data, QWidget *parent= 0);
     void prepareToComm();
 signals:
     void autoTesting(bool);
@@ -37,6 +37,7 @@ private:
     QSignalMapper signalmap;
     QPushButton *shazuibuttonarray[16];
     QComm *pcom;
+    QHMIData *hmidata;
     bool inautotesting;
     int timerid;
     bool timereventrecursion;

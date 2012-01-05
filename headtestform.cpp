@@ -4,9 +4,10 @@
 #include"communicat.h"
 #include "QGridLayout"
 #include<QTest>
+#include"qhmidata.h"
 
-headTestForm::headTestForm(QComm *com,QWidget *parent) :
-    QWidget(parent),pcom(com),inautotesting(FALSE),
+headTestForm::headTestForm(QComm *com,QHMIData *data,QWidget *parent) :
+    QWidget(parent),pcom(com),hmidata(data),inautotesting(FALSE),
     timereventrecursion(FALSE){
     setupUi(this);
 
@@ -229,6 +230,7 @@ void headTestForm::autotest()
 void headTestForm::on_pushButton_cancle_clicked()
 {
     hide();
+    hmidata->TogSysStat(QHMIData::SysRun);
     deleteLater();
 }
 

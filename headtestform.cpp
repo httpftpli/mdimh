@@ -179,13 +179,13 @@ void headTestForm::sanjiaotestauto()
 
 void headTestForm::pinautotest()
 {
-    pcom->pinTest(0xffffffffffffffff,0);
+    pcom->pinTest(0xffffffffffffffffuLL,0);
     QTest::qWait(100);
-    pcom->pinTest(0xffffffffffffffff,1);
+    pcom->pinTest(0xffffffffffffffffuLL,1);
     QTest::qWait(100);
-    pcom->pinTest(0xffffffffffffffff,0);
+    pcom->pinTest(0xffffffffffffffffuLL,0);
     QTest::qWait(100);
-    pcom->pinTest(0xffffffffffffffff,1);
+    pcom->pinTest(0xffffffffffffffffuLL,1);
     QTest::qWait(100);
     for(int i=0;i<64;i++){
        pcom->pinTest((unsigned long long)1<<i,0);
@@ -237,12 +237,12 @@ void headTestForm::on_pushButton_cancle_clicked()
 void headTestForm::setshazuival(unsigned short val)
 {
     unsigned char shazuival1 = val & 0xff;
-    for(int i=0;i,8;i++){
+    for(int i=0;i<8;i++){
         shazuibuttonarray[i]->setChecked(shazuival1&(1<<i));
     }
 #if DUAL_SYSTEM
     unsigned char shazuival2 = (val & 0xff00)>>8;
-    for(int i=0;i,8;i++){
+    for(int i=0;i<8;i++){
         shazuibuttonarray[i+8]->setChecked(shazuival2&(1<<i));
     }
 #endif

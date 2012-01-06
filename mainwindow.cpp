@@ -23,6 +23,7 @@
 #include "dialogtingche.h"
 #include "formhead.h"
 #include "QTest"
+#include "helpform.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -424,4 +425,11 @@ void MainWindow::on_pushButton_13_clicked()
     hmiData.saveSysCfgFile();
     sysLog.save();
     close();
+}
+
+void MainWindow::on_qMdPushButton_18_clicked()
+{
+    HelpForm *form = new HelpForm;
+    form->loadUrl(QUrl("http://www.google.com.hk"));
+    form->show();
 }

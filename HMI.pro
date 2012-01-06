@@ -7,6 +7,8 @@
 QT       += core gui
 QT       += network
 QT       += testlib
+QT       += webkit
+
 
 
 TARGET = HMI
@@ -53,7 +55,8 @@ SOURCES += main.cpp\
     alarmform.cpp \
     formxtcs2.cpp \
     formhead.cpp \
-    formheadtest.cpp
+    formheadtest.cpp \
+    helpform.cpp
 
 HEADERS  += \
     mdPushbutton/qmdpushbutton.h \
@@ -99,7 +102,8 @@ HEADERS  += \
     alarmform.h \
     formxtcs2.h \
     formhead.h \
-    formheadtest.h
+    formheadtest.h \
+    helpform.h
 
 FORMS    += \
     qformfile.ui \
@@ -122,7 +126,8 @@ FORMS    += \
     dialogtingche.ui \
     formxtcs2.ui \
     formhead.ui \
-    formheadtest.ui
+    formheadtest.ui \
+    helpform.ui
 
 OTHER_FILES +=
 

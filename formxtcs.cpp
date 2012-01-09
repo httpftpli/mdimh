@@ -57,7 +57,7 @@ void FormXtcs::valeChanged(QWidget *obj){
     }
     QDoubleSpinBox *doublespinbox = qobject_cast<QDoubleSpinBox *>(obj);
     if(doublespinbox){
-        int val =doublespinbox->value()*10;
+        int val =qRound(doublespinbox->value()*10);
         int index = doublespinbox->property("index").toInt();
         param->setData(SpaItemHd_Xtcs,index,val);
         return;

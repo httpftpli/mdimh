@@ -69,6 +69,8 @@ private slots:
 
     void on_qMdPushButton_18_clicked();
 
+    void on_qMdPushButton_19_clicked();
+
 private:
     QStringList azllist,hzllist;
     QPointer<paramform > paramForm;

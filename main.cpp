@@ -18,8 +18,9 @@
 int main(int argc, char *argv[])
 {
     QMdApplication a(argc, argv);
+    a.setApplicationVersion("V1.00");
 #ifdef  Q_WS_X11
-    QApplication::setStyle("plastique");
+    a.setStyle("plastique");
 #endif
     QTextCodec *textcode = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForCStrings(textcode);

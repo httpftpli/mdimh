@@ -60,7 +60,7 @@ public:
    bool sanjiaoMagneticTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr, unsigned char magnet,
                             unsigned long stat);
    bool sanjiaoMagneticTest(unsigned int sanjiao,unsigned char stat);
-   void bedMotorTest(unsigned char flag,unsigned short pos,unsigned short param);
+   int bedMotorTest(unsigned char flag,unsigned short pos,unsigned short param);
    void rollTest(unsigned char flag,unsigned char derection,unsigned char rollpercent);
    void AssistRollTest(unsigned char derection,unsigned char rollpercent);
    void LedTest(unsigned char ledstat);

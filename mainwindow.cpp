@@ -24,6 +24,7 @@
 #include "formhead.h"
 #include "QTest"
 #include "helpform.h"
+#include "dialogabout.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -432,4 +433,10 @@ void MainWindow::on_qMdPushButton_18_clicked()
     HelpForm *form = new HelpForm;
     form->loadUrl(QUrl("http://www.google.com.hk"));
     form->show();
+}
+
+void MainWindow::on_qMdPushButton_19_clicked()
+{
+    DialogAbout *about = new DialogAbout(&hmiData);
+    about->exec();
 }

@@ -36,6 +36,9 @@ private slots:
     void on_spinBox_2_valueChanged(int arg1);
     void luolaTest();
     void fuzuLuolaTest();
+    void yaochuangTest(double val);
+
+    void on_pushButton_fz_toggled(bool checked);
 
 private:
     int timerid;
@@ -54,10 +57,6 @@ private:
     int luoladir;
     int luolaval;
     int luolapulsorpercent;
-
-
-
-
 };
 
 #endif // MACHINEEXAME_H

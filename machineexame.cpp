@@ -71,8 +71,8 @@ machineexame::machineexame(QComm *comm, QHMIData *data,QWidget *parent) :
     spinBox_3->setStyle(style3);
 
     QMdStyle *style4 = new QMdStyle();
-    style4->setParent(spinBox_4);
-    spinBox_4->setStyle(style4);
+    style4->setParent(doubleSpinBox_yc);
+    doubleSpinBox_yc->setStyle(style4);
 
     QMdStyle *style5 = new QMdStyle();
     style5->setParent(spinBox_5);
@@ -81,10 +81,6 @@ machineexame::machineexame(QComm *comm, QHMIData *data,QWidget *parent) :
     QMdStyle *style6 = new QMdStyle();
     style6->setParent(spinBox_6);
     spinBox_6->setStyle(style6);
-
-    QMdStyle *style7 = new QMdStyle();
-    style7->setParent(spinBox_7);
-    spinBox_7->setStyle(style7);
 
     zsdsignalmap.setMapping(pushButton_zsdred,1);
     zsdsignalmap.setMapping(pushButton_zsdyellow,2);
@@ -102,6 +98,7 @@ void machineexame::prepareToComm()
     connect(pushButton_luola,SIGNAL(clicked()),SLOT(luolaTest()));
     connect(pushButton_fuzuluola,SIGNAL(clicked()),SLOT(fuzuLuolaTest()));
     connect(pushButton_jt,SIGNAL(toggled(bool)),SLOT(headTest(bool)));
+    connect(doubleSpinBox_yc,SIGNAL(valueChanged(double)),SLOT(yaochuangTest(double)));
 }
 
 
@@ -227,4 +224,15 @@ void machineexame::luolaTest()
 void machineexame::fuzuLuolaTest()
 {
     pcomm->AssistRollTest(fuzuluoladir,fuzuluolaval);
+}
+
+void machineexame::yaochuangTest(double val)
+{
+    unsigned char isfanzhen = pushButton_fz->isChecked();
+    pcomm->bedMotorTest(isfanzhen,(unsigned short)qRound(val*100),0);
+}
+
+void machineexame::on_pushButton_fz_toggled(bool checked)
+{
+    pushButton_fz->setText(checked?tr("翻针"):tr("针对齿"));
 }

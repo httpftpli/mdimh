@@ -56,7 +56,8 @@ SOURCES += main.cpp\
     formxtcs2.cpp \
     formhead.cpp \
     formheadtest.cpp \
-    helpform.cpp
+    helpform.cpp \
+    dialogabout.cpp
 
 HEADERS  += \
     mdPushbutton/qmdpushbutton.h \
@@ -103,7 +104,8 @@ HEADERS  += \
     formxtcs2.h \
     formhead.h \
     formheadtest.h \
-    helpform.h
+    helpform.h \
+    dialogabout.h
 
 FORMS    += \
     qformfile.ui \
@@ -127,7 +129,8 @@ FORMS    += \
     formxtcs2.ui \
     formhead.ui \
     formheadtest.ui \
-    helpform.ui
+    helpform.ui \
+    dialogabout.ui
 
 OTHER_FILES +=
 

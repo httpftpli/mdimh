@@ -432,8 +432,16 @@ int QComm::sendParamaInRun(unsigned short setcount,unsigned short finishcount,un
 }
 
 
-void QComm::bedMotorTest(unsigned char flag,unsigned short pos,unsigned short param){
-
+int QComm::bedMotorTest(unsigned char flag,unsigned short pos,unsigned short param){
+    *(unsigned short *)d_send = htons(11);       //len
+    *(unsigned char *)(d_send+2) = (0x14);      //fun code
+    *(unsigned char *)(d_send+3) = (flag);
+    *(unsigned short *)(d_send+4) = htons(pos);
+    *(unsigned short *)(d_send+6) = htons(param);
+    unsigned char r;
+    if(programsend(r)&&(r=0x55))
+        return Md::Ok;
+    return Md::CommError;
 }
 
 void QComm::rollTest(unsigned char flag,unsigned char derection,unsigned char rollpercent){
@@ -719,7 +727,7 @@ int QComm::SendParama( QFile &wrkfile, QFile &spafile,int packet,QWidget *parent
 int QComm::paramaUpdata(unsigned char id,unsigned short *buf,int len,bool halfwordorbyte){
     Q_ASSERT(len<500);
     if(len>500)
-        len==500;
+        len=500;
     unsigned short packlen;
     *(unsigned char *)(d_send+2) = 0x97;
     *(unsigned char *)(d_send+3) = id;

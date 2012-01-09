@@ -19,7 +19,7 @@ headTestForm::headTestForm(QComm *com,QHMIData *data,QWidget *parent) :
     head0 = new FormHeadTest(pcom,Md::SYSTEM1,Md::POSFRONT);
     head1 = new FormHeadTest(pcom,Md::SYSTEM1,Md::POSREAR);
     head2 = new FormHeadTest(pcom,Md::SYSTEM2,Md::POSFRONT);
-    head3= new FormHeadTest(pcom,Md::SYSTEM2,Md::POSREAR);
+    head3 = new FormHeadTest(pcom,Md::SYSTEM2,Md::POSREAR);
     layout->addWidget(head1,0,0);
     layout->addWidget(head3,0,1);
     layout->addWidget(head0,1,0);
@@ -272,7 +272,7 @@ void headTestForm::timerEvent(QTimerEvent *e)
         const unsigned char NUM=2;
 #endif
         for(int i=0;i<NUM;i++){
-            unsigned char dumuprobe = buf[0]&(0x03<<i);
+            unsigned char dumuprobe = (buf[0]&(0x03<<(i*2)))>>(i*2);
             unsigned char sanjiao = buf[1+i];
             unsigned char lpin = buf[7+2*i];
             unsigned char rpin = buf[8+2*i];

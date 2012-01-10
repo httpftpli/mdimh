@@ -120,7 +120,6 @@ Md::Result sysInit(){
         QTest::qWait(2000);
         return Md::CommError;
     }
-
     splash->showMessage(QObject::tr("正在下载参数"),Qt::AlignBottom);
     QFile wrkfile(hmiData.wrkFilePath);
     QFile spafile(hmiData.spaFilePath);

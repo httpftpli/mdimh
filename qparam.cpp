@@ -14,7 +14,6 @@ QParam::QParam(QComm *send, QObject *parent):
 
 }
 
-
 QParam::~QParam(){
     if(spabuf){
         delete [] spabuf;
@@ -47,6 +46,8 @@ bool QParam::setFile(const QString &spafilepath){
 
 void  QParam::loadFile(){
     if(!spafile)
+        return;
+    if(!spabuf)
         return;
     spafile->open(QIODevice::ReadOnly);
     spabuf = new short[LENOFSPA];

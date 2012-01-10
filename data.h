@@ -360,30 +360,34 @@ private:
 class QYCWZXZModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QYCWZXZModel( QParam *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
-                    paramadata(data){}
+    QYCWZXZModel( QParam *data ,QComm *com,QObject * parent = 0 ):QAbstractTableModel(parent),
+        paramadata(data),pcomm(com){}
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     QVariant data(const QModelIndex &index, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
+private:
     QParam *paramadata;
+    QComm *pcomm;
 };
 
 /////////////翻针摇床位置修正/////////////////////////////
 class QFZYCWZXZModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QFZYCWZXZModel( QParam *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
-                    param(data){}
+    QFZYCWZXZModel( QParam *data ,QComm *com,QObject * parent = 0 ):QAbstractTableModel(parent),
+        param(data),pcomm(com){}
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     QVariant data(const QModelIndex &index, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags ( const QModelIndex & index ) const ;
+private:
     QParam *param;
+    QComm *pcomm;
 };
 
 /*////////////机器工作参数/////////////////////////////

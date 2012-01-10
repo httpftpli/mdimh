@@ -10,12 +10,13 @@
 #include "formxtcs.h"
 #endif
 
-paramform::paramform(QWidget *parent) :
+paramform::paramform(QComm *com, QWidget *parent) :
     QWidget(parent,Qt::FramelessWindowHint),patterndata(NULL),paramadata(NULL),dmzmodel(NULL),llmodel(NULL),
         zdjmodel(NULL),ssmodel(NULL),sztfmodel(NULL),ytxszxzmodel(NULL),
         ytxsztfmodel(NULL),cjpmodel(NULL),pzkmodel(NULL),
         szkbmodel(NULL),dmbcmodel(NULL),ycwzxzmodel(NULL),
-        fzycwzxzmodel(NULL),formjqgzcs(NULL),formxtcs(NULL){
+        fzycwzxzmodel(NULL),formjqgzcs(NULL),formxtcs(NULL),
+        pcomm(com){
     //qDebug()<<"enter paramform construction fuc"<<QTime::currentTime().toString("ss-zzz");
     setupUi(this);
     //qDebug()<<"setupUi(this)"<<QTime::currentTime().toString("ss-zzz");
@@ -40,7 +41,7 @@ paramform::paramform(QWidget *parent) :
 }
 
 paramform::~paramform(){
-    this->paramadata->releaseBuf();;
+    //this->paramadata->releaseBuf();
 }
 
 void paramform::setPattern(QPatternData *pattern){
@@ -227,14 +228,14 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
         break;
    case 9:
         if(ycwzxzmodel==NULL){
-            ycwzxzmodel= new QYCWZXZModel(paramadata,this);
+            ycwzxzmodel= new QYCWZXZModel(paramadata,pcomm,this);
             tableView_ycwzxz->setModel(ycwzxzmodel);
             tableView_ycwzxz->setSpan(0,2,1,6);
         }
         break;
    case 10:
         if(NULL==fzycwzxzmodel){
-            fzycwzxzmodel = new QFZYCWZXZModel(paramadata,this);
+            fzycwzxzmodel = new QFZYCWZXZModel(paramadata,pcomm,this);
             tableView_fzyc->setSpan(0,0,1,2);
             tableView_fzyc->setSpan(0,2,1,2);
             tableView_fzyc->setSpan(0,4,1,2);

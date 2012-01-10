@@ -177,7 +177,7 @@ void MainWindow::on_qMdPushButton_3_clicked()
 {
     if(!paramForm)
     //qDebug()<<"base time"<<QTime::currentTime().toString("ss-zzz");
-        paramForm = QPointer<paramform>(new paramform);
+        paramForm = QPointer<paramform>(new paramform(&qComm));
     //qDebug()<<"new paramform finish"<<QTime::currentTime().toString("ss-zzz");
     paramForm->setIndex(paramform::Index_cjp);
     paramForm->show();    
@@ -297,7 +297,7 @@ void MainWindow::on_qMdPushButton_24_clicked()
 void MainWindow::on_pushButton_clicked()
 {
     if(!paramForm)
-        paramForm = QPointer<paramform>(new paramform);
+        paramForm = QPointer<paramform>(new paramform(&qComm));
     paramForm->setIndex(paramform::Index_dmz);
     paramForm->show();
 }
@@ -305,7 +305,7 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     if(!paramForm)
-        paramForm = QPointer<paramform>(new paramform);
+        paramForm = QPointer<paramform>(new paramform(&qComm));
     paramForm->setIndex(paramform::Index_llzzdj);
     paramForm->show();
 }
@@ -318,7 +318,7 @@ void MainWindow::on_pushButton_3_clicked()
 void MainWindow::on_pushButton_5_clicked()
 {
     if(!paramForm)
-        paramForm = QPointer<paramform>(new paramform);
+        paramForm = QPointer<paramform>(new paramform(&qComm));
     paramForm->setIndex(paramform::Index_ss);
     paramForm->show();
 }
@@ -334,7 +334,7 @@ void MainWindow::on_pushButton_12_clicked()
 void MainWindow::on_pushButton_6_clicked()
 {
     if(!paramForm)
-        paramForm = QPointer<paramform>(new paramform);
+        paramForm = QPointer<paramform>(new paramform(&qComm));
     paramForm->setIndex(paramform::Index_sztf);
     paramForm->show();
 }

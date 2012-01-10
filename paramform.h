@@ -33,7 +33,7 @@ public:
         Index_qjxtcs
     };
 
-    explicit paramform(QWidget *parent = 0);
+    explicit paramform(QComm *com,QWidget *parent = 0);
 
     ~paramform();
 
@@ -74,6 +74,7 @@ private:
     QYCWZXZModel *ycwzxzmodel;
     QFZYCWZXZModel *fzycwzxzmodel;
     FormJqgzcs *formjqgzcs;
+    QComm *pcomm;
 #if DUAL_SYSTEM
     FormXtcs2   *formxtcs;
 #else

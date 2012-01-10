@@ -1499,10 +1499,27 @@ bool  QYCWZXZModel::setData(const QModelIndex &index, const QVariant &value, int
     int row = index.row();
     int column = index.column();
     int val = value.toString().toInt();
-    if(0==role)
+    if(0==row)
         paramadata->setData(SpaItemHd_Ycwzxz,0,val);
     else
         paramadata->setData(SpaItemHd_Ycwzxz,column/2*8+row,val);
+
+    switch(column){
+    case 1:
+        pcomm->bedMotorTest(2,row*100,val);
+        break;
+    case 3:
+        pcomm->bedMotorTest(2,-100*row,val);
+        break;
+    case 5:
+        pcomm->bedMotorTest(3,100*(row-1),val);
+        break;
+    case 7:
+        pcomm->bedMotorTest(3,-100*(row-1),val);
+        break;
+    default:
+        break;
+    }
     return TRUE;
 }
 
@@ -1594,15 +1611,28 @@ bool QFZYCWZXZModel::setData(const QModelIndex &index, const QVariant &value, in
     if(0==row)
         return FALSE;
     if(Qt::EditRole==role){
+        int val = value.toInt();
         switch(column){
         case 1:
-            param->setData(SpaItemHd_Fzycwzxz,row-1,value.toInt());
+            param->setData(SpaItemHd_Fzycwzxz,row-1,val);
+            row--;
+            if(row>8)
+                row = -(row-8);
+            pcomm->bedMotorTest(5,100*row,val);
             break;
         case 3:
-            param->setData(SpaItemHd_Fzycwzxz_z,row-1,value.toInt());
+            param->setData(SpaItemHd_Fzycwzxz_z,row-1,val);
+            row--;
+            if(row>8)
+                row = -(row-8);
+            pcomm->bedMotorTest(4,100*row,val);
             break;
         case 5:
-            param->setData(SpaItemHd_Fzycwzxz_f,row-1,value.toInt());
+            param->setData(SpaItemHd_Fzycwzxz_f,row-1,val);
+            row--;
+            if(row>8)
+                row = -(row-8);
+            pcomm->bedMotorTest(6,100*row,val);
             break;
         default:
             break;

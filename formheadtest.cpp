@@ -71,13 +71,13 @@ void FormHeadTest::setHeadData(unsigned char dumuprobe, unsigned char sanjiao,
                                unsigned short ldumuval,unsigned short rdumuval)
 {
     if(dumuprobe&0x01)
-        label_d0->setStyleSheet("background-color:red");
-    else
         label_d0->setStyleSheet("background-color:gray");
-    if(dumuprobe&0x02)
-        label_d1->setStyleSheet("background-color:red");
     else
+        label_d0->setStyleSheet("background-color:red");
+    if(dumuprobe&0x02)
         label_d1->setStyleSheet("background-color:gray");
+    else
+        label_d1->setStyleSheet("background-color:red");
     for(int i=0;i<6;i++)
         sanjiaoarray[i]->setChecked(sanjiao&(1<<i));
     for(int i=0;i<8;i++)

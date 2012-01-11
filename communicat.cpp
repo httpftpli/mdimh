@@ -31,7 +31,7 @@ bool QComm::programsend(){
         QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         if(time.hasExpired(COMMTIMEOUT)){
             emit commTimerOut(d_send[2]);
-            return Md::CommError;
+            return FALSE;
         }
     }
     beforesend();
@@ -61,7 +61,7 @@ bool QComm::programsend(){
          QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
          if(time.hasExpired(COMMTIMEOUT)){
              emit commTimerOut(d_send[2]);
-             return Md::CommError;
+             return FALSE;
          }
      }
      beforesend();
@@ -92,7 +92,7 @@ bool QComm::programsend(){
          QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
          if(time.hasExpired(COMMTIMEOUT)){
              emit commTimerOut(d_send[2]);
-             return Md::CommError;
+             return FALSE;
          }
      }
      beforesend();
@@ -125,7 +125,7 @@ bool QComm::programsend(unsigned char &ackval1,unsigned char &ackval2,
         QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         if(time.hasExpired(COMMTIMEOUT)){
             emit commTimerOut(d_send[2]);
-            return Md::CommError;
+            return FALSE;
         }
     }
      beforesend();
@@ -158,7 +158,7 @@ bool QComm::programsend(char *buf, unsigned short &len){
         QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         if(time.hasExpired(COMMTIMEOUT)){
             emit commTimerOut(d_send[2]);
-            return Md::CommError;
+            return FALSE;
         }
     }
     beforesend();
@@ -545,7 +545,10 @@ int QComm::ReadHead(char *buf, unsigned short &len){
     *(unsigned short *)d_send = htons(7);       //len
     *(unsigned char *)(d_send+2) = (0x24);      //fun code
     *(unsigned char *)(d_send+3) = 0x55;
-    return programsend(buf,len);
+    if(programsend(buf,len))
+        return Md::Ok;
+    else
+        return Md::CommError;
 }
 
 int QComm::TogSysStat(unsigned char stat){

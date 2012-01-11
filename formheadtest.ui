@@ -277,6 +277,12 @@
         </property>
         <item>
          <widget class="QLabel" name="label_d0">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>10</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
             <width>10</width>
@@ -284,7 +290,7 @@
            </size>
           </property>
           <property name="text">
-           <string>Te</string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -332,6 +338,12 @@
         </item>
         <item>
          <widget class="QLabel" name="label_d1">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>10</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
             <width>10</width>
@@ -339,7 +351,7 @@
            </size>
           </property>
           <property name="text">
-           <string>Te</string>
+           <string/>
           </property>
          </widget>
         </item>

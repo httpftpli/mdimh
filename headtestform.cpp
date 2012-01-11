@@ -272,12 +272,14 @@ void headTestForm::timerEvent(QTimerEvent *e)
         const unsigned char NUM=2;
 #endif
         for(int i=0;i<NUM;i++){
-            unsigned char dumuprobe = (buf[0]&(0x03<<(i*2)))>>(i*2);
+            unsigned char dumuproberow = ((unsigned char)buf[0]<<4)|
+                    ((unsigned char)buf[0]>>4);
+            unsigned char dumuprobe = (dumuproberow&(0x03<<(2*i)))>>2*i;
             unsigned char sanjiao = buf[1+i];
             unsigned char lpin = buf[7+2*i];
             unsigned char rpin = buf[8+2*i];
-            unsigned short ldumuval = *(unsigned short*)(buf+15+4*i);
-            unsigned short rdumuval = *(unsigned short*)(buf+15+4*i);
+            unsigned short ldumuval = ntohs(*(unsigned short*)(buf+15+4*i));
+            unsigned short rdumuval = ntohs(*(unsigned short*)(buf+17+4*i));
             head[i]->setHeadData(dumuprobe,sanjiao,lpin,rpin,ldumuval,rdumuval);
         }
         /////////shazui////////////////
@@ -286,6 +288,5 @@ void headTestForm::timerEvent(QTimerEvent *e)
         /////////yajiao///////////////
 
     }
-
     timereventrecursion = FALSE;
 }

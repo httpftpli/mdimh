@@ -251,7 +251,7 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
         break;
    case 11:
         if(NULL==formjqgzcs){
-            formjqgzcs = new FormJqgzcs(paramadata,this);
+            formjqgzcs = new FormJqgzcs(paramadata,pcomm,this);
             QWidget *widget = stackedWidget->currentWidget();
             QGridLayout *layout = new QGridLayout;
             widget->setLayout(layout);
@@ -263,9 +263,9 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
    case 12:
         if(NULL==formxtcs){
 #if DUAL_SYSTEM
-            formxtcs = new FormXtcs2(paramadata,this);
+            formxtcs = new FormXtcs2(paramadata,pcomm,this);
 #else
-            formxtcs = new FormXtcs(paramadata,this);
+            formxtcs = new FormXtcs(paramadata,pcomm,this);
 #endif
             QWidget *widget =stackedWidget->currentWidget();
             QGridLayout *layout = new QGridLayout();

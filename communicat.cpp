@@ -415,6 +415,22 @@ bool QComm::sanjiaoMagneticTest(unsigned int sanjiao,unsigned char stat){
     return programsend();
 }
 
+int QComm::yajiaoTest(int frontback, int moveflag, short val)
+{
+    *(unsigned short *)d_send = htons(10);       //len
+    *(unsigned char *)(d_send+2) = (0x17);      //fun code
+
+    *(unsigned char  *)(d_send+3) = frontback;
+    *(unsigned char  *)(d_send+4) = moveflag;
+    *(short *)(d_send+5) = htons(val);
+    unsigned char r=0;
+    if(!programsend(r))
+        return Md::CommError;
+    if(r!=0x55)
+        return Md::CommError;
+    return Md::Ok;
+}
+
 int QComm::sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,
                         unsigned char OneStop,unsigned char alarmLimit,unsigned char DanKouLock){
     *(unsigned short *)d_send = htons(14);       //len

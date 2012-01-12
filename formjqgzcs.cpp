@@ -1,9 +1,10 @@
 #include "formjqgzcs.h"
 #include "qparam.h"
 #include "qmdstyle.h"
+#include "communicat.h"
 
-FormJqgzcs::FormJqgzcs(QParam *data,QWidget *parent):
-        QWidget(parent),param(data),mdstyle(new QMdStyle){
+FormJqgzcs::FormJqgzcs(QParam *data,QComm *comm, QWidget *parent):
+    QWidget(parent),param(data),pcomm(comm), mdstyle(new QMdStyle){
     setupUi(this);
     QWidget *widget[]={
         _1_spinBox    ,_2_spinBox    ,_3_spinBox    ,_4_spinBox ,_5_doubleSpinBox,
@@ -64,6 +65,10 @@ void FormJqgzcs::valeChanged(QWidget *obj){
         int val = spinbox->value();
         int index = spinbox->property("index").toInt();
         param->setData(SpaItemHd_Jqgzcs,index,val);
+        if(14==index)
+            pcomm->yajiaoTest(Md::POSFRONT,4,val);
+        if(15==index)
+            pcomm->yajiaoTest(Md::POSREAR,4,val);
         return;
     }
     QDoubleSpinBox *doublespinbox = qobject_cast<QDoubleSpinBox *>(obj);

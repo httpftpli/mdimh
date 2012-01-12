@@ -7,19 +7,21 @@
 
 class QParam;
 class QMdStyle;
+class QComm;
 
 class FormXtcs : public QWidget, private Ui::FormXtcs
 {
     Q_OBJECT
 
 public:
-    explicit FormXtcs(QParam *paramdata, QWidget *parent = 0);
+    explicit FormXtcs(QParam *paramdata, QComm *comm, QWidget *parent = 0);
     ~FormXtcs();
 
 private:
     QParam *param;
     QSignalMapper signalmapper;
     QMdStyle *mdstyle;
+    QComm *pcomm;
 private slots:
     void valeChanged(QWidget *widget);
 

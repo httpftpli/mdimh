@@ -18,17 +18,37 @@ headTestForm::headTestForm(QComm *com,QHMIData *data,QWidget *parent) :
     QGridLayout *layout = new QGridLayout(widget);
     head0 = new FormHeadTest(pcom,Md::SYSTEM1,Md::POSFRONT);
     head1 = new FormHeadTest(pcom,Md::SYSTEM1,Md::POSREAR);
-    head2 = new FormHeadTest(pcom,Md::SYSTEM2,Md::POSFRONT);
-    head3 = new FormHeadTest(pcom,Md::SYSTEM2,Md::POSREAR);
-    layout->addWidget(head1,0,0);
-    layout->addWidget(head3,0,1);
-    layout->addWidget(head0,1,0);
-    layout->addWidget(head2,1,1);
-
     head[0]=head0;
     head[1]=head1;
-    head[2]=head2;
-    head[3]=head3;
+    layout->addWidget(head1,0,0);
+    layout->addWidget(head0,1,0);
+    yajiaoprobe0 = new QLabel;
+    yajiaoprobe0->setFixedSize(10,10);
+    yajiao0 = new QPushButton;
+    yajiao0->setText("压脚");
+    yajiao0->setFixedSize(60,40);
+    yajiao0->setCheckable(TRUE);
+    QWidget *widgetyj0 = new QWidget;
+    QHBoxLayout *layoutyj0 = new QHBoxLayout(widgetyj0);
+    layoutyj0->addStretch();
+    layoutyj0->addWidget(yajiaoprobe0);
+    layoutyj0->addWidget(yajiao0);
+    layoutyj0->addStretch();
+    layout->addWidget(widgetyj0,2,0);
+
+    yajiaoprobe1 = new QLabel;
+    yajiaoprobe1->setFixedSize(10,10);
+    yajiao1 = new QPushButton;
+    yajiao1->setFixedSize(60,40);
+    yajiao1->setText("后压脚");
+    yajiao1->setCheckable(TRUE);
+    QWidget *widgetyj1 = new QWidget;
+    QHBoxLayout *layoutyj1 = new QHBoxLayout(widgetyj1);
+    layoutyj1->addStretch();
+    layoutyj1->addWidget(yajiao1);
+    layoutyj1->addWidget(yajiaoprobe1);
+    layoutyj1->addStretch();
+    layout->addWidget(widgetyj1,2,1);
 
     shazuibuttonarray[0] = pushButton_s00;
     shazuibuttonarray[1] = pushButton_s01;
@@ -46,18 +66,29 @@ headTestForm::headTestForm(QComm *com,QHMIData *data,QWidget *parent) :
     shazuibuttonarray[13] = pushButton_s15;
     shazuibuttonarray[14] = pushButton_s16;
     shazuibuttonarray[15] = pushButton_s17;
+    for(int i=0;i<8;i++){
+        signalmap.setMapping(shazuibuttonarray[i],i);
+    }
+
+
+
+
 #if DUAL_SYSTEM
+    head2 = new FormHeadTest(pcom,Md::SYSTEM2,Md::POSFRONT);
+    head3 = new FormHeadTest(pcom,Md::SYSTEM2,Md::POSREAR);
+    head[2]=head2;
+    head[3]=head3;
+    layout->addWidget(head2,1,1);
+    layout->addWidget(head3,0,1);
+    for(int i=8;i<16;i++){
+        signalmap.setMapping(shazuibuttonarray[i],i);
+    }
 #else
     for(int i=8;i<16;i++){
         shazuibuttonarray[i]->hide();
     }
 #endif
-
-    for(int i=0;i<16;i++){
-        signalmap.setMapping(shazuibuttonarray[i],i);
-    }
-
-    connect(&signalmap,SIGNAL(mapped(int)),SLOT(shazuitest(int)));
+    //connect(&signalmap,SIGNAL(mapped(int)),SLOT(shazuitest(int)));
     //connect(head0,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
     //connect(head1,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
     //connect(head2,SIGNAL(autoTesting(bool)),SLOT(setDisabled(bool)));
@@ -78,7 +109,9 @@ void headTestForm::prepareToComm()
     connect(pushButton_pauto,SIGNAL(clicked()),SLOT(pinautotest()));
     connect(pushButton_dauto,SIGNAL(clicked()),SLOT(dumutestauto()));
     connect(pushButton_sjauto,SIGNAL(clicked()),SLOT(sanjiaotestauto()));
-    connect(pushButton_autotest,SIGNAL(clicked()),SLOT(autotest()));
+    //connect(pushButton_autotest,SIGNAL(clicked()),SLOT(autotest()));
+    connect(yajiao0,SIGNAL(toggled(bool)),SLOT(yajiaotestF(bool)));
+    connect(yajiao1,SIGNAL(toggled(bool)),SLOT(yajiaotestB(bool)));
     timerid = startTimer(800);
 }
 
@@ -201,12 +234,12 @@ void headTestForm::autotest()
 {
 
     /////////dumu test////////////////////////////////////////////
-    if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,1)==FALSE)
+    if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,500)==FALSE)
         return
-    QTest::qWait(200);
+    QTest::qWait(1000);
     if(pcom->DumuMotorTest(Md::SYSTEMALL,Md::POSFRONTREAR,Md::POSLEFTRIGHT,0)==FALSE)
         return
-    QTest::qWait(200);
+    QTest::qWait(1000);
 #ifdef DUAL_SYSTEM
     const int NUM = 16;
 #else
@@ -215,15 +248,31 @@ void headTestForm::autotest()
     for(int i=0;i<NUM;i++){
       if(pcom->DumuMotorTest(1<<i,200)==FALSE)
           break;
-      QTest::qWait(200);
+      QTest::qWait(1000);
       if(pcom->DumuMotorTest(1<<i,0)==FALSE)
           break;
-      QTest::qWait(200);
+      QTest::qWait(1000);
     }
     /////////dumu test finish///////////////////////////////////////////
+    pcom->yajiaoTest(Md::POSFRONTREAR,1,0);
+    QTest::qWait(1000);
+    pcom->yajiaoTest(Md::POSFRONTREAR,2,0);
+    QTest::qWait(1000);
+    pcom->yajiaoTest(Md::POSFRONTREAR,1,0);
+    QTest::qWait(1000);
     pinautotest();
     shazuitestauto();
     sanjiaotestauto();
+}
+
+void headTestForm::yajiaotestF(bool check)
+{
+    pcom->yajiaoTest(Md::POSFRONT,check?2:1,0);
+}
+
+void headTestForm::yajiaotestB(bool check)
+{
+    pcom->yajiaoTest(Md::POSREAR,check?2:1,0);
 }
 
 
@@ -281,6 +330,16 @@ void headTestForm::timerEvent(QTimerEvent *e)
             unsigned short ldumuval = ntohs(*(unsigned short*)(buf+15+4*i));
             unsigned short rdumuval = ntohs(*(unsigned short*)(buf+17+4*i));
             head[i]->setHeadData(dumuprobe,sanjiao,lpin,rpin,ldumuval,rdumuval);
+            unsigned char yajiao = *(unsigned char*)(buf+31);
+            if(yajiao&0x10)
+                yajiaoprobe0->setStyleSheet("background-color:gray");
+            else
+                yajiaoprobe0->setStyleSheet("background-color:red");
+
+            if(yajiao&0x20)
+                yajiaoprobe1->setStyleSheet("background-color:gray");
+            else
+                yajiaoprobe1->setStyleSheet("background-color:red");
         }
         /////////shazui////////////////
         unsigned short shazui = buf[5]+(buf[6]<<8);
@@ -290,3 +349,6 @@ void headTestForm::timerEvent(QTimerEvent *e)
     }
     timereventrecursion = FALSE;
 }
+
+
+

@@ -26,7 +26,11 @@ private slots:
     void sanjiaotestauto();
     void pinautotest();
     void autotest();
+    void yajiaotestF(bool check);
+    void yajiaotestB(bool check);
     void on_pushButton_cancle_clicked();
+
+
 
 private:
     FormHeadTest *head0;
@@ -34,6 +38,10 @@ private:
     FormHeadTest *head2;
     FormHeadTest *head3;
     FormHeadTest *head[4];
+    QLabel *yajiaoprobe0 ;
+    QLabel *yajiaoprobe1 ;
+    QPushButton *yajiao0 ;
+    QPushButton *yajiao1 ;
     QSignalMapper signalmap;
     QPushButton *shazuibuttonarray[16];
     QComm *pcom;

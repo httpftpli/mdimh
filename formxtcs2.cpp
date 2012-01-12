@@ -1,9 +1,10 @@
 #include "formxtcs2.h"tcs.h"
 #include "qparam.h"
 #include "qmdstyle.h"
+#include "communicat.h"
 
-FormXtcs2::FormXtcs2(QParam *paramdata, QWidget *parent) :
-        QWidget(parent),param(paramdata),mdstyle(new QMdStyle){
+FormXtcs2::FormXtcs2(QParam *paramdata, QComm *comm, QWidget *parent) :
+        QWidget(parent),param(paramdata),pcomm(comm),mdstyle(new QMdStyle){
     setupUi(this);
     QWidget *widget[]={
         _01_spinBox  ,_02_spinBox  ,_03_spinBox   ,_04_spinBox   ,_05_spinBox_2,
@@ -56,6 +57,10 @@ void FormXtcs2::valeChanged(QWidget *obj){
         param->setData(SpaItemHd_Xtcs,index,val);
         if((index == 11)||(index ==12))
             param->updataPivotal();
+        if(14==index)
+            pcomm->yajiaoTest(Md::POSFRONT,3,val);
+        if(15==index)
+            pcomm->yajiaoTest(Md::POSREAR,3,val);
         return;
     }
     QDoubleSpinBox *doublespinbox = qobject_cast<QDoubleSpinBox *>(obj);

@@ -268,10 +268,22 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             formxtcs = new FormXtcs(paramadata,pcomm,this);
 #endif
             QWidget *widget =stackedWidget->currentWidget();
-            QGridLayout *layout = new QGridLayout();
+            QVBoxLayout *layout = new QVBoxLayout();
             widget->setLayout(layout);
             layout->addWidget(formxtcs);
+            label_jtzhenshu = new QLabel(this);
+            QLabel *label_temp = new QLabel(this);
+            label_temp->setText("当前机头位置");
+            QWidget *widget1 = new QWidget;
+            QHBoxLayout *hlayout = new QHBoxLayout(widget1);
+            hlayout->addStretch();
+            hlayout->addWidget(label_temp);
+            hlayout->addWidget(label_jtzhenshu);
+            hlayout->addStretch();
+            layout->addStretch(15);
+            layout->addWidget(widget1);
             layout->setContentsMargins(6,20,6,6);
+
             formxtcs->show();
         }
 

@@ -75,6 +75,7 @@ private:
     QFZYCWZXZModel *fzycwzxzmodel;
     FormJqgzcs *formjqgzcs;
     QComm *pcomm;
+    QLabel *label_jtzhenshu;
 #if DUAL_SYSTEM
     FormXtcs2   *formxtcs;
 #else

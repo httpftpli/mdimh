@@ -48,13 +48,13 @@ void  QParam::loadFile(){
     if(!spafile)
         return;
     if(!spabuf)
-        return;
+        spabuf = new short[LENOFSPA];
     spafile->open(QIODevice::ReadOnly);
-    spabuf = new short[LENOFSPA];
     int num = spafile->read((char *)spabuf,LENOFSPA);
     if((unsigned int)num<sizeof LENOFSPA)
         qWarning("len of spafile shorter than LENOFSPA");
     spafile->close();
+    modifyedItem.clear();
 }
 
 

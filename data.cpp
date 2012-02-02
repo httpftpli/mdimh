@@ -270,10 +270,10 @@ void QMdItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, c
             }
         }else
             valstate = QValidator::Acceptable;
-        if(valstate==QValidator::Acceptable)
-            model->setData(index,str.toInt(),Qt::EditRole);
-        else
-            model->setData(index,oldval.toInt(),Qt::EditRole);
+        if((valstate==QValidator::Acceptable)&&(str.trimmed()!=oldval.trimmed()))
+            model->setData(index,str,Qt::EditRole);
+        //else
+            //this->setEditorData();
     }
 }
 
@@ -1537,9 +1537,11 @@ Qt::ItemFlags  QYCWZXZModel::flags(const QModelIndex &index) const{
 
 
 int QFZYCWZXZModel::rowCount(const QModelIndex &parent) const{
+    Q_UNUSED(parent)
     return 17;
 }
 int QFZYCWZXZModel::columnCount(const QModelIndex &parent) const{
+    Q_UNUSED(parent)
     return 6;
 }
 QVariant QFZYCWZXZModel::headerData(int section, Qt::Orientation orientation, int role) const{
@@ -1657,82 +1659,6 @@ Qt::ItemFlags QFZYCWZXZModel::flags(const QModelIndex &index) const{
 }
 
 
-
-//////////////////////////机器工作参数//////////////////////////
-
-/*QJQGZCSModel::QJQGZCSModel( QParam *data ,QObject * parent ):QAbstractTableModel(parent),
-                paramadata(data){
-    namelist<<"主马达高速"<<"主马达速度限制"<<"主马达低速"
-            <<"主马达复位速度"<<"主马达高速速度"<<"自动归零件数"<<"针床撞击灵敏度"
-            <<"针床撞击使能"<<"主罗拉停车力矩"<<"副罗拉停车力矩"<<"左送纱停车力矩"
-            <<"右送纱停车力矩"<<"机头回转距离"<<"后沉降片复位"<<"前程降片复位"
-            <<"电磁铁通电时间"<<"副罗拉使能"<<"编织卷布增益"<<"翻针卷布增益"
-            <<"屏幕保护时间"<<"屏幕保护有效"<<"选针器刀片个数"<<"左右送纱有效"
-            <<"片间隔距离"<<"沙嘴落下提前量"<<"罗拉厂转模式"
-            <<"罗拉正转脉冲数"<<"罗拉反转脉冲数"<<"摇床丝杆补偿"<<"送纱启动等待时间";
-
-}
-
-int QJQGZCSModel::rowCount(const QModelIndex &parent) const{
-    Q_UNUSED(parent)
-    return 12;
-}
-
-int QJQGZCSModel::columnCount(const QModelIndex &parent) const{
-    Q_UNUSED(parent)
-    return 6;
-}
-
-QVariant QJQGZCSModel::headerData(int section, Qt::Orientation orientation, int role) const{
-    if(Qt::DisplayRole!=role)
-        return QVariant();
-    if(Qt::Horizontal==orientation){
-        if(section%2)
-            return tr("值");
-        else
-            return tr("名称");
-    }
-    return QVariant();
-}
-
-QVariant  QJQGZCSModel::data(const QModelIndex &index, int role) const{
-    if(!index.isValid())
-        return QVariant();
-    int row = index.row();
-    int column = index.column();
-    if(role==Qt::DisplayRole){
-        if(column%2)
-            return QString::number(paramadata->fechData(ADDR_ParaJiQiGongZuo,column/2*12+row));
-        else
-            return namelist.value(column/2*12+row);
-    }else if(role==Qt::SizeHintRole){
-        if(column%2)
-            return QSize(60,50);
-    }else if(role==Qt::TextAlignmentRole){
-        if(column%2)
-            return QVariant(Qt::AlignHCenter|Qt::AlignVCenter);
-    }
-    return QVariant();
-}
-
-
-bool  QJQGZCSModel::setData(const QModelIndex &index, const QVariant &value, int role){
-    return TRUE;
-
-}
-
-Qt::ItemFlags  QJQGZCSModel::flags(const QModelIndex &index) const{
-    int column = index.column();
-    if(column%2)
-        return Qt::ItemIsEnabled|Qt::ItemIsSelectable|Qt::ItemIsEditable;
-    else
-        return Qt::NoItemFlags;
-
-}*/
-
-
-
-/////////////////////////////////////////////////////////
 
 
 bool QMdSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex & source_parent ) const{

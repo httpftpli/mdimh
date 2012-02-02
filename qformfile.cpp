@@ -164,7 +164,7 @@ void QFormFile::on_qMdPushButton_5_clicked()
     progressDialog.setRange(0,100);
     progressDialog.setLabelText(tr("发送CNT文件"));
     progressDialog.show();
-    int result = qComm.SendFile(cntfilepath,0,FALSE,this);
+    int result = qComm.sendFile(cntfilepath,0,FALSE,this);
     if(result ==Md::CommError) {
         box.exec(tr("花型发送"),tr("发送CNT文件，通信错误"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
@@ -172,7 +172,7 @@ void QFormFile::on_qMdPushButton_5_clicked()
     }
     progressDialog.setLabelText(tr("发送PAT文件"));
     progressDialog.show();
-    result = qComm.SendFile(patfilepath,0,FALSE,this);
+    result = qComm.sendFile(patfilepath,0,FALSE,this);
     if(result ==Md::CommError) {
         box.exec(tr("花型发送"),tr("发送PAT文件，通信错误"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);

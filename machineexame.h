@@ -40,6 +40,7 @@ private slots:
 
     void on_pushButton_fz_toggled(bool checked);
 
+
 private:
     int timerid;
     bool timereventrecursion;

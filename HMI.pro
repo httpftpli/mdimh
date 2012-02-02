@@ -116,7 +116,6 @@ FORMS    += \
     headtestform.ui \
     syslogform.ui \
     updateromform.ui \
-    inputpanel.ui \
     calibrationtestwidget.ui \
     qshazuikbform.ui \
     qhuabanxhform.ui \

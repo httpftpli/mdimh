@@ -825,7 +825,7 @@ int  QComm::SendShazuiKb(const QString &sazfilepath){
     return Md::Ok;
 }
 
-int  QComm::SendFile(const QString &filepath,unsigned short fileid, bool samehint, QWidget *parent){
+int  QComm::sendFile(const QString &filepath,unsigned short fileid, bool samehint, QWidget *parent){
     QFile file(filepath);
     if(!file.exists()){
         return Md::FileNotExist;

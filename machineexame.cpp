@@ -236,3 +236,5 @@ void machineexame::on_pushButton_fz_toggled(bool checked)
 {
     pushButton_fz->setText(checked?tr("翻针"):tr("针对齿"));
 }
+
+

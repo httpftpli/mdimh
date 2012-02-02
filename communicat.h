@@ -84,7 +84,7 @@ public:
    int TogSysStat(unsigned char stat);
    int sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,
                     unsigned char OneStop,unsigned char alarmLimit,unsigned char DanKouLock);
-   int SendFile(const QString &filepath,unsigned short fileid,bool samehint,QWidget *parent);
+   int sendFile(const QString &filepath,unsigned short fileid,bool samehint,QWidget *parent);
    int SendShazuiKb(const QString &sazfilepath=QString());
    int SendParama(QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
    int paramaUpdata(unsigned char id,unsigned short *buf,int len,bool halfwordorbyte);

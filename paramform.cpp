@@ -199,7 +199,7 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
 
         }
         break;
-   case 6:
+   case 6:{
         if(pzkmodel==NULL){
             pzkmodel = new QPZKModel(patterndata,8,this);            
             tableView_pzk->setModel(pzkmodel);
@@ -214,26 +214,39 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             spinBox->setRange(valbottom,valtop);
         }
         break;
+    }
    case 7:{
         unsigned short qzd = patterndata->wrk_fechData(WrkItemHd_QiZenDian,0);
         lineEdit_qzd->setText(QString::number(qzd));
         break;
     }
-   case 8:
+   case 8:{
         if(dmbcmodel == NULL){
             dmbcmodel = new QDMBCModel(paramadata,this);
             tableView_dmbc->setModel(dmbcmodel);
+            QMdItemDelegate *delegate = new QMdItemDelegate(this);
+            int valbottom =spaItemDsp[SpaItemHd_Dmdmbc].valrangebottom;
+            int valtop = spaItemDsp[SpaItemHd_Dmdmbc].valrangetop;
+            delegate->setRange(valbottom,valtop);
+            tableView_dmbc->setItemDelegate(delegate);
             tableView_dmbc->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
         }
         break;
-   case 9:
+    }
+   case 9:{
         if(ycwzxzmodel==NULL){
             ycwzxzmodel= new QYCWZXZModel(paramadata,pcomm,this);
             tableView_ycwzxz->setModel(ycwzxzmodel);
+            QMdItemDelegate *delegate = new QMdItemDelegate(this);
+            int valbottom =spaItemDsp[SpaItemHd_Ycwzxz].valrangebottom;
+            int valtop = spaItemDsp[SpaItemHd_Ycwzxz].valrangetop;
+            delegate->setRange(valbottom,valtop);
+            tableView_ycwzxz->setItemDelegate(delegate);
             tableView_ycwzxz->setSpan(0,2,1,6);
         }
         break;
-   case 10:
+    }
+   case 10:{
         if(NULL==fzycwzxzmodel){
             fzycwzxzmodel = new QFZYCWZXZModel(paramadata,pcomm,this);
             tableView_fzyc->setSpan(0,0,1,2);
@@ -241,14 +254,16 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             tableView_fzyc->setSpan(0,4,1,2);
             tableView_fzyc->setModel(fzycwzxzmodel);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            tableView_fzyc->setItemDelegate(delegate);
             delegate->setRange(spaItemDsp[SpaItemHd_Fzycwzxz].valrangebottom,
                                spaItemDsp[SpaItemHd_Fzycwzxz].valrangetop
                                );
+
+            tableView_fzyc->setItemDelegate(delegate);
             tableView_fzyc->verticalHeader()->setResizeMode(0,QHeaderView::ResizeToContents);
 
         }
         break;
+    }
    case 11:
         if(NULL==formjqgzcs){
             formjqgzcs = new FormJqgzcs(paramadata,pcomm,this);

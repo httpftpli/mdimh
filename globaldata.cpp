@@ -137,7 +137,7 @@ Md::Result sysInit(){
     }
     ///////下载cnt文件///////////////////////////////////
     QObject::connect(&qComm,SIGNAL(commPercent(int)),splash,SLOT(showCntMessage(int)),Qt::QueuedConnection);
-    commResult = qComm.SendFile(hmiData.cntFilePath,0,TRUE,NULL);
+    commResult = qComm.sendFile(hmiData.cntFilePath,0,TRUE,NULL);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("下载CNT文件，通讯错误"),Qt::AlignBottom);
         QTest::qWait(2000);
@@ -145,7 +145,7 @@ Md::Result sysInit(){
     }
     QObject::disconnect(&qComm,SIGNAL(commPercent(int)),splash,SLOT(showCntMessage(int)));
     QObject::connect(&qComm,SIGNAL(commPercent(int)),splash,SLOT(showPatMessage(int)),Qt::QueuedConnection);
-    commResult = qComm.SendFile(hmiData.patFilePath,0,TRUE,NULL);
+    commResult = qComm.sendFile(hmiData.patFilePath,0,TRUE,NULL);
     if(commResult == Md::CommError){
         splash->showMessage(QObject::tr("下载PAT文件，通讯错误"),Qt::AlignBottom);
         QTest::qWait(2000);

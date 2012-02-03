@@ -60,6 +60,7 @@ void  QParam::loadFile(){
 
 void  QParam::releaseBuf(){
     delete [] spabuf;
+    modifyedItem.clear();
     spabuf = NULL;
 }
 
@@ -89,12 +90,13 @@ void QParam::setDankouLock(bool lock){
 }
 #endif
 
-void QParam::setData(SpaItemHd handle,int offset,short data){
+void QParam::setData(SpaItemHd handle,int offset,short data,bool emitdirty){
     if(spabuf){
         unsigned short addr = spaItemDsp[handle].addr;
         spabuf[addr+offset] = data;
         modifyedItem.insert(handle);
-        emit dirty(TRUE);
+        if(emitdirty)
+            emit dirty(TRUE);
     }
     return;
 }
@@ -136,11 +138,16 @@ int QParam::updataPivotal(){
     return pcomm->paramaUpdata(yiyincunzs,chijvjiaozeng,hengjizhenshu);
 }
 
-int QParam::save(bool isdownload){
-    if(!spabuf||!modifyedItem.isEmpty())
+int QParam::save(bool isdownload,bool isall){
+    if(!spabuf||modifyedItem.isEmpty())
         return Md::Ok ;
     spafile->open(QIODevice::ReadWrite);
-    foreach(SpaItemHd handle,modifyedItem)   {
+    foreach(SpaItemHd handle,modifyedItem){
+        if(!isall){
+            if((handle!=SpaItemHd_Fzycwzxz_z)&&(handle!=SpaItemHd_Fzycwzxz_f)&&
+                    (handle!=SpaItemHd_Fzycwzxz)&&(handle!=SpaItemHd_Ycwzxz))
+                continue;
+        }
         unsigned addr  = spaItemDsp[handle].addr;
         unsigned len = spaItemDsp[handle].len;
         spafile->seek(addr*2);
@@ -150,7 +157,7 @@ int QParam::save(bool isdownload){
     spafile->close();
     emit dirty(FALSE);
     emit changed();
-    if(isdownload){
+    if(isdownload&&isall){
         foreach(SpaItemHd hd,modifyedItem){
             int r = updata(hd);
             if(r!=Md::Ok)

@@ -122,13 +122,13 @@ class QParam : public QObject
     void  releaseBuf();
     bool  setFile(const QString &spafilepath);
     short fechData(SpaItemHd handle,int offset);
-    void setData(SpaItemHd handle,int offset,short data);
+    void setData(SpaItemHd handle,int offset,short data,bool emitdirty=TRUE);
 #if DUAL_SYSTEM
     void setDankouLock(bool lock);  //send the dankoulock only set in the file ,
                                     // don't send to mainboard and emit signal
 #endif
     void refreshBuf();
-    int save(bool isdownload);
+    int save(bool isdownload,bool isall=TRUE);
     unsigned short duMu_BuGongZuo(HeadPosDir posdir);
     int updataPivotal();
 

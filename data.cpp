@@ -1500,9 +1500,9 @@ bool  QYCWZXZModel::setData(const QModelIndex &index, const QVariant &value, int
     int column = index.column();
     int val = value.toString().toInt();
     if(0==row)
-        paramadata->setData(SpaItemHd_Ycwzxz,0,val);
+        paramadata->setData(SpaItemHd_Ycwzxz,0,val,FALSE);
     else
-        paramadata->setData(SpaItemHd_Ycwzxz,column/2*8+row,val);
+        paramadata->setData(SpaItemHd_Ycwzxz,column/2*8+row,val,FALSE);
 
     switch(column){
     case 1:
@@ -1616,21 +1616,21 @@ bool QFZYCWZXZModel::setData(const QModelIndex &index, const QVariant &value, in
         int val = value.toInt();
         switch(column){
         case 1:
-            param->setData(SpaItemHd_Fzycwzxz,row-1,val);
+            param->setData(SpaItemHd_Fzycwzxz,row-1,val,FALSE);
             row--;
             if(row>8)
                 row = -(row-8);
             pcomm->bedMotorTest(5,100*row,val);
             break;
         case 3:
-            param->setData(SpaItemHd_Fzycwzxz_z,row-1,val);
+            param->setData(SpaItemHd_Fzycwzxz_z,row-1,val,FALSE);
             row--;
             if(row>8)
                 row = -(row-8);
             pcomm->bedMotorTest(4,100*row,val);
             break;
         case 5:
-            param->setData(SpaItemHd_Fzycwzxz_f,row-1,val);
+            param->setData(SpaItemHd_Fzycwzxz_f,row-1,val,FALSE);
             row--;
             if(row>8)
                 row = -(row-8);

@@ -55,6 +55,8 @@ void paramform::setParama(QParam *parama){
 
 void paramform::on_qMdPushButton_clicked()
 {
+    paramadata->save(FALSE,FALSE);
+    paramadata->releaseBuf();
     deleteLater();
 }
 

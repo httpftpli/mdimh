@@ -576,8 +576,7 @@ int QComm::TogSysStat(unsigned char stat){
         if(ackval==0x55)
             return Md::Ok;
     }
-    else
-        return Md::CommError;
+    return Md::CommError;
 }
 
 //////////////checkCustomerId//////////////////////

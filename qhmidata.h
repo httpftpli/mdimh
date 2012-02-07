@@ -137,7 +137,6 @@ public:
     int runTime;
     QString patFilePath;
     QString cntFilePath;
-    QString wrkFilePath;
     QString sys_wrkFilePath;
     QString spaFilePath;
     QString sazFilePath;

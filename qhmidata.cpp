@@ -17,7 +17,8 @@ QHMIData::QHMIData(QParam *param,QComm *qcomm,QObject *parent):
 
     connect(pcomm,SIGNAL(commTimerOut(unsigned char)),SLOT(on_CommTimerOut(unsigned char)));
     timer700ms.setInterval(1000);
-    timer700ms.setSingleShot(FALSE);  
+    timer700ms.setSingleShot(FALSE);
+    sys_wrkFilePath = "defalt.wrk";
 }
 
 
@@ -258,8 +259,6 @@ void QHMIData::loadParam(const QString &inifilepath){
     patternVailable = sysset.value("pattern/vailable").toBool();
     patFilePath = sysset.value("pattern/patFileName").toString();
     cntFilePath = sysset.value("pattern/cntFileName").toString();
-    wrkFilePath = sysset.value("pattern/wrkFileName").toString();
-    sys_wrkFilePath = sysset.value("param/wrkFileName").toString();
     loopFilePath = sysset.value("pattern/loopFileName").toString();
     spaFilePath = sysset.value("param/spaFileName").toString();
     udiskDirPath = sysset.value("system/udiskFilePath").toString();
@@ -307,14 +306,9 @@ void QHMIData::saveSysCfgFile(){
     sysset.setValue("run/resetrun",QString::number(xtrunorguiling));
     sysset.setValue("pattern/patFileName",patFilePath);
     sysset.setValue("pattern/cntFileName",cntFilePath);
-    sysset.setValue("pattern/wrkFileName",wrkFilePath);
     sysset.setValue("history/stoptime",stopTimeHistory);
     sysset.setValue("history/runtime",runTimeHistory);
     sysset.sync();
-    QFile file(sysconfigfilename);
-    file.open(QIODevice::ReadOnly);
-    file.flush();
-    file.close();
 }
 
 int QHMIData::sendParamaInRun(){
@@ -468,7 +462,6 @@ int QHMIData::clothSetCount(){
 void QHMIData::on_patternChange(const QString &patternname,const QString &cntfilepath, const QString &patfilepath,
                               const QString &wrkfilepath , const QString &sazfilepath){
     partternName = patternname;
-    wrkFilePath = wrkfilepath;
     if((cntFilePath!=cntfilepath)||(patFilePath!=patfilepath)){
         cntFilePath = cntfilepath;
         patFilePath = patfilepath;

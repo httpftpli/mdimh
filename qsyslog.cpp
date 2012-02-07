@@ -40,6 +40,7 @@ void QSysLog::save(){
          stream<<item.type;
          stream<<item.log;
     }
+    file.flush();
     file.close();
 }
 

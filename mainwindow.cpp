@@ -113,6 +113,7 @@ void MainWindow::onHmidataRuning(bool val){
 void MainWindow::onPowerDown()
 {
     hmiData.saveSysCfgFile();
+    QProcess::execute("quit.sh");
     sysLog.save();
     qComm.quit();
     qComm.wait();
@@ -425,6 +426,7 @@ void MainWindow::on_pushButton_13_clicked()
     qComm.wait();
     hmiData.saveSysCfgFile();
     sysLog.save();
+    QProcess::execute("quit.sh");
     close();
 }
 

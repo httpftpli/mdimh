@@ -167,8 +167,10 @@ public:
     Q_DECLARE_FLAGS(FileStateFlag, FileState)
     QPatternData(QComm *s,QObject *parent=0);
     ~QPatternData();
-    Result setFile(const QString &cntfilepath,const QString &patfilepath, const QString &wrkfilepath,Md::HAVEFILEFLAG openflag=Md::HAVENO);
+    Result setFile(const QString &cntfilepath,const QString &patfilepath);
     Md::HAVEFILEFLAG loadFile(Md::HAVEFILEFLAG flag=Md::HAVEALL);
+    bool isWrkfileSys();
+    bool isPatternAvailable();
     void refreshBuf(Md::HAVEFILEFLAG flag);
     void deloadFile(Md::HAVEFILEFLAG flag=Md::HAVEALL);
     void patSetData(unsigned short row,unsigned short column,unsigned char data);
@@ -253,6 +255,9 @@ private:
 
     int _azl(unsigned char data);
     int _hzl(unsigned char data);
+
+    bool iswrkfilesys;
+    bool ispatternavalible;
 
     int wrk_updata(WrkItemHd hd);
 

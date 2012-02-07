@@ -146,21 +146,49 @@ void QFormFile::on_qMdPushButton_5_clicked()
 
     Md::HAVEFILEFLAG flag = model->haveFile(index);
 
-    if(flag&Md::HAVEWRK){
+    /*if(flag&Md::HAVEWRK){
         wrkfilename = model->patternName(index,".wrk");
         wrkfilepath = dirname+"/"+wrkfilename;
     }else{
         wrkfilepath = QString();
-    }
+    }*/
 
-    INFORMLOG(tr("更换花型")+cntfilename+QString(" ")+patfilename+QString(" ")+wrkfilename);
-    QPatternData::Result r = patternData.setFile(cntfilepath,patfilepath,wrkfilepath);
+    INFORMLOG(tr("更换花型")+cntfilename+QString(" ")+patfilename);
+    QPatternData::Result r = patternData.setFile(cntfilepath,patfilepath);
     QMdMessageBox box;
     if(r!=QPatternData::Ok){
         box.exec(tr("选择文件"),tr("花型文件错误"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return;
     }
+
+
+    //////togle system/////////////////
+    int commResult = qComm.TogSysStat(QHMIData::SysInParam);
+    if(commResult == Md::CommError){
+        box.exec(tr("通讯错误"),tr("花型下载失败"),QMessageBox::Warning,
+                 QMessageBox::Cancel,QMessageBox::Cancel);
+        return ;
+    }
+    ////download wrk spa
+    QFile wrkfile(patternData.wrkFilePath);
+    QFile spafile(hmiData.spaFilePath);
+    commResult = qComm.SendParama(wrkfile,spafile,0xff);
+    if(commResult == Md::CommError){
+        box.exec(tr("通讯错误"),tr("花型下载失败"),QMessageBox::Warning,
+                 QMessageBox::Cancel,QMessageBox::Cancel);
+        return ;
+    }
+    ///download szkb///////////////////////////////////
+    commResult = patternData.sendShazuiKb();
+    if(commResult == Md::CommError){
+        box.exec(tr("通讯错误"),tr("花板捆绑文件下载失败"),QMessageBox::Warning,
+                 QMessageBox::Cancel,QMessageBox::Cancel);
+        return ;
+    }
+
+
+    ///////下载cnt文件///////////////////////////////////
     progressDialog.setRange(0,100);
     progressDialog.setLabelText(tr("发送CNT文件"));
     progressDialog.show();
@@ -170,6 +198,7 @@ void QFormFile::on_qMdPushButton_5_clicked()
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return;
     }
+    ///////下载PAT文件///////////////////////////////
     progressDialog.setLabelText(tr("发送PAT文件"));
     progressDialog.show();
     result = qComm.sendFile(patfilepath,0,FALSE,this);
@@ -179,26 +208,29 @@ void QFormFile::on_qMdPushButton_5_clicked()
         return;
     }
 
-    QFile wrkfile(wrkfilepath);
-    QFile spafile(hmiData.spaFilePath);
-    result = qComm.SendParama(wrkfile,spafile,0xf7,NULL);
-    if(result ==Md::CommError) {
-        box.exec(tr("花型发送"),tr("发送WRK文件,通信错误"),QMessageBox::Warning,
+    //等待下位机响应/////////////////////////////////
+    int i=0;
+    for(i=0;i<3;i++) {
+        commResult = qComm.TogSysStat(QHMIData::SysInParam);
+        if(commResult==Md::Ok)
+            break;
+    }
+    if(3==i){
+        box.exec(tr("花型发送"),tr("下载花型后主控未成功响应"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return;
     }
-
-    if(flag&Md::HAVESAZ){ //发送沙嘴捆绑文件
-        result = qComm.SendShazuiKb(patternData.sazFilePath);
-        if(result ==Md::CommError) {
-            box.exec(tr("花型发送"),tr("发送沙嘴捆绑,通信错误"),QMessageBox::Warning,
-                     QMessageBox::Cancel,QMessageBox::Cancel);
-            return;
-        }
-    }
+    //运行时参数设置//////////////////////////////////////////////
+    /* commResult = hmiData.sendParamaInRun();
+    if(commResult == Md::CommError){
+        splash->showMessage(QObject::tr("通讯错误,运行时参数设置失败"),Qt::AlignBottom);
+        QTest::qWait(2000);
+        return;
+    }*/
     progressDialog.close();
     box.exec(tr("花型发送"),tr("下载成功"),QMessageBox::Information,
              QMessageBox::Cancel,QMessageBox::Cancel);
+    return;
 }
 
 

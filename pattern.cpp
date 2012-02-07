@@ -30,40 +30,43 @@ QPatternData::~QPatternData(){
 
 
 
-QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QString &patfilepath,
-                                           const QString &wrkfilepath,
-                                           Md::HAVEFILEFLAG openflag){
+QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QString &patfilepath){
     INFORMLOG(tr("扫描花型文件"));
     cntfile.clear();
     patfile.clear();
     wrkfile.clear();
     sazbuf.clear();
+    delete [] cntbuf;
+    cntbuf = NULL;
+    delete [] patbuf;
+    patbuf = NULL;
+    delete [] wrkbuf;
+    wrkbuf = NULL;
+    ispatternavalible = FALSE;
     this->shazuiused_r =0;
     this->shazuiused_l =0;
-
     this->tatalcolumn = 0;
     this->tatalcntrow = 0;
     this->tatalpatrow = 0;
+    this->wrkFilePath = hmiData.sys_wrkFilePath;
+    this->wrkfile = QSharedPointer<QFile>(new QFile(wrkFilePath));
+    QFileInfo wrkfileinfo(*(this->wrkfile));
+    this->wrkFileName = wrkfileinfo.fileName();
+    this->iswrkfilesys = TRUE;
 
-    //检查cntfile patfile wrkfile文件是否可用//////////////
-    QSharedPointer<QFile> cntfile,patfile,wrkfile;
+    //检查cntfile patfile 文件是否可用//////////////
+    QSharedPointer<QFile> cntfile,patfile;
     cntfile = QSharedPointer<QFile>(new QFile(cntfilepath));
     if(!cntfile->exists()){
-       WARNLOG(tr("无花型文件，找不到cnt文件"));
+       WARNLOG(tr("无花型文件，找不到cnt文件,使用系统WRK文件"));
        return NoCntFile;
     }
     patfile = QSharedPointer<QFile>(new QFile(patfilepath));
     if(!patfile->exists()){
-       WARNLOG(tr("无花型文件，找不到pat文件"));
+       WARNLOG(tr("无花型文件，找不到pat文件,使用系统WRK文件"));
        return NoPatFile;
     }
-    wrkfile = QSharedPointer<QFile>(new QFile(wrkfilepath));
-    if(!wrkfile->exists()){
-        INFORMLOG(tr("花型WRK文件不存在，使用系统的WRK文件"));
-        wrkfile->setFileName(hmiData.wrkFilePath);
-    }
-    QFileInfo wrkfileinfo(*wrkfile);
-    wrkFileName = wrkfileinfo.fileName();
+
     unsigned char shazuir=0,shazuil=0,shazui=0,shazuinew=0;
     QDataStream stream;
     stream.setByteOrder(QDataStream::LittleEndian);
@@ -75,17 +78,13 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     stream>>wight>>pathight;     //读取花型尺寸
     patfile->close();
     if((wight==0)||(pathight==0)){
-        ERRORLOG(tr("花型文件格式错误"));
-        return  PatFileError;
+        ERRORLOG(tr("花型文件格式错误,使用系统WRK文件"));
+        return PatFileError;
     }
     if(patfile->size()<(wight/2+wight%2)*(pathight+1)){
-        ERRORLOG(tr("花型文件格式错误，文件长度不匹配"));
-        return  PatFileError;
+        ERRORLOG(tr("花型文件格式错误，PAT文件长度不匹配,使用系统WRK文件"));
+        return PatFileError;
     }
-    //if(cntfile->size()<128*hight){
-      //  ERRORLOG(tr("pat文件和cnt文件不匹配"));
-       // return  CntPatNotMatch;
-    //}
     cntfile->open(QIODevice::ReadOnly);
     stream.setDevice(cntfile.data());
     // scan pattern finish flag
@@ -113,19 +112,16 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
             i%2?(shazuil|=snew):(shazuir|=snew);
     }
     cntfile->close();
-
     this->cntfile = cntfile;
     this->patfile = patfile;
-    this->wrkfile = wrkfile;
     this->cntFilePath = cntfilepath;
     this->patFilePath = patfilepath;
-    //根据传入的最后一个参数，决定文件是处于关闭状态还是打开状态
-    /////////////////////////////////////
-
+    ispatternavalible = TRUE;
     QFileInfo cntfileinfo(*cntfile);
     QString name = cntfileinfo.fileName();
-    patternDirPath = cntfileinfo.absolutePath();//doesn't include filename;
     this->patternName = name.left(name.size()-4);
+    INFORMLOG(tr("花型正常，花型：")+patternName);
+    patternDirPath = cntfileinfo.absolutePath();//doesn't include filename;
     this->shazuiused_l = shazuil;
     this->shazuiused_r = shazuir;
     this->tatalpatrow = pathight;
@@ -152,7 +148,27 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
         }
         sazfile.close();
     }
-    emit patternChanged(patternName,cntfilepath,patfilepath,wrkfilepath,sazFilePath);
+
+
+    QString wrkfilepath = patternDirPath+'/'+patternName+".WRK";
+    wrkfile = QSharedPointer<QFile>(new QFile(wrkfilepath));
+    if(wrkfile->exists()){
+        this->wrkfile = wrkfile;
+        this->iswrkfilesys = FALSE;
+        this->wrkFileName = patternName+".WRK";
+    }
+    else{
+        wrkfile->setFileName(patternDirPath+'/'+patternName+".wrk");
+        if(wrkfile->exists()){
+           this->wrkfile = wrkfile;
+           this->iswrkfilesys = FALSE;
+           this->wrkFileName = patternName+".wrk";
+        }else{
+           INFORMLOG(tr("花型WRK文件不存在，使用系统的WRK文件"));
+        }
+    }
+    ispatternavalible = TRUE;
+    emit patternChanged(patternName,this->cntFilePath,this->patFilePath,this->wrkFilePath,this->sazFilePath);
     return Ok;
 }
 
@@ -185,6 +201,16 @@ Md::HAVEFILEFLAG QPatternData::loadFile(Md::HAVEFILEFLAG flag){
         r |=Md::HAVEWRK;
     }
     return r;
+}
+
+bool QPatternData::isWrkfileSys()
+{
+    return this->iswrkfilesys;
+}
+
+bool QPatternData::isPatternAvailable()
+{
+    return this->ispatternavalible;
 }
 
 void QPatternData::patSetData(unsigned short row,unsigned short column,unsigned char cha){
@@ -444,6 +470,12 @@ int QPatternData::sendShazuiKb(){
 }
 
 short QPatternData::wrk_fechData(WrkItemHd handle,int offset){
+    if(!wrkbuf){
+        wrkbuf = new unsigned short[2500];
+        wrkfile->open(QIODevice::ReadOnly);
+        wrkfile->read((char *)wrkbuf,wrkfile->size());
+        wrkfile->close();
+    }
     int addr = wrkItemDsp[handle].addr;
     return wrkbuf[offset+addr];
 }
@@ -477,8 +509,10 @@ bool QPatternData::isValid () const{
 }*/
 
 unsigned short QPatternData::cntFechData(unsigned short row,unsigned char addr,unsigned short len){
+    if(!isPatternAvailable())
+        return -1;
     if(len>2)
-        return 0xff;
+        return -1;
     if(cntbuf!=NULL){
         if(len==1)
             return this->cntbuf[row*128+addr];
@@ -486,14 +520,14 @@ unsigned short QPatternData::cntFechData(unsigned short row,unsigned char addr,u
             return *(unsigned short *)&(cntbuf[(row)*128+addr]);
     }else{
         if(!cntfile->open(QIODevice::ReadOnly))
-            return 0xffff;
+            return -1;
         char val[2];
         cntfile->seek((row+1)*128+addr);
         cntfile->read(val,len);
         cntfile->close();
         return *(unsigned short *)val;
     }
-    return 0xffff;
+    return -1;
 }
 
 unsigned char QPatternData::shaZui(unsigned char system,unsigned short row){
@@ -600,6 +634,8 @@ QString  QPatternData::cnt_seDaiHaoA(unsigned short row,unsigned char system,Md:
         addr = (system==0)?CNT_S1H_AColor:CNT_S2H_AColor;
     unsigned short data= cntFechData(row,addr,2);
     QString str;
+    if(data=-1)
+        return str;
     for(int i=0;i<16;i++){
         if(data&(1<<i))
             str.append(QString::number(i,16).toUpper());
@@ -616,6 +652,8 @@ QString  QPatternData::cnt_seDaiHaoH(unsigned short row,unsigned char system,Md:
         addr = (system==0)?CNT_S1H_HColor:CNT_S2H_HColor;
     unsigned short data= cntFechData(row,addr,2);
     QString str;
+    if(data=-1)
+        return str;
     for(int i=0;i<16;i++){
         if(data&(1<<i))
             str.append(QString::number(i,16).toUpper());
@@ -631,7 +669,8 @@ unsigned short QPatternData::cnt_huabanhang(unsigned short row,unsigned char sys
         addr = (system==0)?CNT_S1Q_Pat:CNT_S2Q_Pat;
     else
         addr = (system==0)?CNT_S1H_Pat:CNT_S2H_Pat;
-    return this->cntFechData(row,addr);
+    unsigned short val = cntFechData(row,addr);
+    return ((unsigned short)(-1)==val)?0:val;
 }
 
 

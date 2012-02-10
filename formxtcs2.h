@@ -17,6 +17,7 @@ public:
     explicit FormXtcs2(QParam *paramdata, QComm *comm,QWidget *parent = 0);
     ~FormXtcs2();
 
+
 private:
     QParam *param;
     QSignalMapper signalmapper;

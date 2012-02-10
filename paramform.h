@@ -40,6 +40,9 @@ public:
     void setPattern(QPatternData *pattern);
     void setParama(QParam *parama);
     void setIndex(ParamFormIndex index);
+
+protected:
+    bool event(QEvent *e);
 private slots:
     void on_listWidget_currentRowChanged(int currentRow);
     void on_pushButton_spasave_clicked();
@@ -52,6 +55,7 @@ private slots:
     void on_stackedWidget_currentChanged(int );
     void on_qMdPushButton_clicked();
     void indexchange(int index);
+    void readabspinpos();
     ///////////////////////////////
 signals:
     void indexchanged(int index);
@@ -75,18 +79,15 @@ private:
     QFZYCWZXZModel *fzycwzxzmodel;
     FormJqgzcs *formjqgzcs;
     QComm *pcomm;
-    QLabel *label_jtzhenshu;
+    QLabel *label_jtzhenshu_xtcs;
+    QLabel *label_jtzhenshu_jqgzcs;
 #if DUAL_SYSTEM
     FormXtcs2   *formxtcs;
 #else
     FormXtcs   *formxtcs;
 #endif
     int showindex;
-
-
-
-
-
+    QTimer timer;//timer for read absolute pin position
 
     ////////////////////////////
 };

@@ -38,6 +38,13 @@ paramform::paramform(QComm *com, QWidget *parent) :
     connect(this,SIGNAL(indexchanged(int)),SLOT(indexchange(int)));
     //connect(paramadata,SIGNAL(dirty(bool)),pushButton_spareset,SLOT(setEnabled(bool)));
 
+    timer.setInterval(400); //timer for read absolute pin position
+    timer.setSingleShot(FALSE);
+    connect(&timer,SIGNAL(timeout()),SLOT(readabspinpos())); //when in xtcs form timer start,
+                                                             //otherwise timer stop
+
+    //QStatusBar *statusbar = new QStatusBar;
+    //statusbar->
 }
 
 paramform::~paramform(){
@@ -55,7 +62,7 @@ void paramform::setParama(QParam *parama){
 
 void paramform::on_qMdPushButton_clicked()
 {
-    paramadata->save(FALSE,FALSE);
+    paramadata->save(TRUE,FALSE);
     paramadata->releaseBuf();
     deleteLater();
 }
@@ -270,11 +277,22 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
         if(NULL==formjqgzcs){
             formjqgzcs = new FormJqgzcs(paramadata,pcomm,this);
             QWidget *widget = stackedWidget->currentWidget();
-            QGridLayout *layout = new QGridLayout;
+            QVBoxLayout *layout = new QVBoxLayout;
             widget->setLayout(layout);
             layout->addWidget(formjqgzcs);
             layout->setContentsMargins(6,6,6,6);
-            formjqgzcs->show();
+            label_jtzhenshu_jqgzcs = new QLabel;
+            label_jtzhenshu_jqgzcs->setFixedSize(40,
+                                      label_jtzhenshu_jqgzcs->height());
+            QLabel *label_jtzhenshu_label = new QLabel;
+            label_jtzhenshu_label->setText(tr("当前机头绝对位置: "));
+            QWidget *widget_temp = new QWidget;
+            widget_temp->setFixedSize(400,40);
+            QHBoxLayout *hlayout = new QHBoxLayout(widget_temp);
+            hlayout->addStretch();
+            hlayout->addWidget(label_jtzhenshu_label);
+            hlayout->addWidget(label_jtzhenshu_jqgzcs);
+            layout->addWidget(widget_temp);
         }
         break;
    case 12:
@@ -285,29 +303,36 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             formxtcs = new FormXtcs(paramadata,pcomm,this);
 #endif
             QWidget *widget =stackedWidget->currentWidget();
-            QVBoxLayout *layout = new QVBoxLayout();
+            QVBoxLayout *layout = new QVBoxLayout;
             widget->setLayout(layout);
             layout->addWidget(formxtcs);
-            label_jtzhenshu = new QLabel(this);
+            label_jtzhenshu_xtcs = new QLabel(this);
+            label_jtzhenshu_xtcs->setFixedSize(40,label_jtzhenshu_xtcs->height());
             QLabel *label_temp = new QLabel(this);
-            label_temp->setText("当前机头位置");
+            label_temp->setText(tr("当前机头绝对位置: "));
             QWidget *widget1 = new QWidget;
             QHBoxLayout *hlayout = new QHBoxLayout(widget1);
             hlayout->addStretch();
             hlayout->addWidget(label_temp);
-            hlayout->addWidget(label_jtzhenshu);
+            hlayout->addWidget(label_jtzhenshu_xtcs);
             hlayout->addStretch();
-            layout->addStretch(15);
             layout->addWidget(widget1);
+            layout->addStretch(50);
+            QLabel *label_hint = new QLabel(this);
+            label_hint->setText(tr("注：对以上参数的修改退出参数设置界面生效，不需要手动保存"));
+            layout->addWidget(label_hint);
             layout->setContentsMargins(6,20,6,6);
-
-            formxtcs->show();
+            //formxtcs->show();
         }
 
    default:
         break;
 
     }
+    if((yyy==11)||(yyy==12))
+        timer.stop();
+    else
+        timer.stop();
 }
 
 void paramform::indexchange(int index){
@@ -323,9 +348,37 @@ void paramform::indexchange(int index){
             listWidget_2->setCurrentRow(index-8);
     }
 }
+
+void paramform::readabspinpos()
+{
+    unsigned short val;
+    QString str;
+    if(pcomm->ReadAbsoluteNoOfPin(val)==Md::Ok)
+        str = QString("[ %1 ]").arg(val,4);
+    else
+        timer.stop();   //if comm error,timer will be stop ,
+                        //then this function nolong be called
+                        //untill tabwidet is toggle to xtcs and jqgzcs page
+    if(NULL!=formxtcs)
+        label_jtzhenshu_xtcs->setText(str);
+    if(NULL!=formjqgzcs)
+        label_jtzhenshu_jqgzcs->setText(str);
+}
+
 void paramform::setIndex(ParamFormIndex index){
     showindex = index;
     emit indexchanged(index);
+}
+
+bool paramform::event(QEvent *e)
+{
+    if(e->type()==QEvent::StatusTip){
+        QStatusTipEvent *tipevent = (QStatusTipEvent *)(e);
+        label_tip->setText(tipevent->tip());
+        e->accept();
+        return TRUE;
+    }
+    return QWidget::event(e);
 }
 
 void paramform::on_listWidget_2_currentRowChanged(int currentRow)

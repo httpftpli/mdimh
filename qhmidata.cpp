@@ -230,18 +230,9 @@ int QHMIData::TogSysStat(SysStat stat){
     default:
         break;
     }
-    int r = pcomm->TogSysStat(val);
-    if(Md::Ok!=r)
-        return r;
-    switch(stat){
-    case SysRun:
-        timer700ms.start();
-    default:
-        timer700ms.stop();
-        break;
-    }
-    return Md::Ok;
+    return pcomm->TogSysStat(val);
 }
+
 
 void QHMIData::loadParam(const QString &inifilepath){
     QSettings sysset(inifilepath,QSettings::IniFormat,this);
@@ -311,7 +302,7 @@ void QHMIData::saveSysCfgFile(){
     sysset.sync();
 }
 
-int QHMIData::sendParamaInRun(){
+int QHMIData::sendParamaInRun(){//dankoulock在机器系统参数中
     return  pcomm->sendParamaInRun(clothsetcount,clothfinishcount,
                                speedlimit,stopperone,
                                alarmlimit,dankoulock);

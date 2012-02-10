@@ -118,6 +118,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="statusTip">
+        <string/>
+       </property>
        <property name="text">
         <string>选针器右行补偿</string>
        </property>
@@ -170,6 +173,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>机头左侧对准零位针：移动机头 </string>
+       </property>
        <property name="minimum">
         <number>-2000</number>
        </property>
@@ -191,6 +197,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>机头左边软件限位：移动机头</string>
        </property>
        <property name="minimum">
         <number>-2000</number>
@@ -214,6 +223,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>机头右边软件限位：移动机头</string>
+       </property>
        <property name="minimum">
         <number>-2000</number>
        </property>
@@ -235,6 +247,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>右系统沙嘴右行零位：沙嘴动作</string>
        </property>
        <property name="minimum">
         <number>-2000</number>
@@ -258,6 +273,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>右系统沙嘴左行零位：沙嘴动作</string>
+       </property>
        <property name="minimum">
         <number>-2000</number>
        </property>
@@ -280,6 +298,12 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>沙嘴停放修正值:0~19</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
        <property name="maximum">
         <number>19</number>
        </property>
@@ -295,6 +319,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>横机一英寸的针数：数值范围1～16</string>
        </property>
        <property name="buttonSymbols">
         <enum>QAbstractSpinBox::NoButtons</enum>
@@ -323,6 +350,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>选针器左行补偿：-7.9～+7.9</string>
        </property>
        <property name="decimals">
         <number>1</number>
@@ -379,6 +409,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>同步带齿距矫正</string>
+       </property>
        <property name="buttonSymbols">
         <enum>QAbstractSpinBox::NoButtons</enum>
        </property>
@@ -397,6 +430,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>左系统沙嘴右行零位：沙嘴动作</string>
        </property>
        <property name="minimum">
         <number>-2000</number>
@@ -420,6 +456,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>左系统沙嘴左行零位：沙嘴动作</string>
+       </property>
        <property name="minimum">
         <number>-2000</number>
        </property>
@@ -441,6 +480,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>选针器右行补偿：-7.9～+7.9</string>
        </property>
        <property name="decimals">
         <number>1</number>
@@ -497,6 +539,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>横机总针数：10～1000</string>
+       </property>
        <property name="buttonSymbols">
         <enum>QAbstractSpinBox::NoButtons</enum>
        </property>
@@ -538,6 +583,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>生克有效</string>
+       </property>
        <property name="text">
         <string>Button</string>
        </property>
@@ -570,6 +618,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>前生克补偿：-128～+128</string>
+       </property>
        <property name="maximum">
         <number>128</number>
        </property>
@@ -599,6 +650,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>后生克补偿：-128～+128</string>
+       </property>
        <property name="maximum">
         <number>128</number>
        </property>
@@ -627,6 +681,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>摇床速度设定：0～100</string>
        </property>
        <property name="maximum">
         <number>100</number>
@@ -663,6 +720,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>选针器重选节能</string>
+       </property>
        <property name="text">
         <string>Button</string>
        </property>
@@ -687,25 +747,6 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
-      <widget class="QSpinBox" name="_19_spinBox">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>5</number>
-       </property>
-       <property name="index" stdset="0">
-        <UInt>18</UInt>
-       </property>
-      </widget>
-     </item>
      <item row="7" column="0">
       <widget class="QLabel" name="label_13">
        <property name="text">
@@ -720,6 +761,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>密度马达速度：1～10</string>
        </property>
        <property name="minimum">
         <number>1</number>
@@ -752,6 +796,9 @@
          <width>0</width>
          <height>30</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>系统单口锁定</string>
        </property>
        <property name="text">
         <string>Button</string>
@@ -791,6 +838,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>选针器排列方式</string>
+       </property>
        <property name="text">
         <string>Button</string>
        </property>
@@ -829,6 +879,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>摇床位置</string>
+       </property>
        <property name="text">
         <string>Button</string>
        </property>
@@ -861,6 +914,9 @@
          <height>30</height>
         </size>
        </property>
+       <property name="statusTip">
+        <string>摇床检测允许误差：0~100 (0表示不检测)</string>
+       </property>
        <property name="maximum">
         <number>100</number>
        </property>
@@ -881,6 +937,28 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="6" column="1">
+      <widget class="QSpinBox" name="_19_spinBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>选针器通电时间：1～5</string>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>5</number>
+       </property>
+       <property name="index" stdset="0">
+        <UInt>18</UInt>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

@@ -10,7 +10,8 @@ QPatternData::QPatternData(QComm *s,QObject *parent):QObject(parent),
                             shaZuiKb(0),cntbuf(NULL),
                             patfile(NULL), wrkfile(NULL),
                             cntfile(NULL),patbuf(NULL),dumu_history(24),
-                            shazuiused_r(0),shazuiused_l(0),pcomm(s){
+                            shazuiused_r(0),shazuiused_l(0),pcomm(s),
+                            isdualdumuzu(FALSE),dumuzu_used(0){
 
 }
 
@@ -53,6 +54,8 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     QFileInfo wrkfileinfo(*(this->wrkfile));
     this->wrkFileName = wrkfileinfo.fileName();
     this->iswrkfilesys = TRUE;
+    this->dumuzu_used = 0;
+    this->isdualdumuzu = FALSE;
 
     //检查cntfile patfile 文件是否可用//////////////
     QSharedPointer<QFile> cntfile,patfile;
@@ -87,6 +90,21 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     }
     cntfile->open(QIODevice::ReadOnly);
     stream.setDevice(cntfile.data());
+    //test isdualdumuzu according to d[0] and d[1] at cntfile
+    char dualdumuflag[2];
+    cntfile->read(dualdumuflag,2);
+    if(((dualdumuflag[0]=='H')&&(dualdumuflag[1]=='Q'))
+            ||((dualdumuflag[0]=='C')&&(dualdumuflag[1]=='X'))){
+        dualdumuflag[0]='M';
+        dualdumuflag[1]='D';
+        cntfile->write(dualdumuflag,2);
+        isdualdumuzu = TRUE;
+    }
+    if((dualdumuflag[0]=='M')&&(dualdumuflag[1]=='D')){
+        cntfile->write(dualdumuflag,2);
+        isdualdumuzu = TRUE;
+    }
+
     // scan pattern finish flag
     while(1){
         cntfile->seek(128*cnthight+CNT_End);
@@ -96,7 +114,8 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
             break;
         cnthight++;
     }
-    for(int i=1;i<=cnthight;i++){  //读取原始沙嘴
+     //读取原始沙嘴 ,读取使用的度目组
+    for(int i=1;i<=cnthight;i++){
         unsigned short _s1,_s2;
         unsigned char s1,s2,s,snew;
             cntfile->seek(i*128+80);
@@ -110,7 +129,21 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
             snew = shazuinew^shazui;
             shazui = shazuinew;
             i%2?(shazuil|=snew):(shazuir|=snew);
+            cntfile->seek(i*128+92);
+            char dumuzhi1;
+            cntfile->read(&dumuzhi1,1);
+            dumuzu_used = dumuzu_used|(1<<dumuzhi1);
     }
+    if(isdualdumuzu){
+        for(int i=1;i<=cnthight;i++){
+           char dumuzhi2;
+           cntfile->seek(i*128+125);
+           cntfile->read(&dumuzhi2,1);
+           dumuzu_used = dumuzu_used|(1<<dumuzhi2);
+        }
+    }
+
+    cntfile->flush();
     cntfile->close();
     this->cntfile = cntfile;
     this->patfile = patfile;
@@ -692,6 +725,11 @@ QString QPatternData::cnt_yaoChuang(unsigned short row){
     if(ycfx&0x01)
         str.append("*");
     return str;
+}
+
+unsigned int QPatternData::cnt_dumuUsed()
+{
+    return dumuzu_used;
 }
 
 unsigned char QPatternData::cnt_spead(unsigned short row){

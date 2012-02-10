@@ -117,7 +117,7 @@ void QParam::refreshBuf(){
 
 int QParam::updata(SpaItemHd hd){
     const SpaItemDsp dsp = spaItemDsp[hd];
-    if(hd==SpaItemHd_Xtcs){
+    if(hd==SpaItemHd_Jqgzcs){
         unsigned short buf[dsp.len];
         for(int i=0;i<dsp.len;i++)
             buf[i] = spabuf[dsp.addr+i];
@@ -145,7 +145,9 @@ int QParam::save(bool isdownload,bool isall){
     foreach(SpaItemHd handle,modifyedItem){
         if(!isall){
             if((handle!=SpaItemHd_Fzycwzxz_z)&&(handle!=SpaItemHd_Fzycwzxz_f)&&
-                    (handle!=SpaItemHd_Fzycwzxz)&&(handle!=SpaItemHd_Ycwzxz))
+                    (handle!=SpaItemHd_Fzycwzxz)&&(handle!=SpaItemHd_Ycwzxz)&&
+                    (handle!=SpaItemHd_Xtcs)) //Fzycwz,Ycwzxz,Xtcs is not need to click save ,
+                                              //it will be saved auto when cancle parama seting form
                 continue;
         }
         unsigned addr  = spaItemDsp[handle].addr;
@@ -157,11 +159,27 @@ int QParam::save(bool isdownload,bool isall){
     spafile->close();
     emit dirty(FALSE);
     emit changed();
-    if(isdownload&&isall){
-        foreach(SpaItemHd hd,modifyedItem){
-            int r = updata(hd);
-            if(r!=Md::Ok)
-                return r;
+    if(isdownload){
+        if(modifyedItem.contains(SpaItemHd_Xtcs)){
+            if(updata(SpaItemHd_Xtcs)==Md::Ok)
+                modifyedItem.remove(SpaItemHd_Xtcs);
+            else
+                return Md::CommError;
+        }
+        if(modifyedItem.contains(SpaItemHd_Fzycwzxz_z))
+            modifyedItem.remove(SpaItemHd_Fzycwzxz_z);
+        if(modifyedItem.contains(SpaItemHd_Fzycwzxz_f))
+            modifyedItem.remove(SpaItemHd_Fzycwzxz_f);
+        if(modifyedItem.contains(SpaItemHd_Fzycwzxz))
+            modifyedItem.remove(SpaItemHd_Fzycwzxz);
+        if(modifyedItem.contains(SpaItemHd_Ycwzxz))
+            modifyedItem.remove(SpaItemHd_Ycwzxz);
+        if(isall){
+            foreach(SpaItemHd hd,modifyedItem){
+                int r = updata(hd);
+                if(r!=Md::Ok)
+                    return r;
+            }
         }
     }
     modifyedItem.clear();

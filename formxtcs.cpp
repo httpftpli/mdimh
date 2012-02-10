@@ -2,6 +2,7 @@
 #include "qparam.h"
 #include "qmdstyle.h"
 #include "communicat.h"
+#include <QStatusTipEvent>
 
 FormXtcs::FormXtcs(QParam *paramdata,QComm *comm, QWidget *parent) :
     QWidget(parent),param(paramdata),pcomm(comm),mdstyle(new QMdStyle){
@@ -53,25 +54,29 @@ void FormXtcs::valeChanged(QWidget *obj){
     if(spinbox){
         int val = spinbox->value();
         int index = spinbox->property("index").toInt();
-        param->setData(SpaItemHd_Xtcs,index,val);
+        param->setData(SpaItemHd_Xtcs,index,val,FALSE);
+        if((index == 11)||(index ==12))
+            param->updataPivotal();
         if(14==index)
-            pcomm->yajiaoTest(Md::POSFRONT,3,val);
+            pcomm->yajiaoTest(Md::POSFRONT,3,val); //shengke buchang
         if(15==index)
-            pcomm->yajiaoTest(Md::POSREAR,3,val);
+            pcomm->yajiaoTest(Md::POSREAR,3,val);  //shengke buchang
         return;
     }
     QDoubleSpinBox *doublespinbox = qobject_cast<QDoubleSpinBox *>(obj);
     if(doublespinbox){
         int val =qRound(doublespinbox->value()*10);
         int index = doublespinbox->property("index").toInt();
-        param->setData(SpaItemHd_Xtcs,index,val);
+        param->setData(SpaItemHd_Xtcs,index,val,FALSE);
+        if(index==5)
+            param->updataPivotal();
         return;
     }
     QPushButton *pushbutton = qobject_cast<QPushButton *>(obj);
     if(pushbutton){
         int val =pushbutton->isChecked();
         int index = pushbutton->property("index").toInt();
-        param->setData(SpaItemHd_Xtcs,index,val);
+        param->setData(SpaItemHd_Xtcs,index,val,FALSE);
         return;
     }
 

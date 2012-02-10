@@ -187,6 +187,7 @@ public:
     unsigned char cnt_yaJiao(unsigned short row);
     QString  cnt_yaoChuang(unsigned short row);
 
+    unsigned int  cnt_dumuUsed();
     unsigned char cnt_spead(unsigned short row);
     unsigned char cnt_mainLuola(unsigned short row);
     unsigned char cnt_fuzuLuola(unsigned short row);
@@ -252,6 +253,8 @@ private:
     unsigned char dumu_history;
     QComm *pcomm;
     unsigned char *cntbuf;    //用于载入整个CNT文件
+    bool isdualdumuzu;
+    unsigned int dumuzu_used;
 
     int _azl(unsigned char data);
     int _hzl(unsigned char data);

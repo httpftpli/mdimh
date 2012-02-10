@@ -316,9 +316,9 @@ int QDMZModel::columnCount(const QModelIndex &parent) const{
 QVariant  QDMZModel::data(const QModelIndex &index, int role) const{
     if(!index.isValid())
         return QVariant();
+    int row = index.row();
+    int column = index.column();
     if(role==Qt::DisplayRole){
-        int row = index.row();
-        int column = index.column();
 #if DUAL_SYSTEM
         short dat = patterndata->wrk_fechData(WrkItemHd_DuMuZi,8*row+column);
 #else
@@ -327,8 +327,19 @@ QVariant  QDMZModel::data(const QModelIndex &index, int role) const{
 #endif
         return QString::number(dat);
     }
+    if(Qt::BackgroundColorRole==role){
+        if((row==0)||(row==22)||(row==23))
+            return QVariant();
+        else{
+            if(patterndata->cnt_dumuUsed()&(1<<(row+1)))
+                return QVariant();
+            else
+                return QColor(0,0,0,100);
+        }
+    }
     return QVariant();
 }
+
 
 
 bool  QDMZModel::setData(const QModelIndex &index, const QVariant &value, int role){

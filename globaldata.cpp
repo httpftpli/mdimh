@@ -71,7 +71,7 @@ Md::Result sysInit(){
         box.setDefaultButton(QMessageBox::Yes);
         if(box.exec()==QMessageBox::Yes){
             QString filename = QFileDialog::getOpenFileName(splash,
-                   QObject::tr("打开文件"),QString("./rom"),QObject::tr("固件文件 (*.bin *.min)"));
+                                                            QObject::tr("打开文件"),QString("./rom"),QObject::tr("固件文件 (*.bin *.min)"));
             if(filename!=""){
                 QFile file(filename);
                 commResult = qComm.SendBin(file,splash);
@@ -178,6 +178,7 @@ Md::Result sysInit(){
         QTest::qWait(2000);
         return Md::CommError;
     }
+    //确认厂商ID///////////////////////////////////////////////
     if(hmiData.customerId!=0xffff){
         commResult = qComm.checkCustomerId(hmiData.customerId);
         if(commResult==Md::CommError){
@@ -190,6 +191,7 @@ Md::Result sysInit(){
             return Md::CustomerIdNotPass;
         }
     }
+    ///查询版本/////////////////////////////////////////////////
     hmiData.pollSysVersion();
     INFORMLOG(QObject::tr("开机初始化成功"));
     return Md::Ok;

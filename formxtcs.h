@@ -16,7 +16,6 @@ class FormXtcs : public QWidget, private Ui::FormXtcs
 public:
     explicit FormXtcs(QParam *paramdata, QComm *comm, QWidget *parent = 0);
     ~FormXtcs();
-
 private:
     QParam *param;
     QSignalMapper signalmapper;

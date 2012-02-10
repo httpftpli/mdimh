@@ -156,8 +156,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>针床撞击使能</string>
        </property>
        <property name="text">
         <string>Button</string>
@@ -209,26 +212,16 @@
        </property>
       </widget>
      </item>
-     <item row="15" column="2">
-      <spacer name="verticalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
      <item row="0" column="3">
       <widget class="QSpinBox" name="_1_spinBox">
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>主马达高速：10～100</string>
        </property>
        <property name="prefix">
         <string/>
@@ -249,8 +242,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>主马达限制速度：20～60</string>
        </property>
        <property name="suffix">
         <string/>
@@ -274,8 +270,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>主马达低速：5～30</string>
        </property>
        <property name="suffix">
         <string/>
@@ -299,8 +298,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>主马达复位速度：4～20</string>
        </property>
        <property name="suffix">
         <string/>
@@ -324,8 +326,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>自动归零件数：0～1000</string>
        </property>
        <property name="maximum">
         <number>1000</number>
@@ -340,8 +345,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>针床撞击灵敏度：0~127</string>
        </property>
        <property name="maximum">
         <number>127</number>
@@ -356,8 +364,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>主罗拉停车力矩：0~99</string>
        </property>
        <property name="index" stdset="0">
         <UInt>9</UInt>
@@ -369,8 +380,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>副罗拉停车力矩：0~99</string>
        </property>
        <property name="index" stdset="0">
         <UInt>10</UInt>
@@ -382,8 +396,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>左送纱停车力矩：0～99</string>
        </property>
        <property name="index" stdset="0">
         <UInt>11</UInt>
@@ -408,8 +425,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>右送纱停车力矩：0～99</string>
        </property>
        <property name="index" stdset="0">
         <UInt>12</UInt>
@@ -434,8 +454,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>机头回转距离：5～55</string>
        </property>
        <property name="minimum">
         <number>5</number>
@@ -466,8 +489,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>后沉降片复位：0～1000</string>
        </property>
        <property name="maximum">
         <number>1000</number>
@@ -495,8 +521,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>前沉降片复位：0～1000</string>
        </property>
        <property name="maximum">
         <number>1000</number>
@@ -511,8 +540,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>主马达最高速度：0.6～1.2</string>
        </property>
        <property name="suffix">
         <string/>
@@ -534,6 +566,19 @@
        </property>
       </widget>
      </item>
+     <item row="15" column="2">
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
     </layout>
    </item>
    <item>
@@ -551,61 +596,13 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout_2">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
      <property name="horizontalSpacing">
       <number>1</number>
      </property>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_191">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>电磁铁通电时间</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_161">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>副罗拉使能</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QPushButton" name="_17_pushButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Button</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="index" stdset="0">
-        <UInt>17</UInt>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label_141">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -618,7 +615,7 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="8" column="0">
       <widget class="QLabel" name="label_131">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -631,8 +628,11 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="9" column="0">
       <widget class="QLabel" name="label_151">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -644,8 +644,11 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="0">
+     <item row="10" column="0">
       <widget class="QLabel" name="label_101">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -657,8 +660,11 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
+     <item row="10" column="1">
       <widget class="QPushButton" name="_21_pushButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -668,7 +674,7 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
        </property>
        <property name="text">
@@ -682,7 +688,7 @@
        </property>
       </widget>
      </item>
-     <item row="10" column="0">
+     <item row="11" column="0">
       <widget class="QLabel" name="label_9">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -695,26 +701,16 @@
        </property>
       </widget>
      </item>
-     <item row="19" column="0">
-      <spacer name="verticalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="10" column="1">
+     <item row="11" column="1">
       <widget class="QSpinBox" name="_22_spinBox">
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>选针器刀片个数：4～8</string>
        </property>
        <property name="minimum">
         <number>4</number>
@@ -727,12 +723,15 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="9" column="1">
       <widget class="QSpinBox" name="_20_spinBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
        </property>
        <property name="suffix">
@@ -746,13 +745,16 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="8" column="1">
       <widget class="QSpinBox" name="_19_spinBox">
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>翻针卷布增益比例：0～100</string>
        </property>
        <property name="maximum">
         <number>100</number>
@@ -762,13 +764,16 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="7" column="1">
       <widget class="QSpinBox" name="_18_spinBox">
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>编织卷布增益比例：0～100</string>
        </property>
        <property name="maximum">
         <number>100</number>
@@ -778,13 +783,312 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="12" column="0">
+      <widget class="QLabel" name="label_111">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>左右送纱有效</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="1">
+      <widget class="QPushButton" name="_23_pushButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>左右送纱有效</string>
+       </property>
+       <property name="text">
+        <string>Button</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="index" stdset="0">
+        <UInt>23</UInt>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="0">
+      <widget class="QLabel" name="label_121">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>片间隔距离</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="1">
+      <widget class="QSpinBox" name="_24_spinBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>片间隔距离：0～399</string>
+       </property>
+       <property name="maximum">
+        <number>399</number>
+       </property>
+       <property name="index" stdset="0">
+        <UInt>25</UInt>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>沙嘴落下提前量</string>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="1">
+      <widget class="QSpinBox" name="_25_spinBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>沙嘴落下提前量：1～200</string>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>200</number>
+       </property>
+       <property name="index" stdset="0">
+        <UInt>26</UInt>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>罗拉常转模式</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="1">
+      <widget class="QPushButton" name="_26_pushButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>罗拉常转模式</string>
+       </property>
+       <property name="text">
+        <string>Button</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="index" stdset="0">
+        <UInt>27</UInt>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>罗拉正转脉冲数</string>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="1">
+      <widget class="QSpinBox" name="_27_spinBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>罗拉开合正转脉冲数：0～2000</string>
+       </property>
+       <property name="maximum">
+        <number>2000</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+       <property name="index" stdset="0">
+        <UInt>28</UInt>
+       </property>
+      </widget>
+     </item>
+     <item row="17" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>罗拉反转脉冲数</string>
+       </property>
+      </widget>
+     </item>
+     <item row="17" column="1">
+      <widget class="QSpinBox" name="_28_spinBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>罗拉开合反转脉冲数：0～2000</string>
+       </property>
+       <property name="maximum">
+        <number>2000</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+       <property name="index" stdset="0">
+        <UInt>29</UInt>
+       </property>
+      </widget>
+     </item>
+     <item row="18" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>摇床丝杆补偿</string>
+       </property>
+      </widget>
+     </item>
+     <item row="18" column="1">
+      <widget class="QSpinBox" name="_29_spinBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>摇床丝杆间隙补偿脉冲数：--30～+30</string>
+       </property>
+       <property name="maximum">
+        <number>30</number>
+       </property>
+       <property name="index" stdset="0">
+        <UInt>30</UInt>
+       </property>
+      </widget>
+     </item>
+     <item row="19" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>送纱启动等待时间</string>
+       </property>
+      </widget>
+     </item>
+     <item row="19" column="1">
+      <widget class="QSpinBox" name="_30_spinBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>送纱机头启动等待时间：0～20</string>
+       </property>
+       <property name="maximum">
+        <number>20</number>
+       </property>
+       <property name="index" stdset="0">
+        <UInt>31</UInt>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_191">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>电磁铁通电时间</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
       <widget class="QSpinBox" name="_16_spinBox">
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>电磁铁通电时间：1～5</string>
        </property>
        <property name="suffix">
         <string/>
@@ -800,21 +1104,8 @@
        </property>
       </widget>
      </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="label_111">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>左右送纱有效</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="1">
-      <widget class="QPushButton" name="_23_pushButton">
+     <item row="1" column="1">
+      <widget class="QPushButton" name="_17_pushButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -824,8 +1115,11 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>30</height>
+         <height>25</height>
         </size>
+       </property>
+       <property name="statusTip">
+        <string>副罗拉使能</string>
        </property>
        <property name="text">
         <string>Button</string>
@@ -834,12 +1128,12 @@
         <bool>true</bool>
        </property>
        <property name="index" stdset="0">
-        <UInt>23</UInt>
+        <UInt>17</UInt>
        </property>
       </widget>
      </item>
-     <item row="12" column="0">
-      <widget class="QLabel" name="label_121">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_161">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -847,217 +1141,22 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>片间隔距离</string>
+        <string>副罗拉使能</string>
        </property>
       </widget>
      </item>
-     <item row="12" column="1">
-      <widget class="QSpinBox" name="_24_spinBox">
-       <property name="minimumSize">
+     <item row="20" column="0">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
         <size>
-         <width>0</width>
-         <height>30</height>
+         <width>20</width>
+         <height>40</height>
         </size>
        </property>
-       <property name="maximum">
-        <number>399</number>
-       </property>
-       <property name="index" stdset="0">
-        <UInt>25</UInt>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="0">
-      <widget class="QLabel" name="label_8">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>沙嘴落下提前量</string>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="1">
-      <widget class="QSpinBox" name="_25_spinBox">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>200</number>
-       </property>
-       <property name="index" stdset="0">
-        <UInt>26</UInt>
-       </property>
-      </widget>
-     </item>
-     <item row="14" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>罗拉常转模式</string>
-       </property>
-      </widget>
-     </item>
-     <item row="14" column="1">
-      <widget class="QPushButton" name="_26_pushButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Button</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="index" stdset="0">
-        <UInt>27</UInt>
-       </property>
-      </widget>
-     </item>
-     <item row="15" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>罗拉正转脉冲数</string>
-       </property>
-      </widget>
-     </item>
-     <item row="15" column="1">
-      <widget class="QSpinBox" name="_27_spinBox">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximum">
-        <number>2000</number>
-       </property>
-       <property name="singleStep">
-        <number>10</number>
-       </property>
-       <property name="index" stdset="0">
-        <UInt>28</UInt>
-       </property>
-      </widget>
-     </item>
-     <item row="16" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>罗拉反转脉冲数</string>
-       </property>
-      </widget>
-     </item>
-     <item row="16" column="1">
-      <widget class="QSpinBox" name="_28_spinBox">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximum">
-        <number>2000</number>
-       </property>
-       <property name="singleStep">
-        <number>10</number>
-       </property>
-       <property name="index" stdset="0">
-        <UInt>29</UInt>
-       </property>
-      </widget>
-     </item>
-     <item row="17" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>摇床丝杆补偿</string>
-       </property>
-      </widget>
-     </item>
-     <item row="17" column="1">
-      <widget class="QSpinBox" name="_29_spinBox">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximum">
-        <number>30</number>
-       </property>
-       <property name="index" stdset="0">
-        <UInt>30</UInt>
-       </property>
-      </widget>
-     </item>
-     <item row="18" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>送纱启动等待时间</string>
-       </property>
-      </widget>
-     </item>
-     <item row="18" column="1">
-      <widget class="QSpinBox" name="_30_spinBox">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximum">
-        <number>20</number>
-       </property>
-       <property name="index" stdset="0">
-        <UInt>31</UInt>
-       </property>
-      </widget>
+      </spacer>
      </item>
     </layout>
    </item>

@@ -25,8 +25,9 @@ FormHead::FormHead(QPatternData * data,QHMIData *hmi, QParam *p,QWidget *parent)
 
 }
 
-void  FormHead::setAtribute(unsigned char val){
-    this->leftright = val;
+void  FormHead::setKouAtribute(unsigned char val){
+    Q_ASSERT((val==Md::POSLEFT)||(val==Md::POSRIGHT));
+    this->kou = val;
 }
 
 void FormHead::onParamChanded(){
@@ -35,14 +36,18 @@ void FormHead::onParamChanded(){
 
 void FormHead::onCntNumber(unsigned short cntnumber){    
     this->cntnumber = cntnumber;
+    unsigned char  sys;
 #if DUAL_SYSTEM
-    bool sys = (cntnumber%2)^(leftright==Md::POSLEFT);
+    if(this->kou==Md::POSLEFT)  // left kou
+         sys = (cntnumber%2)?0:1;
+    else                                  //right kou
+         sys = (cntnumber%2)?1:0;
 #else
-    bool sys = FALSE;
+         sys = 0;
 #endif
     /////////花板行/////////////////////////////
-    label_hbhh->setNum(pattern->cnt_huabanhang(cntnumber,sys,Md::POSREAR));
-    label_hbhq->setNum(pattern->cnt_huabanhang(cntnumber,sys,Md::POSFRONT));
+    label_hbhh->setNum(pattern->cnt_huabanhang(cntnumber,(Md::POS_LFETRIGHT)kou,Md::POSREAR));
+    label_hbhq->setNum(pattern->cnt_huabanhang(cntnumber,(Md::POS_LFETRIGHT)kou,Md::POSFRONT));
     ///////动作/////////////////////////////////////
     label_awdzh->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,sys,Md::POSREAR)));
     label_awdzq->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,sys,Md::POSFRONT)));
@@ -58,7 +63,7 @@ void FormHead::onCntNumber(unsigned short cntnumber){
     for(int i=0;i<8;i++)
         plablearray[i]->setText((sz&1<<i)?QString::number(i+1):"_");
     ///////////////////度目值/////////////////////////
-    if(cntnumber%2){//偶数数行
+    /*if(cntnumber%2){//偶数数行
         label_dmz_hz->setNum(param->duMu_BuGongZuo(QParam::BackLeft));
         label_dmz_qz->setNum(param->duMu_BuGongZuo(QParam::FrontLeft));
         label_dmz_hy->setNum(pattern->duMuZhi(TRUE,cntnumber));
@@ -72,7 +77,7 @@ void FormHead::onCntNumber(unsigned short cntnumber){
         label_dmz_qy->setNum(param->duMu_BuGongZuo(QParam::FrontRight));
         label_right->setPixmap(pixmapright);
         label_left->setPixmap(pixmapright);
-    }
+    }*/
 }
 
 void FormHead::paintEvent ( QPaintEvent * ){

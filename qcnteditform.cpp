@@ -25,14 +25,6 @@ QCntEditForm::QCntEditForm(QWidget *parent,QPatternData *data) :
     pcheckBoxArray2[6]=pushButton_17;
     pcheckBoxArray2[7]=pushButton_18;
     (pattern->loadStatus()&Md::HAVECNT)?iscntloaded=TRUE:iscntloaded=FALSE;
-    if(!iscntloaded){
-        if(!(pattern->loadFile(Md::HAVECNT)&Md::HAVECNT)){
-            QMdMessageBox box;
-            box.exec(tr("载入cnt文件"),tr("cnt文件载入失败"),QMessageBox::Warning,
-                     QMessageBox::Cancel,QMessageBox::Cancel);
-            deleteLater();
-        }
-    }
     QIntValidator *intval = new QIntValidator(this);
     intval->setRange(1,pattern->tatalcntrow);
     lineEdit_row->setValidator(intval);
@@ -45,10 +37,11 @@ QCntEditForm::QCntEditForm(QWidget *parent,QPatternData *data) :
 void QCntEditForm::rowToggle(int row){
     bool sys2 = row%2;
     lineEdit_row->setText(QString::number(row+1));
+    /*
     lineEdit_hbh1->setText(QString::number(pattern->cnt_huabanhang(row,!sys2,Md::POSREAR)));
     lineEdit_hbh2->setText(QString::number(pattern->cnt_huabanhang(row,sys2,Md::POSREAR)));
     lineEdit_hbh1_q->setText(QString::number(pattern->cnt_huabanhang(row,!sys2,Md::POSFRONT)));
-    lineEdit_hbh2_q->setText(QString::number(pattern->cnt_huabanhang(row,sys2,Md::POSFRONT)));
+    lineEdit_hbh2_q->setText(QString::number(pattern->cnt_huabanhang(row,sys2,Md::POSFRONT)));*/
 
     /**********1系统后床指令A*********************/
     int indextmp = pattern->cnt_Azhiling(row,!sys2,Md::POSREAR);
@@ -105,10 +98,10 @@ void QCntEditForm::rowToggle(int row){
     for(int i=0;i<8;i++)
         pcheckBoxArray2[i]->setChecked(sz2&1<<i);
     /**********度目,类型*********************/
-    bool doubleorsigle;
-    unsigned char dumu = pattern->cnt_duMu(row,doubleorsigle);
-    lineEdit_dm->setText(QString::number(dumu));
-    lineEdit_lx->setText(doubleorsigle?tr("双面"):tr("单面"));
+    //bool doubleorsigle;
+    //unsigned char dumu1 = pattern->cnt_duMu(row,doubleorsigle);
+    //lineEdit_dm1->setText(QString::number(dumu1));
+    //lineEdit_lx->setText(doubleorsigle?tr("双面"):tr("单面"));
     /**********主罗拉*********************/
     lineEdit_zll->setText(QString::number(pattern->cnt_mainLuola(row)));
     /**********辅助罗拉*********************/
@@ -126,9 +119,9 @@ void QCntEditForm::rowToggle(int row){
     /**********摇床*********************/
     lineEdit_yc->setText(pattern->cnt_yaoChuang(row));
     /**********循环首*********************/
-    lineEdit_xhs->setText(QString::number(pattern->cntFechData(row,CNT_LoopStart,2)));
+    lineEdit_xhs->setText(QString::number(pattern->cnt_FechData(row,CNT_LoopStart,2)));
     /**********循环次数*********************/
-    lineEdit_xhcs->setText(QString::number(pattern->cntFechData(row,CNT_LoopNum,2)));
+    lineEdit_xhcs->setText(QString::number(pattern->cnt_FechData(row,CNT_LoopNum,2)));
 }
 
 void QCntEditForm::on_pushButton_3_clicked()

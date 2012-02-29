@@ -93,11 +93,10 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val)
             dataBuf[RUN_LOOP_TOTAL] = tatalloop;
             emit hmi_loopTatal(tatalloop);
         }
-        stream >> cntnumber;
+        stream >> cntnumber;  //cntnumber 以1开始
         if(cntnumber==0){
             cntnumber=0x01;
         }
-        cntnumber--;                            //上发的行号以一为起点，所以减去1
         dataBuf[RUN_CNT_NUMBER] = cntnumber;
         emit hmi_cntNumber(cntnumber);
         stream >> leftloop;

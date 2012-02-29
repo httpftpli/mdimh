@@ -173,8 +173,7 @@ public:
     bool isPatternAvailable();
     void refreshBuf(Md::HAVEFILEFLAG flag);
     void deloadFile(Md::HAVEFILEFLAG flag=Md::HAVEALL);
-    void patSetData(unsigned short row,unsigned short column,unsigned char data);
-    void cntSetData(unsigned short row,unsigned char index,unsigned short data,unsigned char len);
+
     Md::HAVEFILEFLAG loadStatus();
     Result loadLoop(const QString &prmfilepath);
     int Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag=Md::HAVENO);
@@ -182,32 +181,41 @@ public:
 
 
 
-    unsigned char cnt_duMu(unsigned short row,bool &doubleOrSigle);
-    unsigned char duMuZhi(bool backorfront,unsigned short row);
-    unsigned char cnt_yaJiao(unsigned short row);
-    QString  cnt_yaoChuang(unsigned short row);
-
-    unsigned int  cnt_dumuUsed();
-    unsigned char cnt_spead(unsigned short row);
-    unsigned char cnt_mainLuola(unsigned short row);
-    unsigned char cnt_fuzuLuola(unsigned short row);
-    unsigned char cnt_songSha(unsigned short row);
-    unsigned char cnt_shazuiTf(unsigned short row);
-    unsigned char cnt_tingChe(unsigned short row);
-
-    unsigned char shaZui(unsigned char system,unsigned short row);    //返回沙嘴捆绑后当前行的沙嘴
+    unsigned char  cnt_yaJiao(unsigned short row);
+    QString        cnt_yaoChuang(unsigned short row);
+    unsigned char  cnt_duMuZu(unsigned short row, unsigned char sys,bool &doubleOrSigle);
+    unsigned char  cnt_duMuZu(unsigned short row, Md::POS_LFETRIGHT system_kou,bool &doubleOrSigle);
+    unsigned int   cnt_dumuUsed();
+    unsigned char  cnt_spead(unsigned short row);
+    unsigned char  cnt_mainLuola(unsigned short row);
+    unsigned char  cnt_fuzuLuola(unsigned short row);
+    unsigned char  cnt_songSha(unsigned short row);
+    unsigned char  cnt_shazuiTf(unsigned short row);
+    unsigned char  cnt_tingChe(unsigned short row);
     int            cnt_Azhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR);
+    int            cnt_Azhiling(unsigned short row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR);
     int            cnt_Hzhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR);
+    int            cnt_Hzhiling(unsigned short row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR);
     QString        cnt_seDaiHaoA(unsigned short row,unsigned char system,Md::POS_FRONTREAR frontorrear);
+    QString        cnt_seDaiHaoA(unsigned short row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontorrear);
     QString        cnt_seDaiHaoH(unsigned short row,unsigned char system,Md::POS_FRONTREAR frontorrear);
-    unsigned char  cnt_shaZui(unsigned char system,unsigned short row);//返回CNT文件中当前行的沙嘴
-    unsigned short cnt_huabanhang(unsigned short row,unsigned char system,Md::POS_FRONTREAR frontorrear);
+    QString        cnt_seDaiHaoH(unsigned short row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontorrear);
+    unsigned char  cnt_shaZui(unsigned short row,unsigned char system);
+    unsigned char  cnt_shaZui(unsigned char row,Md::POS_LFETRIGHT kou);
+    unsigned short cnt_huabanhang(unsigned short row,Md::POS_LFETRIGHT sys_kou,Md::POS_FRONTREAR frontorrear);
+    unsigned short cnt_huabanhang(unsigned short row,unsigned char sys,Md::POS_FRONTREAR pos);
 
+    unsigned char  shaZui(unsigned short row,unsigned char system);    //返回沙嘴捆绑后当前行的沙嘴
+    unsigned char  shaZui(unsigned short row,Md::POS_LFETRIGHT kou);    //返回沙嘴捆绑后当前行的沙嘴
+    unsigned char  duMuZhi(unsigned short row,bool backorfront, unsigned char dumuindex);
     unsigned short wrk_qizhengdian();
 
 
-    //unsigned char  cntFechData(unsigned short row,unsigned char addr);
-    unsigned short cntFechData(unsigned short row,unsigned char addr,unsigned short leng=1);
+    unsigned short cnt_FechData(unsigned short row,unsigned char addr,unsigned short leng=1);
+    void cnt_SetData(unsigned short row,unsigned char index,unsigned short data,unsigned char len);
+    inline char pat_FechData(unsigned short row,unsigned short column);
+    void pat_SetData(unsigned short row,unsigned short column,unsigned char data, bool download = TRUE);
+
     short wrk_fechData(WrkItemHd handle,int offset);
     void  wrk_setData(WrkItemHd handle,int offset,short data);
 
@@ -225,10 +233,8 @@ public:
     QString wrkFilePath;
     QString wrkFileName;
     QString sazFilePath;
-    unsigned char *patbuf;    //用于载入整个PAT文件
-    unsigned short *wrkbuf;    //用于载入整个wrk文件
-    unsigned char shazuiused_r;  //系统1左边花型中用到的沙嘴；
-    unsigned char shazuiused_l;  //系统1左边花型中用到的沙嘴；
+    unsigned char shazuiused_r;  //右口用到的沙嘴；
+    unsigned char shazuiused_l;  //左口用到的沙嘴；
     QList<SzkbData> sazbuf;   //沙嘴捆绑数据
     unsigned char shaZuiKb;   //捆绑的沙嘴，从sazbuf中提取；
 
@@ -236,9 +242,10 @@ public:
     QSharedPointer<QFile> patfile;
     QSharedPointer<QFile> wrkfile;
 
-    unsigned short tatalcntrow;
-    unsigned short tatalpatrow;
-    unsigned short tatalcolumn;
+    int tatalcntrow;
+    int tatalpatrow;
+    int tatalcolumn;
+    int patbyteperrow;
     QSet<unsigned short> patModifiedRow;//用于保存修改的pat行
     QSet<unsigned short> cntModifiedRow;//用于保存修改的cnt行
     QSet<WrkItemHd> wrkModifiedHandle; //用于保存修改的wrk包号
@@ -250,9 +257,10 @@ signals:
     void cntDirty(bool val);
     void wrkDirty(bool val);
 private:
-    unsigned char dumu_history;
+    unsigned char dumu_history_sys1,dumu_history_sys2;
     QComm *pcomm;
-    unsigned char *cntbuf;    //用于载入整个CNT文件
+    unsigned char *cntbuf,*patbuf; //花型缓冲区
+    unsigned short *wrkbuf;
     bool isdualdumuzu;
     unsigned int dumuzu_used;
 
@@ -263,7 +271,7 @@ private:
     bool ispatternavalible;
 
     int wrk_updata(WrkItemHd hd);
-
+    unsigned char kou2sys(Md::POS_LFETRIGHT kou,unsigned short cntnumber);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPatternData::FileStateFlag)

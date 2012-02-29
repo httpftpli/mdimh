@@ -135,7 +135,7 @@ QHeaderView {
         <bool>false</bool>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>10</number>
        </property>
        <widget class="QWidget" name="page">
         <widget class="QMdTableView" name="tableView">
@@ -692,6 +692,9 @@ QHeaderView {
         <layout class="QGridLayout" name="gridLayout_8">
          <item row="0" column="0">
           <widget class="QTableView" name="tableView_dmbc">
+           <property name="toolTip">
+            <string>度目补偿</string>
+           </property>
            <property name="editTriggers">
             <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
            </property>
@@ -709,6 +712,9 @@ QHeaderView {
         <layout class="QGridLayout" name="gridLayout_7">
          <item row="0" column="0">
           <widget class="QTableView" name="tableView_ycwzxz">
+           <property name="toolTip">
+            <string>摇床补偿(摇床位置修正)</string>
+           </property>
            <property name="editTriggers">
             <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
            </property>
@@ -745,6 +751,9 @@ QHeaderView {
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
           <widget class="QTableView" name="tableView_fzyc">
+           <property name="toolTip">
+            <string>翻针摇床补偿</string>
+           </property>
            <property name="verticalScrollBarPolicy">
             <enum>Qt::ScrollBarAlwaysOff</enum>
            </property>
@@ -891,7 +900,7 @@ QHeaderView {
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>

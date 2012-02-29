@@ -40,12 +40,6 @@ PatFileForm::PatFileForm(QWidget *parent, QPatternData *data) :
     connect(lineEdit_3,SIGNAL(textChanged(QString)),&pos,SLOT(setColumn(QString)));
 
     pos.setData(pattern->tatalpatrow,1);
-    if(!(pattern->loadFile(Md::HAVEPAT)&Md::HAVEPAT)){
-        QMdMessageBox box;
-        box.exec(tr("载入pat文件"),tr("载入文件失败"),QMessageBox::Warning,
-                 QMessageBox::Cancel,QMessageBox::Cancel);
-        deleteLater();
-    }
 }
 
 void PatFileForm::tableViewIsEditing(QModelIndex index){
@@ -104,7 +98,6 @@ void PatFileForm::on_pushButton_jumpto_clicked()
 {
     jumpTo(pos.row,pos.column,QAbstractItemView::PositionAtCenter);
 }
-
 
 
 void PatFileForm::on_pushButton_columnleft_clicked()

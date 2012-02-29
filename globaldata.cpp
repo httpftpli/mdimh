@@ -36,7 +36,7 @@ Md::Result sysInit(){
     QPatternData::Result r;
     r = patternData.setFile(hmiData.cntFilePath,hmiData.patFilePath);
     if(r==QPatternData::Ok){
-        patternData.loadFile(Md::HAVECNT|Md::HAVEWRK);
+        patternData.loadFile(Md::HAVEWRK);
     }else if(r==QPatternData::NoCntFile){
         box.setIcon(QMessageBox::Warning);
         box.setText(QObject::tr("载入花型"));

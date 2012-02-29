@@ -15,7 +15,7 @@ class FormHead : public QWidget, private Ui::FormHead
 
 public:
     explicit FormHead(QPatternData *,QHMIData *,QParam *,QWidget *parent = 0);
-    void setAtribute(unsigned char leftorright);
+    void setKouAtribute(unsigned char leftorright);
 private:
     QPatternData *pattern;
     QHMIData *hmidata;
@@ -26,7 +26,7 @@ private:
     QStringList azllist;
     QStringList hzllist;
     unsigned short cntnumber;
-    unsigned char leftright;
+    unsigned char kou;
 protected slots:
     void onCntNumber(unsigned short number);
     void onParamChanded();

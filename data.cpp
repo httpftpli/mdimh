@@ -105,7 +105,7 @@ QVariant QPatModel::headerData(int section, Qt::Orientation orientation,int role
             return str;
         }
         else
-            return pattern->tatalcntrow-section;
+            return pattern->tatalpatrow-section;
     }
     return QVariant();
 }
@@ -118,15 +118,7 @@ QVariant QPatModel::data(const QModelIndex &index, int role) const{
     }else if(role == Qt::DisplayRole){
         int row = index.row();
         int column = index.column();
-        char data = pattern->patbuf[((r-row-1)*(c/2+c%2))+column/2];
-        char ch=  (column%2)?(data&0x0f):((unsigned char)data>>4);
-        if((ch>=0)&&(ch<=9)){
-            ch = ch+'0';
-        }
-        else if((ch>=0x0a)&&(ch<=0x0f)){
-            ch = ch-10+'A';
-        }
-        return QString(ch);
+        return QString(pattern->pat_FechData(r-row,column));
     }else
         return QVariant();
 }
@@ -140,16 +132,7 @@ bool QPatModel::setData(const QModelIndex &index, const QVariant &value, int rol
         if(str.isEmpty())
             return FALSE;
         char cha = value.toString().at(0).toAscii();
-        if((cha<='9')&&(cha>='0')){
-            cha = cha-'0';
-        }else if((cha<='f')&&(cha>='a')){
-            cha = cha-'a'+10;
-        }else if((cha<='F')&&(cha>='A')){
-            cha = cha-'A'+10;
-        }else{
-            return FALSE;
-        }
-        pattern->patSetData(r-row-1,column,cha);
+        pattern->pat_SetData(r-row,column,cha);
         return TRUE;
     }
     return FALSE;
@@ -1129,16 +1112,16 @@ void QCntLoopModel::save(bool send){
     for(int i=0;i<looplist.size();i++){
         loop = looplist.at(i);
         end = loop.endline;
-        patterndata->cntSetData(end-1,CNT_LoopStart,0,2);
-        patterndata->cntSetData(end-1,CNT_LoopNum,0,2);
+        patterndata->cnt_SetData(end-1,CNT_LoopStart,0,2);
+        patterndata->cnt_SetData(end-1,CNT_LoopNum,0,2);
     }
     for(int i=0;i<looplistchanged.size();i++){
         loop = looplistchanged.at(i);
         start = loop.startline;
         end = loop.endline;
         num = loop.numofloop;
-        patterndata->cntSetData(end-1,CNT_LoopStart,start,2);
-        patterndata->cntSetData(end-1,CNT_LoopNum,num,2);
+        patterndata->cnt_SetData(end-1,CNT_LoopStart,start,2);
+        patterndata->cnt_SetData(end-1,CNT_LoopNum,num,2);
     }
     patterndata->Save(Md::HAVECNT,send?Md::HAVECNT:Md::HAVENO);
 }
@@ -1279,9 +1262,9 @@ bool QSzkbModel::checkdatavalid(){
 
 QTingcheModel::QTingcheModel(QPatternData *pattern ,QObject * parent):QAbstractTableModel(parent),
              patterndata(pattern){
-        for(int i=0;i<patterndata->tatalcntrow;i++){
-            if(patterndata->cntFechData(i,CNT_TingCe,1)==1)
-                cntrows.insert(i,1);
+        for(int i=1;i<=patterndata->tatalcntrow;i++){
+            if(patterndata->cnt_FechData(i,CNT_TingCe,1)==1)
+                cntrows.insert(i-1,1);
         }
 }
 
@@ -1317,7 +1300,7 @@ QVariant QTingcheModel::data(const QModelIndex &index, int role) const{
 
 bool QTingcheModel::insertCntRow (unsigned short cntrow){
         cntrows.insert(cntrow,1);
-        patterndata->cntSetData(cntrow,CNT_TingCe,1,1);
+        patterndata->cnt_SetData(cntrow,CNT_TingCe,1,1);
         reset();
 }
 
@@ -1327,7 +1310,7 @@ bool QTingcheModel::removeRows(int row,int count, const QModelIndex &parent){
     for(int i=0;i<count;i++){
         unsigned short cntrow = cntrows.keys().at(row+i);
         cntrows.remove(cntrow);
-        patterndata->cntSetData(cntrow,CNT_TingCe,0,1);
+        patterndata->cnt_SetData(cntrow,CNT_TingCe,0,1);
     }
     endRemoveRows();
     return TRUE;

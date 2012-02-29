@@ -35,8 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     formheadl = new FormHead(&patternData,&hmiData,&paramaData,this);
 #if DUAL_SYSTEM
     formheadr = new FormHead(&patternData,&hmiData,&paramaData,this);
-    formheadl->setAtribute(Md::POSLEFT);
-    formheadr->setAtribute(Md::POSRIGHT);
+    formheadl->setKouAtribute(Md::POSLEFT);
+    formheadr->setKouAtribute(Md::POSRIGHT);
 #endif
     setupUi(this);
     setup();
@@ -141,7 +141,8 @@ void MainWindow::onDankouLock(bool lock){
 void MainWindow::runPatternRowChange(unsigned short cntnumber){
     bool temp;
     lcdNumber->display(cntnumber+1);
-    label_dumu->setNum(patternData.cnt_duMu(cntnumber,temp));
+    label_dumu_l->setNum(patternData.cnt_duMuZu(cntnumber,Md::POSLEFT,temp));
+    label_dumu_r->setNum(patternData.cnt_duMuZu(cntnumber,Md::POSRIGHT,temp));
     int speed = patternData.cnt_spead(cntnumber);
     label_speed->setNum(speed);
     label_speedzhi->setNum(patternData.wrkSpeedZhi(speed));

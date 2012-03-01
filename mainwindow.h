@@ -19,7 +19,6 @@ public:
 
 public slots:
     void runPatternRowChange(unsigned short val);
-    void onParamChanged();
 #if DUAL_SYSTEM
     void onDankouLock(bool);
 #endif
@@ -27,7 +26,7 @@ public slots:
     void Timeout1s();
 
 private slots:
-
+    void onParamChanded();
     void on_pushButton_12_clicked();
     void on_pushButton_11_clicked();
     void on_qMdPushButton_10_clicked(bool checked);
@@ -76,6 +75,7 @@ private:
     QPointer<paramform > paramForm;
     QPixmap pixmapleft,pixmapright;
     FormHead *formheadl;
+    int cntnumber;
 #if DUAL_SYSTEM
     FormHead *formheadr;
 #endif

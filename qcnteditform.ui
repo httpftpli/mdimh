@@ -55,7 +55,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="lineEdit_hbh1">
+                   <widget class="QLineEdit" name="lineEdit_hbhl">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -95,7 +95,7 @@
                    </widget>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdha1">
+                   <widget class="QLineEdit" name="lineEdit_sdhal">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -108,7 +108,7 @@
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdhh1">
+                   <widget class="QLineEdit" name="lineEdit_sdhhl">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -141,7 +141,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QComboBox" name="comboBox_zla1">
+                   <widget class="QComboBox" name="comboBox_zlal">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -166,7 +166,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QComboBox" name="comboBox_zlh1">
+                   <widget class="QComboBox" name="comboBox_zlhl">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -228,56 +228,8 @@
                   <property name="spacing">
                    <number>0</number>
                   </property>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="label_7">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>8</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QLabel" name="label_40">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>7</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="3">
-                   <widget class="QLabel" name="label_39">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>6</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="4">
-                   <widget class="QLabel" name="label_38">
+                  <item row="0" column="6">
+                   <widget class="QLabel" name="label_37">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                       <horstretch>0</horstretch>
@@ -292,23 +244,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="5">
-                   <widget class="QLabel" name="label_37">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>4</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="6">
+                  <item row="0" column="7">
                    <widget class="QLabel" name="label_20">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -317,39 +253,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>3</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="7">
-                   <widget class="QLabel" name="label_14">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>2</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="8">
-                   <widget class="QLabel" name="label_9">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>1</string>
+                     <string>6</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -369,7 +273,71 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="0" column="9">
+                   <widget class="QLabel" name="label_7">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>8</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="label_9">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>1</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="8">
+                   <widget class="QLabel" name="label_40">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>7</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="1" column="1">
+                   <widget class="QPushButton" name="pushButton_01">
+                    <property name="maximumSize">
+                     <size>
+                      <width>29</width>
+                      <height>27</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="9">
                    <widget class="QPushButton" name="pushButton_08">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
@@ -392,6 +360,22 @@
                    </widget>
                   </item>
                   <item row="1" column="2">
+                   <widget class="QPushButton" name="pushButton_02">
+                    <property name="maximumSize">
+                     <size>
+                      <width>29</width>
+                      <height>27</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="8">
                    <widget class="QPushButton" name="pushButton_07">
                     <property name="maximumSize">
                      <size>
@@ -408,6 +392,22 @@
                    </widget>
                   </item>
                   <item row="1" column="3">
+                   <widget class="QPushButton" name="pushButton_03">
+                    <property name="maximumSize">
+                     <size>
+                      <width>29</width>
+                      <height>27</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="7">
                    <widget class="QPushButton" name="pushButton_06">
                     <property name="maximumSize">
                      <size>
@@ -424,22 +424,6 @@
                    </widget>
                   </item>
                   <item row="1" column="4">
-                   <widget class="QPushButton" name="pushButton_05">
-                    <property name="maximumSize">
-                     <size>
-                      <width>29</width>
-                      <height>27</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="5">
                    <widget class="QPushButton" name="pushButton_04">
                     <property name="maximumSize">
                      <size>
@@ -455,24 +439,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="7">
-                   <widget class="QPushButton" name="pushButton_02">
-                    <property name="maximumSize">
-                     <size>
-                      <width>29</width>
-                      <height>27</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="6">
-                   <widget class="QPushButton" name="pushButton_03">
+                   <widget class="QPushButton" name="pushButton_05">
                     <property name="maximumSize">
                      <size>
                       <width>29</width>
@@ -487,19 +455,51 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="8">
-                   <widget class="QPushButton" name="pushButton_01">
-                    <property name="maximumSize">
-                     <size>
-                      <width>29</width>
-                      <height>27</height>
-                     </size>
+                  <item row="0" column="2">
+                   <widget class="QLabel" name="label_14">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
                     </property>
                     <property name="text">
-                     <string/>
+                     <string>2</string>
                     </property>
-                    <property name="checkable">
-                     <bool>true</bool>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QLabel" name="label_39">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>3</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="4">
+                   <widget class="QLabel" name="label_38">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>4</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -530,7 +530,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="lineEdit_hbh1_q">
+                   <widget class="QLineEdit" name="lineEdit_hbhl_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -570,7 +570,7 @@
                    </widget>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdha1_q">
+                   <widget class="QLineEdit" name="lineEdit_sdhal_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -580,7 +580,7 @@
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdhh1_q">
+                   <widget class="QLineEdit" name="lineEdit_sdhhl_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -616,7 +616,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QComboBox" name="comboBox_zla1_q">
+                   <widget class="QComboBox" name="comboBox_zlal_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -641,7 +641,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QComboBox" name="comboBox_zlh1_q">
+                   <widget class="QComboBox" name="comboBox_zlhl_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -725,7 +725,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="lineEdit_hbh2">
+                   <widget class="QLineEdit" name="lineEdit_hbhr">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -765,7 +765,7 @@
                    </widget>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdha2">
+                   <widget class="QLineEdit" name="lineEdit_sdhar">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -778,7 +778,7 @@
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdhh2">
+                   <widget class="QLineEdit" name="lineEdit_sdhhr">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -811,7 +811,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QComboBox" name="comboBox_zla2">
+                   <widget class="QComboBox" name="comboBox_zlar">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -836,7 +836,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QComboBox" name="comboBox_zlh2">
+                   <widget class="QComboBox" name="comboBox_zlhr">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -898,40 +898,8 @@
                   <property name="spacing">
                    <number>0</number>
                   </property>
-                  <item row="0" column="2">
-                   <widget class="QLabel" name="label_19">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>8</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="3">
-                   <widget class="QLabel" name="label_43">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>7</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="4">
-                   <widget class="QLabel" name="label_44">
+                  <item row="0" column="10">
+                   <widget class="QLabel" name="label_21">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                       <horstretch>0</horstretch>
@@ -946,55 +914,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="6">
-                   <widget class="QLabel" name="label_45">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>5</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="7">
-                   <widget class="QLabel" name="label_46">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>4</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="8">
-                   <widget class="QLabel" name="label_21">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>3</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="9">
+                  <item row="0" column="11">
                    <widget class="QLabel" name="label_22">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -1003,14 +923,14 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>2</string>
+                     <string>7</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="10">
+                  <item row="0" column="12">
                    <widget class="QLabel" name="label_23">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -1019,7 +939,7 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>1</string>
+                     <string>8</string>
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignCenter</set>
@@ -1039,71 +959,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="10">
-                   <widget class="QPushButton" name="pushButton_11">
-                    <property name="maximumSize">
-                     <size>
-                      <width>29</width>
-                      <height>27</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="9">
-                   <widget class="QPushButton" name="pushButton_12">
-                    <property name="maximumSize">
-                     <size>
-                      <width>29</width>
-                      <height>27</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="8">
-                   <widget class="QPushButton" name="pushButton_13">
-                    <property name="maximumSize">
-                     <size>
-                      <width>29</width>
-                      <height>27</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="7">
-                   <widget class="QPushButton" name="pushButton_14">
-                    <property name="maximumSize">
-                     <size>
-                      <width>29</width>
-                      <height>27</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="6">
                    <widget class="QPushButton" name="pushButton_15">
                     <property name="maximumSize">
                      <size>
@@ -1119,8 +975,24 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="4">
-                   <widget class="QPushButton" name="pushButton_16">
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="pushButton_11">
+                    <property name="maximumSize">
+                     <size>
+                      <width>29</width>
+                      <height>27</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="12">
+                   <widget class="QPushButton" name="pushButton_18">
                     <property name="maximumSize">
                      <size>
                       <width>29</width>
@@ -1136,6 +1008,22 @@
                    </widget>
                   </item>
                   <item row="1" column="3">
+                   <widget class="QPushButton" name="pushButton_12">
+                    <property name="maximumSize">
+                     <size>
+                      <width>29</width>
+                      <height>27</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="11">
                    <widget class="QPushButton" name="pushButton_17">
                     <property name="maximumSize">
                      <size>
@@ -1151,8 +1039,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="2">
-                   <widget class="QPushButton" name="pushButton_18">
+                  <item row="1" column="5">
+                   <widget class="QPushButton" name="pushButton_13">
                     <property name="maximumSize">
                      <size>
                       <width>29</width>
@@ -1164,6 +1052,118 @@
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="10">
+                   <widget class="QPushButton" name="pushButton_16">
+                    <property name="maximumSize">
+                     <size>
+                      <width>29</width>
+                      <height>27</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="6">
+                   <widget class="QPushButton" name="pushButton_14">
+                    <property name="maximumSize">
+                     <size>
+                      <width>29</width>
+                      <height>27</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="checkable">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="label_19">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>1</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QLabel" name="label_43">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>2</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="5">
+                   <widget class="QLabel" name="label_44">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>3</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="6">
+                   <widget class="QLabel" name="label_45">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>4</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="8">
+                   <widget class="QLabel" name="label_46">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>5</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -1194,7 +1194,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="lineEdit_hbh2_q">
+                   <widget class="QLineEdit" name="lineEdit_hbhr_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -1234,7 +1234,7 @@
                    </widget>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdha2_q">
+                   <widget class="QLineEdit" name="lineEdit_sdhar_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -1244,7 +1244,7 @@
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdhh2_q">
+                   <widget class="QLineEdit" name="lineEdit_sdhhr_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -1280,7 +1280,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QComboBox" name="comboBox_zla2_q">
+                   <widget class="QComboBox" name="comboBox_zlar_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -1305,7 +1305,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QComboBox" name="comboBox_zlh2_q">
+                   <widget class="QComboBox" name="comboBox_zlhr_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>

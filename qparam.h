@@ -111,7 +111,7 @@ class QParam : public QObject
     friend class QPatternData;
     Q_OBJECT
     public:
-    enum HeadPosDir{BackLeft = 0,BackRight =1,FrontLeft =2,FrontRight =3};
+    //enum HeadPosDir{BackLeft = 0,BackRight =1,FrontLeft =2,FrontRight =3};
 
     explicit QParam(QComm *send,QObject *parent = 0);
     ~QParam();
@@ -129,13 +129,17 @@ class QParam : public QObject
 #endif
     void refreshBuf();
     int save(bool isdownload,bool isall=TRUE);
-    unsigned short duMu_BuGongZuo(HeadPosDir posdir);
+    unsigned short duMuZhiBuGongZuo(int row,Md::POS_LFETRIGHT kou,Md::POSFLAG_FRONTREAR fr);
     int updataPivotal();
 
 private:
     short *spabuf;
     QSet<SpaItemHd> modifyedItem;
+#if DUAL_SYSTEM
+    unsigned short dumu_bugongzuo[8];
+#else
     unsigned short dumu_bugongzuo[4];
+#endif
     QComm *pcomm;
     int updata(SpaItemHd hd);
 

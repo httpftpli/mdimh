@@ -11,19 +11,11 @@ class QCntEditForm : public QWidget, private Ui::QCntEditForm
 
 public:
     explicit QCntEditForm(QWidget *parent ,QPatternData *data);
-    ~QCntEditForm(){
-        if(!iscntloaded)
-            pattern->deloadFile(Md::HAVECNT);
-    }
-public slots:
-    void rowToggle(int row);
 private:
     QPatternData *pattern;
     QPushButton *pcheckBoxArray1[8];
     QPushButton *pcheckBoxArray2[8];
-    bool iscntloaded;  //保存原来是否载入了CNT 文件，如果原来没有载入了，
-                            //本窗口退出后布需要卸载cnt缓冲区
-
+    void rowToggle(int row);
 
 private slots:
     void on_pushButton_rowup_clicked();

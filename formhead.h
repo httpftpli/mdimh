@@ -4,6 +4,7 @@
 
 #include "ui_formhead.h"
 #include <QPixmap>
+#include "namespace.h"
 
 class QPatternData;
 class QHMIData;
@@ -15,7 +16,7 @@ class FormHead : public QWidget, private Ui::FormHead
 
 public:
     explicit FormHead(QPatternData *,QHMIData *,QParam *,QWidget *parent = 0);
-    void setKouAtribute(unsigned char leftorright);
+    void setKouAtribute(Md::POS_LFETRIGHT kou);
 private:
     QPatternData *pattern;
     QHMIData *hmidata;
@@ -25,8 +26,8 @@ private:
     QLabel *plablearray[8];
     QStringList azllist;
     QStringList hzllist;
-    unsigned short cntnumber;
-    unsigned char kou;
+    int cntnumber;
+    Md::POS_LFETRIGHT kou;
 protected slots:
     void onCntNumber(unsigned short number);
     void onParamChanded();

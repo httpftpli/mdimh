@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 void MainWindow::setup(){
+    cntnumber = 1;
     QWidget *widget = new QWidget(this);
     QHBoxLayout *layout = new QHBoxLayout(widget);
     layout->addStretch(20);
@@ -82,6 +83,7 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(shazuiUp(bool)),qMdPushButton_11,SLOT(setChecked(bool)));
     connect(&hmiData,SIGNAL(runing(bool)),SLOT(onHmidataRuning(bool)));
     connect(&hmiData,SIGNAL(powerDown()),SLOT(onPowerDown()));
+    connect(&paramaData,SIGNAL(changed()),SLOT(onParamChanded()));
     azllist<<tr("空")<<tr("翻针")<<tr("编织");
     hzllist<<tr("空")<<tr("吊目")<<tr("接针")<<tr("吊目2")<<tr("编松2");
 #if DUAL_SYSTEM
@@ -128,9 +130,12 @@ void MainWindow::Timeout1s(){
     label_timetingche->setText(secondToString(hmiData.stopTimeHistory)+QChar('/')+secondToString(hmiData.stopTime));
 }
 
-void MainWindow::onParamChanged(){
-
+void MainWindow::onParamChanded()
+{
+    runPatternRowChange(this->cntnumber);
 }
+
+
 
 #if DUAL_SYSTEM
 void MainWindow::onDankouLock(bool lock){
@@ -139,10 +144,11 @@ void MainWindow::onDankouLock(bool lock){
 #endif
 
 void MainWindow::runPatternRowChange(unsigned short cntnumber){
+    this->cntnumber=cntnumber;
     bool temp;
-    lcdNumber->display(cntnumber+1);
-    label_dumu_l->setNum(patternData.cnt_duMuZu(cntnumber,Md::POSLEFT,temp));
-    label_dumu_r->setNum(patternData.cnt_duMuZu(cntnumber,Md::POSRIGHT,temp));
+    lcdNumber->display(cntnumber);
+    label_dumu_l->setNum(patternData.cnt_duMuZu(cntnumber,Md::POSLEFT,temp,TRUE));
+    label_dumu_r->setNum(patternData.cnt_duMuZu(cntnumber,Md::POSRIGHT,temp,TRUE));
     int speed = patternData.cnt_spead(cntnumber);
     label_speed->setNum(speed);
     label_speedzhi->setNum(patternData.wrkSpeedZhi(speed));
@@ -166,14 +172,10 @@ void MainWindow::onXtGuilingError(){
     box.exec(tr("系统归零"),tr("归零错误"),QMessageBox::Warning,QMessageBox::Cancel,QMessageBox::Cancel);
 }
 
-
-
 void MainWindow::on_qMdPushButton_clicked()
 {   QFormFile *formfile = new QFormFile;
     formfile->show();
 }
-
-
 
 void MainWindow::on_qMdPushButton_3_clicked()
 {
@@ -198,7 +200,6 @@ void MainWindow::on_qMdPushButton_2_clicked()
     }
 
 }
-
 
 void MainWindow::on_qMdPushButton_7_clicked()
 {

@@ -56,6 +56,7 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     this->dumuzu_used = 0;
     this->isdualdumuzu = FALSE;
     this->dumu_history_sys1 = 1;
+    this->dumu_history_sys2 = 1;
 
     //检查cntfile patfile 文件是否可用//////////////
     QSharedPointer<QFile> cntfile,patfile;
@@ -238,7 +239,7 @@ bool QPatternData::isPatternAvailable()
     return this->ispatternavalible;
 }
 
-void QPatternData::pat_SetData(unsigned short row,unsigned short column,unsigned char cha,bool download){
+void QPatternData::pat_SetData(int row,unsigned short column,unsigned char cha,bool download){
     if(!patbuf)
         return;
     char datacha= pat_FechData(row,column);
@@ -264,7 +265,7 @@ void QPatternData::pat_SetData(unsigned short row,unsigned short column,unsigned
 }
 
 /*changed cntdatabuf,but not change cntfile and compare to data in cntfile*/
-void QPatternData::cnt_SetData(unsigned short row,unsigned char index,unsigned short data,unsigned char len){
+void QPatternData::cnt_SetData(int row,unsigned char index,unsigned short data,unsigned char len){
     if(!cntbuf)
         return;
     Q_ASSERT(index<128);
@@ -285,7 +286,7 @@ void QPatternData::cnt_SetData(unsigned short row,unsigned char index,unsigned s
     cntfile->close();
 }
 
-inline  char QPatternData::pat_FechData(unsigned short row, unsigned short column)
+inline  char QPatternData::pat_FechData(int row, unsigned short column)
 {
     if(patbuf){
         unsigned char data = patbuf[row*patbyteperrow+column/2];
@@ -339,7 +340,7 @@ int QPatternData::wrk_updata(WrkItemHd hd){
     }
 }
 
-unsigned char QPatternData::kou2sys(Md::POS_LFETRIGHT kou, unsigned short cntnumber)
+inline unsigned char QPatternData::kou2sys(Md::POS_LFETRIGHT kou, unsigned short cntnumber)
 {
      bool temp = (kou==Md::POSLEFT)^(cntnumber%2);
      return temp?1:2;
@@ -557,7 +558,7 @@ bool QPatternData::isValid () const{
      return 0;
 }*/
 
-unsigned short QPatternData::cnt_FechData(unsigned short row,unsigned char addr,unsigned short len){
+unsigned short QPatternData::cnt_FechData(int row,unsigned char addr,unsigned char len){
     if(!isPatternAvailable())
         return -1;
     if(len>2)
@@ -571,8 +572,8 @@ unsigned short QPatternData::cnt_FechData(unsigned short row,unsigned char addr,
 }
 
 
-unsigned char QPatternData::shaZui(unsigned short row,unsigned char system){
-    unsigned char cnt_sz = cnt_shaZui(system,row);
+unsigned char QPatternData::shaZui(int row,unsigned char system){
+    unsigned char cnt_sz = cnt_shaZui(row,system);
     unsigned char sz = cnt_sz;
     foreach(SzkbData data,sazbuf){
         if((data.Start<=(row+1))&&(data.End>=(row+1))){
@@ -583,14 +584,14 @@ unsigned char QPatternData::shaZui(unsigned short row,unsigned char system){
     return sz;
 }
 
-unsigned char QPatternData::shaZui(unsigned short row, Md::POS_LFETRIGHT kou)
+unsigned char QPatternData::shaZui(int row, Md::POS_LFETRIGHT kou)
 {
     unsigned char sys = kou2sys(kou,row);
     return shaZui(row,sys);
 }
 
 
-unsigned char QPatternData::cnt_shaZui(unsigned short row,unsigned char system){
+unsigned char QPatternData::cnt_shaZui(int row,unsigned char system){
     Q_ASSERT((system==1)||(system==2));
     unsigned char addr = (system==1)?CNT_S1_SaZui:CNT_S2_SaZui;
     unsigned short sz = cnt_FechData(row,addr,2);
@@ -601,78 +602,77 @@ unsigned char QPatternData::cnt_shaZui(unsigned short row,unsigned char system){
     return 0x0;
 }
 
-unsigned char QPatternData::cnt_shaZui(unsigned char row, Md::POS_LFETRIGHT kou)
+unsigned char QPatternData::cnt_shaZui(int row, Md::POS_LFETRIGHT kou)
 {
     unsigned char sys = kou2sys(kou,row);
     return cnt_shaZui(row,sys);
 }
 
 
-
-
-unsigned char QPatternData::duMuZhi(unsigned short row,bool backorfront ,unsigned char dumuindex){
-    Q_ASSERT((dumuindex>24)||(dumuindex<1));
-    unsigned char dumu = dumuindex-1;
-    if(backorfront)
-        return row%2?wrk_fechData(WrkItemHd_DuMuZi,dumu*4+3):
-                wrk_fechData(WrkItemHd_DuMuZi,dumu*4+1);
-    else
-        return row%2?wrk_fechData(WrkItemHd_DuMuZi,dumu*4+4):
-                wrk_fechData(WrkItemHd_DuMuZi,dumu*4+2);
+unsigned char QPatternData::duMuZhiWork(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontrear ,unsigned char dumuindex){
+    Q_ASSERT((dumuindex<=24)&&(dumuindex>=1));
+    dumuindex--;
+#if DUAL_SYSTEM
+    unsigned char offsetdirector = (row%2)?0:4;
+    unsigned char offsetposfr = (frontrear==Md::POSREAR)?0:2;
+    unsigned char offsetkou = (kou==Md::POSLEFT)?0:1;
+    return wrk_fechData(WrkItemHd_DuMuZi,dumuindex*4+offsetdirector+offsetposfr+offsetkou);
+#else
+    xxxx
+#endif
 }
 
 
-
-unsigned char QPatternData::cnt_yaJiao(unsigned short row){
+unsigned char QPatternData::cnt_yaJiao(int row){
     return this->cnt_FechData(row,CNT_YaJiaoDuan);
 }
 
-unsigned char QPatternData::cnt_tingChe(unsigned short row){
+unsigned char QPatternData::cnt_tingChe(int row){
     return this->cnt_FechData(row,CNT_TingCe);
 }
 
-int   QPatternData::cnt_Azhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR pos){
-    Q_ASSERT((system==0||(system==1)));
+int   QPatternData::cnt_Azhiling(int row,unsigned char system,Md::POS_FRONTREAR pos){
+    Q_ASSERT((system==1||(system==2)));
     unsigned char addr;
     if(pos==Md::POSFRONT)
-        addr = (system==0)?CNT_S1Q_AZiLing:CNT_S2Q_AZiLing;
+        addr = (system==1)?CNT_S1Q_AZiLing:CNT_S2Q_AZiLing;
     else
-        addr = (system==0)?CNT_S1H_AZiLing:CNT_S2H_AZiLing;
+        addr = (system==1)?CNT_S1H_AZiLing:CNT_S2H_AZiLing;
     return _azl(cnt_FechData(row,addr));
 }
 
-int QPatternData::cnt_Azhiling(unsigned short row, Md::POS_LFETRIGHT kou, Md::POS_FRONTREAR pos)
+int QPatternData::cnt_Azhiling(int row, Md::POS_LFETRIGHT kou, Md::POS_FRONTREAR pos)
 {
     unsigned char sys = kou2sys(kou,row);
     return cnt_Azhiling(row,sys,pos);
 }
 
-int   QPatternData::cnt_Hzhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR pos){
-    Q_ASSERT((system==0||(system==1)));
+int   QPatternData::cnt_Hzhiling(int row,unsigned char system,Md::POS_FRONTREAR pos){
+    Q_ASSERT((system==1||(system==2)));
     unsigned char addr;
     if(pos==Md::POSFRONT)
-        addr = (system==0)?CNT_S1Q_HZiLing:CNT_S2Q_HZiLing;
+        addr = (system==1)?CNT_S1Q_HZiLing:CNT_S2Q_HZiLing;
     else
-        addr = (system==0)?CNT_S1H_HZiLing:CNT_S2H_HZiLing;
+        addr = (system==1)?CNT_S1H_HZiLing:CNT_S2H_HZiLing;
     return _hzl(cnt_FechData(row,addr));
 }
 
-int QPatternData::cnt_Hzhiling(unsigned short row, Md::POS_LFETRIGHT kou, Md::POS_FRONTREAR pos)
+int QPatternData::cnt_Hzhiling(int row, Md::POS_LFETRIGHT kou, Md::POS_FRONTREAR pos)
 {
     unsigned short sys = kou2sys(kou,row);
     return cnt_Hzhiling(row,sys,pos);
 }
 
-QString  QPatternData::cnt_seDaiHaoA(unsigned short row,unsigned char system,Md::POS_FRONTREAR pos){
-    Q_ASSERT((system==0||(system==1)));
+QString  QPatternData::cnt_seDaiHaoA(int row,unsigned char system,Md::POS_FRONTREAR pos){
+    Q_ASSERT((system==1||(system==2)));
     unsigned char addr;
     if(pos==Md::POSFRONT)
-        addr = (system==0)?CNT_S1Q_AColor:CNT_S2Q_AColor;
+        addr = (system==1)?CNT_S1Q_AColor:CNT_S2Q_AColor;
     else
-        addr = (system==0)?CNT_S1H_AColor:CNT_S2H_AColor;
+        addr = (system==1)?CNT_S1H_AColor:CNT_S2H_AColor;
     unsigned short data= cnt_FechData(row,addr,2);
     QString str;
-    if(data=-1)
+    if(-1==data)
         return str;
     for(int i=0;i<16;i++){
         if(data&(1<<i))
@@ -681,22 +681,22 @@ QString  QPatternData::cnt_seDaiHaoA(unsigned short row,unsigned char system,Md:
     return str;
 }
 
-QString QPatternData::cnt_seDaiHaoA(unsigned short row, Md::POS_LFETRIGHT kou, Md::POS_FRONTREAR frontorrear)
+QString QPatternData::cnt_seDaiHaoA(int row, Md::POS_LFETRIGHT kou, Md::POS_FRONTREAR frontorrear)
 {
     unsigned char sys = kou2sys(kou,row);
     return cnt_seDaiHaoA(row,sys,frontorrear);
 }
 
-QString  QPatternData::cnt_seDaiHaoH(unsigned short row,unsigned char system,Md::POS_FRONTREAR pos){
-    Q_ASSERT((system==0||(system==1)));
+QString  QPatternData::cnt_seDaiHaoH(int row,unsigned char system,Md::POS_FRONTREAR pos){
+    Q_ASSERT((system==1||(system==2)));
     unsigned char addr;
     if(pos==Md::POSFRONT)
-        addr = (system==0)?CNT_S1Q_HColor:CNT_S2Q_HColor;
+        addr = (system==1)?CNT_S1Q_HColor:CNT_S2Q_HColor;
     else
-        addr = (system==0)?CNT_S1H_HColor:CNT_S2H_HColor;
+        addr = (system==1)?CNT_S1H_HColor:CNT_S2H_HColor;
     unsigned short data= cnt_FechData(row,addr,2);
     QString str;
-    if(data=-1)
+    if(-1==data)
         return str;
     for(int i=0;i<16;i++){
         if(data&(1<<i))
@@ -705,19 +705,19 @@ QString  QPatternData::cnt_seDaiHaoH(unsigned short row,unsigned char system,Md:
     return str;
 }
 
-QString QPatternData::cnt_seDaiHaoH(unsigned short row, Md::POS_LFETRIGHT kou, Md::POS_FRONTREAR frontorrear)
+QString QPatternData::cnt_seDaiHaoH(int row, Md::POS_LFETRIGHT kou, Md::POS_FRONTREAR frontorrear)
 {
     unsigned char sys = kou2sys(kou,row);
     return cnt_seDaiHaoH(row,sys,frontorrear);
 }
 
 
-unsigned short QPatternData::cnt_huabanhang(unsigned short row,Md::POS_LFETRIGHT sys_kou,Md::POS_FRONTREAR pos){
+unsigned short QPatternData::cnt_huabanhang(int row,Md::POS_LFETRIGHT sys_kou,Md::POS_FRONTREAR pos){
     unsigned char sys = kou2sys(sys_kou,row);
     return cnt_huabanhang(row,sys,pos);
 }
 
-unsigned short QPatternData::cnt_huabanhang(unsigned short row, unsigned char sys, Md::POS_FRONTREAR pos)
+unsigned short QPatternData::cnt_huabanhang(int row, unsigned char sys, Md::POS_FRONTREAR pos)
 {
     Q_ASSERT((sys==1)||(sys==2));
     unsigned char addr;
@@ -732,7 +732,7 @@ unsigned short QPatternData::wrk_qizhengdian(){
 }
 
 
-QString QPatternData::cnt_yaoChuang(unsigned short row){ 
+QString QPatternData::cnt_yaoChuang(int row){
     unsigned char ycfx = cnt_FechData(row,CNT_YaoCuangDir);
     unsigned char ycz = cnt_FechData(row,CNT_YaoCuangZi);
 
@@ -747,81 +747,33 @@ QString QPatternData::cnt_yaoChuang(unsigned short row){
     return str;
 }
 
-unsigned char QPatternData::cnt_duMuZu(unsigned short row, unsigned char sys, bool &doubleOrSigle)
+unsigned char QPatternData::cnt_duMuZu(int row, unsigned char sys, bool &doubleOrSigle,bool usehistorydumu)
 {
-    /*unsigned char dumuaddr;
-#if DUAL_SYSTEM
-    //precess system and sys_kou exchange
-    sys =kou2sys(system_kou,row);
-    if(isdualdumuzu)
-        dumuaddr = sys?CNT_DuMu_ExS2:CNT_DuMu;
-    else
-        dumuaddr = CNT_DuMu;
-
-#else
-    sys = 1;
-    dumuaddr = CNT_DuMu;
-
-
-#endif
-    //fetch data
-    unsigned char dumu = cnt_FechData(row,dumuaddr);
-
-    if(dumu==0){
-        //if dumu=0，当非空时取上次有效的度目，如果是空,普通取24，翻针取23
-        if((zhilingfh==0)&&(zhilingfa==0)&&(zhilingrh==0)&&(zhilingra==0))
-            dumu = 24;
-        else if((zhilingfa==0x01)||(zhilingra==0x01))
-            dumu = 23;
-        else if(row==0)
-            dumu = 1;
-        else
-            dumu = (sys==1)?dumu_history_sys1:dumu_history_sys2;
-    }else
-        sys?dumu_history_sys1:dumu_history_sys2 = dumu;
-
-    if(dumu<25){
-        doubleOrSigle = FALSE;
-        return dumu;
-    }else if(dumu<101){
-        doubleOrSigle = TRUE;
-        return 1;
-    }else if(dumu<125){
-        doubleOrSigle = TRUE;
-        return dumu-100;
-    }else{
-        doubleOrSigle = TRUE;
-        return 24;
-    }*/
-
-}
-
-unsigned char QPatternData::cnt_duMuZu(unsigned short row,Md::POS_LFETRIGHT system_kou, bool &doubleOrSigle){
-   /* unsigned char dumuaddr;
+    Q_ASSERT((sys==1)||(sys==2));
     unsigned char zhilingfh_addr;  //front h
     unsigned char zhilingfa_addr;  //front a
     unsigned char zhilingrh_addr;  //rear h
     unsigned char zhilingra_addr;  //rear a
-    unsigned char sys;
+    unsigned char dumuaddr = CNT_DuMu;
 #if DUAL_SYSTEM
-    //precess system and sys_kou exchange
-    sys =kou2sys(system_kou,row);
-    if(isdualdumuzu)
-        dumuaddr = sys?CNT_DuMu_ExS2:CNT_DuMu;
-    else
-        dumuaddr = CNT_DuMu;
-    zhilingfh_addr = (sys==2)?CNT_S2Q_HZiLing:CNT_S1Q_HZiLing;
-    zhilingfa_addr = (sys==2)?CNT_S2Q_AZiLing:CNT_S1Q_AZiLing;
-    zhilingrh_addr = (sys==2)?CNT_S2H_HZiLing:CNT_S1H_HZiLing;
-    zhilingra_addr = (sys==2)?CNT_S2H_AZiLing:CNT_S1H_AZiLing;
+    if(sys==1){
+        zhilingfh_addr = CNT_S1Q_HZiLing;
+        zhilingfa_addr = CNT_S1Q_AZiLing;
+        zhilingrh_addr = CNT_S1H_HZiLing;
+        zhilingra_addr = CNT_S1H_AZiLing;
+    }else{
+        zhilingfh_addr = CNT_S2Q_HZiLing;
+        zhilingfa_addr = CNT_S2Q_AZiLing;
+        zhilingrh_addr = CNT_S2H_HZiLing;
+        zhilingra_addr = CNT_S2H_AZiLing;
+        if(isdualdumuzu)
+           dumuaddr = CNT_DuMu_ExS2;
+    }
 #else
-    sys = 1;
-    dumuaddr = CNT_DuMu;
     zhilingfh_addr = CNT_S1Q_HZiLing;
     zhilingfa_addr = CNT_S1Q_AZiLing;
     zhilingrh_addr = CNT_S1H_HZiLing;
     zhilingra_addr = CNT_S1H_AZiLing;
-
 #endif
     //fetch data
     unsigned char dumu = cnt_FechData(row,dumuaddr);
@@ -831,17 +783,17 @@ unsigned char QPatternData::cnt_duMuZu(unsigned short row,Md::POS_LFETRIGHT syst
     unsigned char zhilingra = cnt_FechData(row,zhilingra_addr);
 
     if(dumu==0){
-        //if dumu=0，当非空时取上次有效的度目，如果是空,普通取24，翻针取23
+        //if dumu=0，空跑行：24，翻针：23 其他：历史度目
         if((zhilingfh==0)&&(zhilingfa==0)&&(zhilingrh==0)&&(zhilingra==0))
             dumu = 24;
         else if((zhilingfa==0x01)||(zhilingra==0x01))
             dumu = 23;
         else if(row==0)
             dumu = 1;
-        else
+        else if(usehistorydumu)
             dumu = (sys==1)?dumu_history_sys1:dumu_history_sys2;
     }else
-        sys?dumu_history_sys1:dumu_history_sys2 = dumu;
+        (sys==1)?dumu_history_sys1:dumu_history_sys2 = dumu;
 
     if(dumu<25){
         doubleOrSigle = FALSE;
@@ -855,7 +807,12 @@ unsigned char QPatternData::cnt_duMuZu(unsigned short row,Md::POS_LFETRIGHT syst
     }else{
         doubleOrSigle = TRUE;
         return 24;
-    }*/
+    }
+}
+
+unsigned char QPatternData::cnt_duMuZu(int row,Md::POS_LFETRIGHT kou, bool &doubleOrSigle,bool usehistorydumu){
+    unsigned char sys = kou2sys(kou,row);
+    return cnt_duMuZu(row,sys,doubleOrSigle,usehistorydumu);
 }
 
 
@@ -864,23 +821,25 @@ unsigned int QPatternData::cnt_dumuUsed()
     return dumuzu_used;
 }
 
-unsigned char QPatternData::cnt_spead(unsigned short row){
+unsigned char QPatternData::cnt_spead(int row){
     return this->cnt_FechData(row,CNT_SuDu);
 }
 
-unsigned char QPatternData::cnt_mainLuola(unsigned short row){
-    return this->cnt_FechData(row,CNT_JuanBu);
+unsigned char QPatternData::cnt_mainLuola(int row){
+    unsigned short mainluola = cnt_FechData(row,CNT_JuanBu);
+    return mainluola;
 }
 
-unsigned char QPatternData::cnt_fuzuLuola(unsigned short row){
-    return this->cnt_FechData(row,CNT_FuJuanBu)-0x80;
+unsigned char QPatternData::cnt_fuzuLuola(int row){
+    unsigned short fuluola = cnt_FechData(row,CNT_FuJuanBu)-0x80;
+    return fuluola;
 }
 
-unsigned char QPatternData::cnt_songSha(unsigned short row){
-    return this->cnt_FechData(row,CNT_FuJuanBu)-0x80;
+unsigned char QPatternData::cnt_songSha(int row){
+    return cnt_fuzuLuola(row);
 }
 
-unsigned char QPatternData::cnt_shazuiTf(unsigned short row){
+unsigned char QPatternData::cnt_shazuiTf(int row){
     return this->cnt_FechData(row,CNT_SaZuoTingFang);
 }
 

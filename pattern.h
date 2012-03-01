@@ -177,44 +177,44 @@ public:
     Md::HAVEFILEFLAG loadStatus();
     Result loadLoop(const QString &prmfilepath);
     int Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag=Md::HAVENO);
+
+
     int sendShazuiKb();
-
-
-
-    unsigned char  cnt_yaJiao(unsigned short row);
-    QString        cnt_yaoChuang(unsigned short row);
-    unsigned char  cnt_duMuZu(unsigned short row, unsigned char sys,bool &doubleOrSigle);
-    unsigned char  cnt_duMuZu(unsigned short row, Md::POS_LFETRIGHT system_kou,bool &doubleOrSigle);
+    unsigned char  cnt_yaJiao(int row);
+    QString        cnt_yaoChuang(int row);
+    unsigned char  cnt_duMuZu(int row, unsigned char sys,bool &doubleOrSigle, bool usehistorydumu);
+    unsigned char  cnt_duMuZu(int row, Md::POS_LFETRIGHT kou,bool &doubleOrSigle,bool usehistorydumu);
     unsigned int   cnt_dumuUsed();
-    unsigned char  cnt_spead(unsigned short row);
-    unsigned char  cnt_mainLuola(unsigned short row);
-    unsigned char  cnt_fuzuLuola(unsigned short row);
-    unsigned char  cnt_songSha(unsigned short row);
-    unsigned char  cnt_shazuiTf(unsigned short row);
-    unsigned char  cnt_tingChe(unsigned short row);
-    int            cnt_Azhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR);
-    int            cnt_Azhiling(unsigned short row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR);
-    int            cnt_Hzhiling(unsigned short row,unsigned char system,Md::POS_FRONTREAR);
-    int            cnt_Hzhiling(unsigned short row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR);
-    QString        cnt_seDaiHaoA(unsigned short row,unsigned char system,Md::POS_FRONTREAR frontorrear);
-    QString        cnt_seDaiHaoA(unsigned short row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontorrear);
-    QString        cnt_seDaiHaoH(unsigned short row,unsigned char system,Md::POS_FRONTREAR frontorrear);
-    QString        cnt_seDaiHaoH(unsigned short row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontorrear);
-    unsigned char  cnt_shaZui(unsigned short row,unsigned char system);
-    unsigned char  cnt_shaZui(unsigned char row,Md::POS_LFETRIGHT kou);
-    unsigned short cnt_huabanhang(unsigned short row,Md::POS_LFETRIGHT sys_kou,Md::POS_FRONTREAR frontorrear);
-    unsigned short cnt_huabanhang(unsigned short row,unsigned char sys,Md::POS_FRONTREAR pos);
+    unsigned char  cnt_spead(int row);
+    unsigned char  cnt_mainLuola(int row);
+    unsigned char  cnt_fuzuLuola(int row);
+    unsigned char  cnt_songSha(int row);
+    unsigned char  cnt_shazuiTf(int row);
+    unsigned char  cnt_tingChe(int row);
+    int            cnt_Azhiling(int row,unsigned char system,Md::POS_FRONTREAR);
+    int            cnt_Azhiling(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR);
+    int            cnt_Hzhiling(int row,unsigned char system,Md::POS_FRONTREAR);
+    int            cnt_Hzhiling(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR);
+    QString        cnt_seDaiHaoA(int row,unsigned char system,Md::POS_FRONTREAR frontorrear);
+    QString        cnt_seDaiHaoA(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontorrear);
+    QString        cnt_seDaiHaoH(int row,unsigned char system,Md::POS_FRONTREAR frontorrear);
+    QString        cnt_seDaiHaoH(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontorrear);
+    unsigned char  cnt_shaZui(int row,unsigned char system);
+    unsigned char  cnt_shaZui(int row,Md::POS_LFETRIGHT kou);
+    unsigned short cnt_huabanhang(int row,Md::POS_LFETRIGHT sys_kou,Md::POS_FRONTREAR frontorrear);
+    unsigned short cnt_huabanhang(int row,unsigned char sys,Md::POS_FRONTREAR pos);
 
-    unsigned char  shaZui(unsigned short row,unsigned char system);    //返回沙嘴捆绑后当前行的沙嘴
-    unsigned char  shaZui(unsigned short row,Md::POS_LFETRIGHT kou);    //返回沙嘴捆绑后当前行的沙嘴
-    unsigned char  duMuZhi(unsigned short row,bool backorfront, unsigned char dumuindex);
+
+    unsigned char  shaZui(int row,unsigned char system);    //返回沙嘴捆绑后当前行的沙嘴
+    unsigned char  shaZui(int row,Md::POS_LFETRIGHT kou);    //返回沙嘴捆绑后当前行的沙嘴
+    unsigned char  duMuZhiWork(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontrear ,unsigned char dumuindex);
     unsigned short wrk_qizhengdian();
 
 
-    unsigned short cnt_FechData(unsigned short row,unsigned char addr,unsigned short leng=1);
-    void cnt_SetData(unsigned short row,unsigned char index,unsigned short data,unsigned char len);
-    inline char pat_FechData(unsigned short row,unsigned short column);
-    void pat_SetData(unsigned short row,unsigned short column,unsigned char data, bool download = TRUE);
+    unsigned short cnt_FechData(int row,unsigned char addr,unsigned char leng=1);
+    void cnt_SetData(int row,unsigned char index,unsigned short data,unsigned char len=1);
+    inline char pat_FechData(int row,unsigned short column);
+    void pat_SetData(int row,unsigned short column,unsigned char data, bool download = TRUE);
 
     short wrk_fechData(WrkItemHd handle,int offset);
     void  wrk_setData(WrkItemHd handle,int offset,short data);
@@ -271,7 +271,7 @@ private:
     bool ispatternavalible;
 
     int wrk_updata(WrkItemHd hd);
-    unsigned char kou2sys(Md::POS_LFETRIGHT kou,unsigned short cntnumber);
+    inline unsigned char kou2sys(Md::POS_LFETRIGHT kou,unsigned short cntnumber);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPatternData::FileStateFlag)

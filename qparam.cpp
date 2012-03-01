@@ -101,8 +101,18 @@ void QParam::setData(SpaItemHd handle,int offset,short data,bool emitdirty){
     return;
 }
 
-unsigned short  QParam::duMu_BuGongZuo(HeadPosDir posdir){
-    return dumu_bugongzuo[posdir];
+unsigned short  QParam::duMuZhiBuGongZuo(int row,Md::POS_LFETRIGHT kou,Md::POSFLAG_FRONTREAR fr){
+#if DUAL_SYSTEM
+    unsigned char rfoffset = (fr==Md::POSREAR)?0:4;
+    unsigned char kouoffset = (kou==Md::POSLEFT)?0:2;
+    unsigned char rowoffset = (row%2)?0:1;
+    return dumu_bugongzuo[rfoffset+kouoffset+rowoffset];
+#else
+    Q_UNUSED(kou);
+    unsigned char rfoffset = (rf==Md::POSREAR)?0:2;
+    unsigned char rowoffset = (row%2)?0:1;
+    return dumu_bugongzuo[rfoffset+rowoffset];
+#endif
 }
 
 void QParam::refreshBuf(){

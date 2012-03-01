@@ -5,7 +5,7 @@
 #include <QHBoxLayout>
 
 FormHead::FormHead(QPatternData * data,QHMIData *hmi, QParam *p,QWidget *parent) :
-        QWidget(parent),pattern(data),hmidata(hmi),param(p),cntnumber(0),
+        QWidget(parent),pattern(data),hmidata(hmi),param(p),cntnumber(1),
         pixmapright(":/image/resource/1w.png"),
         pixmapleft(":/image/resource/1x.png")
 {
@@ -25,9 +25,8 @@ FormHead::FormHead(QPatternData * data,QHMIData *hmi, QParam *p,QWidget *parent)
 
 }
 
-void  FormHead::setKouAtribute(unsigned char val){
-    Q_ASSERT((val==Md::POSLEFT)||(val==Md::POSRIGHT));
-    this->kou = val;
+void  FormHead::setKouAtribute(Md::POS_LFETRIGHT kou){
+    this->kou = kou;
 }
 
 void FormHead::onParamChanded(){
@@ -36,48 +35,49 @@ void FormHead::onParamChanded(){
 
 void FormHead::onCntNumber(unsigned short cntnumber){    
     this->cntnumber = cntnumber;
-    unsigned char  sys;
-#if DUAL_SYSTEM
-    if(this->kou==Md::POSLEFT)  // left kou
-         sys = (cntnumber%2)?0:1;
-    else                                  //right kou
-         sys = (cntnumber%2)?1:0;
-#else
-         sys = 0;
-#endif
     /////////花板行/////////////////////////////
-    label_hbhh->setNum(pattern->cnt_huabanhang(cntnumber,(Md::POS_LFETRIGHT)kou,Md::POSREAR));
-    label_hbhq->setNum(pattern->cnt_huabanhang(cntnumber,(Md::POS_LFETRIGHT)kou,Md::POSFRONT));
+    label_hbhh->setNum(pattern->cnt_huabanhang(cntnumber,kou,Md::POSREAR));
+    label_hbhq->setNum(pattern->cnt_huabanhang(cntnumber,kou,Md::POSFRONT));
     ///////动作/////////////////////////////////////
-    label_awdzh->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,sys,Md::POSREAR)));
-    label_awdzq->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,sys,Md::POSFRONT)));
-    label_hwdzh->setText(azllist.value(pattern->cnt_Hzhiling(cntnumber,sys,Md::POSREAR)));
-    label_hwdzq->setText(azllist.value(pattern->cnt_Hzhiling(cntnumber,sys,Md::POSFRONT)));
+    label_awdzh->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,kou,Md::POSREAR)));
+    label_awdzq->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,kou,Md::POSFRONT)));
+    label_hwdzh->setText(azllist.value(pattern->cnt_Hzhiling(cntnumber,kou,Md::POSREAR)));
+    label_hwdzq->setText(azllist.value(pattern->cnt_Hzhiling(cntnumber,kou,Md::POSFRONT)));
     ////////色代号//////////////////////////////
-    label_awsch->setText(pattern->cnt_seDaiHaoA(cntnumber,sys,Md::POSREAR));
-    label_hwsch->setText(pattern->cnt_seDaiHaoH(cntnumber,sys,Md::POSREAR));
-    label_awscq->setText(pattern->cnt_seDaiHaoA(cntnumber,sys,Md::POSFRONT));
-    label_hwscq->setText(pattern->cnt_seDaiHaoH(cntnumber,sys,Md::POSFRONT));
+    label_awsch->setText(pattern->cnt_seDaiHaoA(cntnumber,kou,Md::POSREAR));
+    label_hwsch->setText(pattern->cnt_seDaiHaoH(cntnumber,kou,Md::POSREAR));
+    label_awscq->setText(pattern->cnt_seDaiHaoA(cntnumber,kou,Md::POSFRONT));
+    label_hwscq->setText(pattern->cnt_seDaiHaoH(cntnumber,kou,Md::POSFRONT));
     ////////沙嘴///////////////////////////////
-    unsigned char sz = pattern->shaZui(sys,cntnumber);
+    unsigned char sz = pattern->shaZui(cntnumber,kou);
     for(int i=0;i<8;i++)
         plablearray[i]->setText((sz&1<<i)?QString::number(i+1):"_");
     ///////////////////度目值/////////////////////////
-    /*if(cntnumber%2){//偶数数行
-        label_dmz_hz->setNum(param->duMu_BuGongZuo(QParam::BackLeft));
-        label_dmz_qz->setNum(param->duMu_BuGongZuo(QParam::FrontLeft));
-        label_dmz_hy->setNum(pattern->duMuZhi(TRUE,cntnumber));
-        label_dmz_qy->setNum(pattern->duMuZhi(FALSE,cntnumber));
-        label_right->setPixmap(pixmapleft);
-        label_left->setPixmap(pixmapleft);
-    }else{//奇数行
-        label_dmz_hz->setNum(pattern->duMuZhi(TRUE,cntnumber));
-        label_dmz_qz->setNum(pattern->duMuZhi(FALSE,cntnumber));
-        label_dmz_hy->setNum(param->duMu_BuGongZuo(QParam::BackRight));
-        label_dmz_qy->setNum(param->duMu_BuGongZuo(QParam::FrontRight));
+    bool temp;
+    unsigned char dumuzu = pattern->cnt_duMuZu(cntnumber,kou,temp,TRUE);
+    unsigned char dumuzhibugongzuoh = param->duMuZhiBuGongZuo(cntnumber,kou,Md::POSREAR);
+    unsigned char dumuzhibugongzuoq = param->duMuZhiBuGongZuo(cntnumber,kou,Md::POSFRONT);
+    unsigned char dumuzhiworkh = pattern->duMuZhiWork(cntnumber,kou,Md::POSREAR,dumuzu);
+    unsigned char dumuzhiworkq = pattern->duMuZhiWork(cntnumber,kou,Md::POSFRONT,dumuzu);
+    if(cntnumber%2){//奇数行
+        label_dmz_hz->setNum(dumuzhiworkh);
+        label_dmz_qz->setNum(dumuzhiworkq);
+        label_dmz_hy->setNum(dumuzhibugongzuoh);
+        label_dmz_qy->setNum(dumuzhibugongzuoq);
+    }else{
+        label_dmz_hz->setNum(dumuzhibugongzuoh);
+        label_dmz_qz->setNum(dumuzhibugongzuoq);
+        label_dmz_hy->setNum(dumuzhiworkh);
+        label_dmz_qy->setNum(dumuzhiworkq);
+    }
+    ///////////////////derection/////////////////////////
+    if(cntnumber%2){//奇数行
         label_right->setPixmap(pixmapright);
         label_left->setPixmap(pixmapright);
-    }*/
+    }else{
+        label_right->setPixmap(pixmapleft);
+        label_left->setPixmap(pixmapleft);
+    }
 }
 
 void FormHead::paintEvent ( QPaintEvent * ){

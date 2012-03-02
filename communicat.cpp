@@ -12,9 +12,22 @@
 #include<QTime>
 
 QComm::QComm(QObject *parent):QThread(parent){
-
+    int i;
+    for(i=0;i<3;i++) {
+        int commResult = qComm.TogSysStat(QHMIData::SysInParam);
+        if(commResult==Md::Ok)
+            break;
+    }
+    if(3==i)
+        isavailable = FALSE;
+    else
+        isavailable = TRUE;
 }
 
+bool QComm::isAvailable()
+{
+    return isavailable;
+}
 
 void QComm::send(){
         unsigned short len = ntohs (*((unsigned short *)d_send));

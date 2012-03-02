@@ -48,6 +48,7 @@ class QComm :public QThread{
    Q_OBJECT
 public:
    QComm(QObject *parent = 0);
+   bool isAvailable();
    void MainMotorTest(unsigned char direction,unsigned char speedpercent);
    bool DumuMotorTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,
                       Md::POSFLAG_LFETRIGHT motor,unsigned short val);
@@ -96,6 +97,7 @@ public:
 
 
 private:
+   bool isavailable;
    QMutex mutex1,mutex2;
 #pragma pack(1)
    char d_send[800];

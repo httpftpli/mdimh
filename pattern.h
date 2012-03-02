@@ -9,6 +9,7 @@
 #include<namespace.h>
 #include<QSet>
 #include "communicat.h"
+#include "globaldata.h"
 
 
 #define LEN_OF_WRK 0x6E1
@@ -214,7 +215,7 @@ public:
     unsigned short cnt_FechData(int row,unsigned char addr,unsigned char leng=1);
     void cnt_SetData(int row,unsigned char index,unsigned short data,unsigned char len=1);
     inline char pat_FechData(int row,unsigned short column);
-    void pat_SetData(int row,unsigned short column,unsigned char data, bool download = TRUE);
+    void pat_SetData(int row,unsigned short column,unsigned char data);
 
     short wrk_fechData(WrkItemHd handle,int offset);
     void  wrk_setData(WrkItemHd handle,int offset,short data);
@@ -235,8 +236,8 @@ public:
     QString sazFilePath;
     unsigned char shazuiused_r;  //右口用到的沙嘴；
     unsigned char shazuiused_l;  //左口用到的沙嘴；
-    QList<SzkbData> sazbuf;   //沙嘴捆绑数据
-    unsigned char shaZuiKb;   //捆绑的沙嘴，从sazbuf中提取；
+    QList<SzkbData> sazbuf;      //沙嘴捆绑数据
+    unsigned char shaZuiKb;      //捆绑的沙嘴，从sazbuf中提取；
 
     QSharedPointer<QFile> cntfile;
     QSharedPointer<QFile> patfile;
@@ -261,7 +262,9 @@ private:
     QComm *pcomm;
     unsigned char *cntbuf,*patbuf; //花型缓冲区
     unsigned short *wrkbuf;
+#if DUAL_SYSTEM
     bool isdualdumuzu;
+#endif
     unsigned int dumuzu_used;
 
     int _azl(unsigned char data);

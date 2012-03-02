@@ -1,7 +1,6 @@
 #include "pattern.h"
 #include <QDataStream>
 #include <QFileInfo>
-#include "globaldata.h"
 #include "qhmidata.h"
 #include "qparam.h"
 #include <QDir>
@@ -12,7 +11,10 @@ QPatternData::QPatternData(QComm *s,QObject *parent):QObject(parent),
                             cntfile(NULL),patbuf(NULL),dumu_history_sys1(1),
                             dumu_history_sys2(1),
                             shazuiused_r(0),shazuiused_l(0),pcomm(s),
-                            isdualdumuzu(FALSE),dumuzu_used(0){
+#if DUAL_SYSTEM
+                            isdualdumuzu(FALSE),
+#endif
+    dumuzu_used(0){
 
 }
 
@@ -36,8 +38,8 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     patfile.clear();
     wrkfile.clear();
     sazbuf.clear();
-    delete [] cntbuf;
-    cntbuf = NULL;
+    //delete [] cntbuf;
+    //cntbuf = NULL;
     delete [] patbuf;
     patbuf = NULL;
     delete [] wrkbuf;
@@ -54,7 +56,9 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     this->wrkFileName = wrkfileinfo.fileName();
     this->iswrkfilesys = TRUE;
     this->dumuzu_used = 0;
+#if DUAL_SYSTEM
     this->isdualdumuzu = FALSE;
+#endif
     this->dumu_history_sys1 = 1;
     this->dumu_history_sys2 = 1;
 
@@ -70,8 +74,6 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
        WARNLOG(tr("无花型文件，找不到pat文件,使用系统WRK文件"));
        return NoPatFile;
     }
-
-    unsigned char shazuir=0,shazuil=0,shazui=0,shazuinew=0;
 
     //检查花型格式,读取花型尺寸，沙嘴使用
     int wight,pathight,cnthight;
@@ -99,6 +101,10 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
         WARNLOG(tr("CNT文件打开错误"));
         return NoCntFile;
     }
+
+    ispatternavalible = TRUE;
+
+#if DUAL_SYSTEM
     //test isdualdumuzu according to d[0] and d[1] at cntfile
     if(((cntbuf[0]=='H')&&(cntbuf[1]=='Q'))
             ||((cntbuf[0]=='C')&&(cntbuf[1]=='X'))){
@@ -108,45 +114,45 @@ QPatternData::Result QPatternData::setFile(const QString &cntfilepath,const QStr
     }else if((cntbuf[0]=='M')&&(cntbuf[1]=='D')){
         isdualdumuzu = TRUE;
     }
+#endif
+
     // scan pattern finish flag,scan shazui
     for(cnthight=1;;cnthight++){
-        unsigned short _s1,_s2;
-        unsigned char s1,s2,s,snew;
-            _s1 = *(unsigned short*)(cntbuf+cnthight*128+80);
-            s1 = (unsigned char)(_s1>>8);
-            //cntfile->seek(i*128+83);
-            _s2 = *(unsigned short*)(cntbuf+cnthight*128+83);
-            s2 = (unsigned char)(_s2>>8);
-            cnthight%2?(shazuir|=snew):(shazuil|=snew);
-            //cntfile->seek(i*128+92);
-            char dumuzhi1;
-            cntfile->read(&dumuzhi1,1);
-            dumuzu_used = dumuzu_used|(1<<dumuzhi1);
-            if(((128*cnthight+CNT_End)>cntfilesize)||(cntbuf[128*cnthight+CNT_End]==1))
-                break;
+        unsigned char sl,sr,d1;
+        sl = cnt_shaZui(cnthight,Md::POSLEFT);
+        sr = cnt_shaZui(cnthight,Md::POSRIGHT);
+        shazuiused_l|=sl;
+        shazuiused_r|=sr;
+        d1 = cntbuf[cnthight*128+CNT_DuMu];
+        if((d1<25)&&(d1!=0))
+            dumuzu_used = dumuzu_used|(1<<(d1-1));
+        else if((d1<125)&&(d1>100))
+            dumuzu_used = dumuzu_used|(1<<(d1-100));
+        if((1==cntbuf[cnthight*128+CNT_End])||((cnthight+1)*128>cntfile->size()))
+            break;
     }
-    //if dualdumuzu ,scan dualdumuzu
+#if DUAL_SYSTEM
     if(isdualdumuzu){
         for(int i=1;i<=cnthight;i++){
-           char dumuzhi2;
-           cntfile->seek(i*128+125);
-           cntfile->read(&dumuzhi2,1);
-           dumuzu_used = dumuzu_used|(1<<dumuzhi2);
+            char d2 = cntbuf[cnthight*128+CNT_DuMu];
+            if((d2<25)&&(d2!=0))
+                dumuzu_used = dumuzu_used|(1<<(d2-1));
+            else if((d2<125)&&(d2>100))
+                dumuzu_used = dumuzu_used|(1<<(d2-100));
         }
     }
+#endif
+
     cntfile->flush();
     this->cntfile = cntfile;
     this->patfile = patfile;
     this->cntFilePath = cntfilepath;
     this->patFilePath = patfilepath;
-    ispatternavalible = TRUE;
     QFileInfo cntfileinfo(*cntfile);
     QString name = cntfileinfo.fileName();
     this->patternName = name.left(name.size()-4);
     INFORMLOG(tr("花型正常，花型：")+patternName);
     patternDirPath = cntfileinfo.absolutePath();//doesn't include filename;
-    this->shazuiused_l = shazuil;
-    this->shazuiused_r = shazuir;
     this->tatalpatrow = pathight;
     this->tatalcntrow = cnthight;
     this->tatalcolumn = wight;
@@ -239,9 +245,11 @@ bool QPatternData::isPatternAvailable()
     return this->ispatternavalible;
 }
 
-void QPatternData::pat_SetData(int row,unsigned short column,unsigned char cha,bool download){
+void QPatternData::pat_SetData(int row,unsigned short column,unsigned char cha){
     if(!patbuf)
         return;
+    unsigned char patlinebuf[1024];
+    qMemCopy(patlinebuf,cntbuf+row*patbyteperrow,patbyteperrow);
     char datacha= pat_FechData(row,column);
     if(datacha!=cha){
         //charactor to int
@@ -259,10 +267,14 @@ void QPatternData::pat_SetData(int row,unsigned short column,unsigned char cha,b
         //write back
         patbuf[(row*patbyteperrow)+column/2]= data;
         //download
-        if(download)
-            pcomm->patUpdate(row,patbuf+row*patbyteperrow,patbyteperrow);
+        if(pcomm->isAvailable()){
+            int r = pcomm->patUpdate(row,patbuf+row*patbyteperrow,patbyteperrow);
+            if(r!=Md::Ok)
+                qMemCopy(cntbuf+row*patbyteperrow,patlinebuf,patbyteperrow);
+        }
     }
 }
+
 
 /*changed cntdatabuf,but not change cntfile and compare to data in cntfile*/
 void QPatternData::cnt_SetData(int row,unsigned char index,unsigned short data,unsigned char len){
@@ -818,7 +830,7 @@ unsigned char QPatternData::cnt_duMuZu(int row,Md::POS_LFETRIGHT kou, bool &doub
 
 unsigned int QPatternData::cnt_dumuUsed()
 {
-    return dumuzu_used;
+    return dumuzu_used|(1<<22)|(1<<23)|1;
 }
 
 unsigned char QPatternData::cnt_spead(int row){

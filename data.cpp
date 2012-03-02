@@ -54,7 +54,6 @@ const char  ProgramEncrypt::EncryptTable[256]={0xD5,0xFD,0xC3,0xB6,0xBE,0xD9,0x5
                        };
 
 
-
 void ProgramEncrypt::Decrypt(char *buf,unsigned short len){
     if(len!=512)
         return;
@@ -311,14 +310,10 @@ QVariant  QDMZModel::data(const QModelIndex &index, int role) const{
         return QString::number(dat);
     }
     if(Qt::BackgroundColorRole==role){
-        if((row==0)||(row==22)||(row==23))
+        if(patterndata->cnt_dumuUsed()&(1<<row))
             return QVariant();
-        else{
-            if(patterndata->cnt_dumuUsed()&(1<<(row+1)))
-                return QVariant();
-            else
-                return QColor(0,0,0,100);
-        }
+        else
+            return QColor(0,0,0,100);
     }
     return QVariant();
 }

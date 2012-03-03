@@ -40,7 +40,8 @@ namespace Md{
         FileSame = 0x10000,
         NotPatCntSaz = 0x20000,
         FileNotExist = 0x40000,
-        ParamUpdataFail = 0x80000
+        ParamUpdataFail = 0x80000,
+        ParamOutOfRange  = 0x100000
 
     };
     enum SYSTEM{SYSTEM1 = 0x01,SYSTEM2 = 0x02,SYSTEMALL = 0X03};

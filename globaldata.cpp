@@ -121,7 +121,7 @@ Md::Result sysInit(){
         QTest::qWait(2000);
         return Md::CommError;
     }
-    if(patternData.isValid()){
+    if(patternData.isPatternAvailable()){
         ////download wrk spa
         splash->showMessage(QObject::tr("正在下载参数"),Qt::AlignBottom);
         QFile wrkfile(patternData.wrkFilePath);

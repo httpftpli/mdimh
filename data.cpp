@@ -122,6 +122,7 @@ QVariant QPatModel::data(const QModelIndex &index, int role) const{
         return QVariant();
 }
 
+
 bool QPatModel::setData(const QModelIndex &index, const QVariant &value, int role){
     if((role ==Qt::EditRole)&&(value.isValid())){
         int r= pattern->tatalpatrow;
@@ -991,9 +992,15 @@ QVariant QPZKModel::headerData(int section, Qt::Orientation orientation, int rol
 
 ////////////loop////////////////////////////////////
 
+QCntLoopModel::QCntLoopModel( QPatternData *data ,QObject * parent):QAbstractTableModel(parent),
+                                                        patterndata(data){
+    loopmap = patterndata->cnt_LoopTable();
+    loopmapcopy = loopmap;
+}
+
 int QCntLoopModel::rowCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
-    return looplistchanged.size();
+    return loopmapcopy.size();
 }
 int QCntLoopModel::columnCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
@@ -1017,55 +1024,31 @@ QVariant QCntLoopModel::data(const QModelIndex &index, int role) const{
     int row = index.row();
     int column = index.column();
     if(column ==0)
-        return QString::number(looplistchanged.at(row).startline);
+        return QString::number(loopmapcopy.value(loopmapcopy.keys().at(row)).startline);
     if(column ==1)
-        return QString::number(looplistchanged.at(row).endline);
+        return QString::number(loopmapcopy.value(loopmapcopy.keys().at(row)).endline);
     if(column ==2)
-        return QString::number(looplistchanged.at(row).numofloop);
+        return QString::number(loopmapcopy.value(loopmapcopy.keys().at(row)).numofloop);
     return QString();
 }
 
-QCntLoopModel::QCntLoopModel( QPatternData *data ,QObject * parent):QAbstractTableModel(parent),
-                                                        patterndata(data){
-    QFile *cntfile = patterndata->cntfile.data();
-    if(!cntfile->open(QIODevice::ReadWrite)){
-        qDebug("in data.h QCntLoopModel::QCntLoopModel  cntfile open fail ");
-        return;
-    }
-    unsigned char buf[128];
-    int i = 1;
-    do{
-        int pos = 0x80*i;
-        if(pos>=cntfile->size())
-            break;
-        cntfile->seek(pos);
-        int size = cntfile->read((char *)buf,128);
-        if(size!=128)
-            break;
-        if(*(unsigned short *)(buf+CNT_LoopNum)){
-            struct LoopType loop;
-            loop.startline = *(unsigned short *)(buf+CNT_LoopStart);
-            loop.endline = i;
-            loop.numofloop = *(unsigned short *)(buf+CNT_LoopNum);
-            looplist<<loop;
-        }
-        i++;
-    }while(buf[CNT_End]!=0x01);
-    looplistchanged = looplist;
-    cntfile->close();
-}
 
 bool QCntLoopModel::setData(const QModelIndex &index, const QVariant &value, int role){
     if(role!=Qt::EditRole)
         return false;
     int row = index.row();
     int column = index.column();
+    int data = value.toInt();
     if(column ==0)
-        looplistchanged[row].startline = value.toInt();
-    if(column ==1)
-        looplistchanged[row].endline= value.toInt();
+        loopmapcopy[loopmapcopy.keys.at(row)].startline = data;
+    if(column ==1){
+        if(loopmapcopy[loopmapcopy.keys.at(row)].endline!=data){
+            loopmapcopy[loopmapcopy.keys.at(row)].endline = value.toInt();
+            reset();
+        }
+    }
     if(column ==2)
-        looplistchanged[row].numofloop= value.toInt();
+        loopmapcopy[loopmapcopy.keys.at(row)].numofloop = value.toInt();
     emit dataChanged(index,index);
     emit datasValid(checkdatavalid());
     return TRUE;
@@ -1078,12 +1061,12 @@ Qt::ItemFlags QCntLoopModel::flags(const QModelIndex &index) const{
 bool QCntLoopModel::insertRows(int row,int count, const QModelIndex &parent){
     Q_UNUSED(parent)
     beginInsertRows(QModelIndex(),row,row+count-1);
-    struct LoopType loop;
+    QPatternData::CntLoopType loop;
     for(int i=0;i<count;i++){
         loop.startline = 0;
         loop.endline = 0;
         loop.numofloop = 0;
-        looplistchanged.insert(row,loop);
+        looplistcopy.insert(row,loop);
     }
     endInsertRows();
     emit datasValid(checkdatavalid());
@@ -1094,7 +1077,7 @@ bool QCntLoopModel::removeRows(int row,int count, const QModelIndex &parent){
     Q_UNUSED(parent);
     beginRemoveRows(QModelIndex(),row,row+count-1);
     for(int i=0;i<count;i++){
-        looplistchanged.removeAt(row);
+        looplistcopy.removeAt(row);
     }
     endRemoveRows();
     emit datasValid(checkdatavalid());
@@ -1102,23 +1085,15 @@ bool QCntLoopModel::removeRows(int row,int count, const QModelIndex &parent){
 }
 
 void QCntLoopModel::save(bool send){
-    struct LoopType loop;
-    unsigned short start,end,num;
-    for(int i=0;i<looplist.size();i++){
-        loop = looplist.at(i);
-        end = loop.endline;
-        patterndata->cnt_SetData(end-1,CNT_LoopStart,0,2);
-        patterndata->cnt_SetData(end-1,CNT_LoopNum,0,2);
+    QPatternData::CntLoopType loop;
+    QList<QPatternData::CntLoopType> looplistclear;
+    looplistclear = looplist;
+    for(int i=0;i<looplistclear.size();i++){//clear old loop data
+        looplist[i].numofloop = 0;
+        looplist[i].startline = 0;
     }
-    for(int i=0;i<looplistchanged.size();i++){
-        loop = looplistchanged.at(i);
-        start = loop.startline;
-        end = loop.endline;
-        num = loop.numofloop;
-        patterndata->cnt_SetData(end-1,CNT_LoopStart,start,2);
-        patterndata->cnt_SetData(end-1,CNT_LoopNum,num,2);
-    }
-    patterndata->Save(Md::HAVECNT,send?Md::HAVECNT:Md::HAVENO);
+    patterndata->cnt_setLoopTable(looplistclear);
+    patterndata->cnt_setLoopTable(looplistcopy);
 }
 
 void QCntLoopModel::resetVal(){
@@ -1126,7 +1101,7 @@ void QCntLoopModel::resetVal(){
 }
 
 bool QCntLoopModel::checkdatavalid(){
-    foreach(LoopType loop,looplistchanged){
+    foreach(QPatternData::CntLoopType loop,looplistcopy){
         if(((loop.startline%2==0)||(loop.endline%2==1)
         ||(loop.startline>loop.endline)))
         return FALSE;

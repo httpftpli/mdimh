@@ -277,13 +277,8 @@ public:
 signals:
     void datasValid(bool);
 private:
-    struct LoopType{
-        int startline;
-        int endline;
-        int numofloop;
-    };
-    QList<struct LoopType> looplist;
-    QList<struct LoopType> looplistchanged;
+    QMap<int,QPatternData::CntLoopType> loopmap;
+    QMap<int,QPatternData::CntLoopType> loopmapcopy;
     QPatternData *patterndata;
     bool checkdatavalid();
 };

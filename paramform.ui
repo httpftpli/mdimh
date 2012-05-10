@@ -842,7 +842,7 @@ QHeaderView {
           </size>
          </property>
          <property name="text">
-          <string>返回</string>
+          <string>确定</string>
          </property>
         </widget>
        </item>
@@ -900,7 +900,7 @@ QHeaderView {
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="iconSize">
       <size>
@@ -1109,38 +1109,6 @@ QHeaderView {
          </item>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_wrksave">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>保存</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_wrkreset">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>重置</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_2">
@@ -1261,22 +1229,6 @@ QHeaderView {
         <widget class="Line" name="line">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_spasave">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>保存</string>
          </property>
         </widget>
        </item>

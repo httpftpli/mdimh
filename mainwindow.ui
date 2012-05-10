@@ -124,7 +124,7 @@ QTabBar::tab:!selected{
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>0</number>
     </property>
     <property name="iconSize">
      <size>
@@ -1461,6 +1461,11 @@ QTabBar::tab:!selected{
         </item>
         <item>
          <widget class="QLabel" name="label_yaochuang">
+          <property name="font">
+           <font>
+            <underline>false</underline>
+           </font>
+          </property>
           <property name="text">
            <string/>
           </property>

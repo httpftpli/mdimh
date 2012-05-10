@@ -6,16 +6,19 @@
 #include "qmdmessagebox.h"
 #include "data.h"
 #include "qhmidata.h"
+#include "pattern.h"
+#include"qparam.h"
 
 extern QApplication a;
 
 
 
-QFormFile::QFormFile(QWidget *parent):QWidget(parent),
+QFormFile::QFormFile(QPattern *p,QWidget *parent):QWidget(parent),
                                        udispath("./patternfile1"),
                                        dirpath("./patternfile"),
                                        udiscurrentpath("./patternfile1"),
-                                       dircurrentpath("./patternfile")
+                                       dircurrentpath("./patternfile"),
+                                       pattern(p)
                                        {
     setupUi(this);
     setWindowFlags(Qt::FramelessWindowHint);
@@ -45,18 +48,13 @@ QFormFile::QFormFile(QWidget *parent):QWidget(parent),
     tableView_2->setColumnHidden(1,1);
     tableView_2->setColumnHidden(2,1);
     tableView_2->setSortingEnabled(TRUE);
-
-
 }
-
-
 
 
 void QFormFile::on_qMdPushButton_6_clicked()
 {
     this->deleteLater();
 }
-
 
 
 void QFormFile::on_qMdPushButton_3_clicked()
@@ -119,49 +117,25 @@ void QFormFile::on_qMdPushButton_clicked()
     srcmodel->copy(indexsrc,*desmodel,indexdes,this);
 }
 
-
-
-
-
-
-
-
 void QFormFile::on_qMdPushButton_5_clicked()
 {
+    QProgressDialog progressDialog(this);
+    progressDialog.setLabelText(tr("正在下载花型"));
+    progressDialog.setWindowModality(Qt::WindowModal);
+    progressDialog.setRange(0,100);
     QModelIndex index = tableView_2->currentIndex();
     QMdSortFilterProxyModel *model =static_cast<QMdSortFilterProxyModel *>(tableView_2->model());
     QString dirname = model->upPath(index);
-    QString cntfilename,patfilename,wrkfilename;
-    QString cntfilepath,patfilepath,wrkfilepath;
-
-    QProgressDialog progressDialog(this);
-    progressDialog.setAutoClose(FALSE);
-    connect(&qComm,SIGNAL(commPercent(int)),&progressDialog,SLOT(setValue(int)));
-
-    cntfilename = model->patternName(index,".cnt");
-    cntfilepath = dirname+"/"+cntfilename;
-
-    patfilename = model->patternName(index,".pat");
-    patfilepath = dirname+"/"+patfilename;
-
-    Md::HAVEFILEFLAG flag = model->haveFile(index);
-
-    /*if(flag&Md::HAVEWRK){
-        wrkfilename = model->patternName(index,".wrk");
-        wrkfilepath = dirname+"/"+wrkfilename;
-    }else{
-        wrkfilepath = QString();
-    }*/
-
-    INFORMLOG(tr("更换花型")+cntfilename+QString(" ")+patfilename);
-    QPatternData::Result r = patternData.setFile(cntfilepath,patfilepath);
+    QString patternname = model->patternName(index);
+    QString patternpath = dirname+"/"+patternname;
+    INFORMLOG(tr("更换花型:")+patternname);
+    QPattern::Result r = pattern->setFile(patternpath);
     QMdMessageBox box;
-    if(r!=QPatternData::Ok){
+    if(r!=QPattern::Ok){
         box.exec(tr("选择文件"),tr("花型文件错误"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return;
     }
-
 
     //////togle system/////////////////
     int commResult = qComm.TogSysStat(QHMIData::SysInParam);
@@ -171,43 +145,28 @@ void QFormFile::on_qMdPushButton_5_clicked()
         return ;
     }
     ////download wrk spa
-    QFile wrkfile(patternData.wrkFilePath);
-    QFile spafile(hmiData.spaFilePath);
-    commResult = qComm.SendParama(wrkfile,spafile,0xff);
+    commResult = paramaData.sendParama();
     if(commResult == Md::CommError){
         box.exec(tr("通讯错误"),tr("花型下载失败"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return ;
     }
     ///download szkb///////////////////////////////////
-    commResult = patternData.sendShazuiKb();
+    commResult = pattern->sendShazuiKb();
     if(commResult == Md::CommError){
         box.exec(tr("通讯错误"),tr("花板捆绑文件下载失败"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return ;
     }
-
-
-    ///////下载cnt文件///////////////////////////////////
-    progressDialog.setRange(0,100);
-    progressDialog.setLabelText(tr("发送CNT文件"));
+    ///////下载花型/////////////////////////////////////
+    connect(pattern,SIGNAL(patternSendPercent(int)),&progressDialog,SLOT(setValue(int)));
     progressDialog.show();
-    int result = qComm.sendFile(cntfilepath,0,FALSE,this);
-    if(result ==Md::CommError) {
+    int result = pattern->sendPattern();
+    if(result !=QPattern::Ok) {
         box.exec(tr("花型发送"),tr("发送CNT文件，通信错误"),QMessageBox::Warning,
                  QMessageBox::Cancel,QMessageBox::Cancel);
         return;
     }
-    ///////下载PAT文件///////////////////////////////
-    progressDialog.setLabelText(tr("发送PAT文件"));
-    progressDialog.show();
-    result = qComm.sendFile(patfilepath,0,FALSE,this);
-    if(result ==Md::CommError) {
-        box.exec(tr("花型发送"),tr("发送PAT文件，通信错误"),QMessageBox::Warning,
-                 QMessageBox::Cancel,QMessageBox::Cancel);
-        return;
-    }
-
     //等待下位机响应/////////////////////////////////
     int i=0;
     for(i=0;i<3;i++) {
@@ -227,7 +186,6 @@ void QFormFile::on_qMdPushButton_5_clicked()
         QTest::qWait(2000);
         return;
     }*/
-    progressDialog.close();
     box.exec(tr("花型发送"),tr("下载成功"),QMessageBox::Information,
              QMessageBox::Cancel,QMessageBox::Cancel);
     return;
@@ -285,5 +243,3 @@ void QFormFile::on_tableView_clicked(QModelIndex index)
 
     }
 }
-
-

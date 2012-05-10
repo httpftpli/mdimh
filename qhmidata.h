@@ -1,12 +1,13 @@
 #ifndef QHMIDATA_H
 #define QHMIDATA_H
-#include <QObject>
 #include "namespace.h"
-#include "communicat.h"
 #include <QQueue>
-#include "globaldata.h"
+#include"config.h"
+#include<QTimer>
+#include<QVariant>
 
 class QParam;
+class QComm;
 
 const unsigned char  INPUT_MAP[32][2] = {  //显示序号与开关量的映射表(数组下标,位)
     {3,0}, {3,1}, {3,2}, {3,3}, {3,4}, {3,5}, {3,6}, {3,7},
@@ -135,8 +136,7 @@ public:
     int curruntTime;
     int stopTime;
     int runTime;
-    QString patFilePath;
-    QString cntFilePath;
+    QString patternPath;
     QString sys_wrkFilePath;
     QString spaFilePath;
     QString sazFilePath;
@@ -169,7 +169,8 @@ public:
     bool dankouLock();
     int toggleDankouLock();
 #endif
-    int xtGuiling();
+    bool xtGuiling();
+    bool xtRun();
     int sendParamaInRun();
     int pollSysVersion();
     QString mainboardVersion();
@@ -182,11 +183,11 @@ public:
     Md::Result errorcode;
     int errorCode();
     int TogSysStat(SysStat stat);
+    bool mainboardRomAvailable();
 
 public slots:
     void On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val);
-    void on_patternChange( const QString &patternname, const  QString &cntfilepath, const QString &patfilepath,
-                          const  QString &wrkfilepath , const QString &sazfilepath);
+    void on_patternChange(const QString &dirpath,const QString &name);
     void on_clothFinish();
 public slots:
     void onParamChanged();

@@ -1,6 +1,7 @@
 #include "qsyslog.h"
 #include<QDebug>
 #include<QDataStream>
+#include<QFile>
 
 
 

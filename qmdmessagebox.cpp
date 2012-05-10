@@ -2,7 +2,7 @@
 #include "csound.h"
 #include <QTest>
 #include <QDebug>
-#include<QDir>
+#include <QDir>
 
 void QMdMessageBox::setVisible (bool visible){
     QMessageBox::setVisible(visible);

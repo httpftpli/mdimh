@@ -1,9 +1,10 @@
 #ifndef CSOUND_H
 #define CSOUND_H
 #include<QString>
-#include<QFile>
 #include<QSharedPointer>
 #include<QTimer>
+
+class QFile;
 
 #pragma pack(1)
 struct Riff_Header

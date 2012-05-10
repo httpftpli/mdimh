@@ -25,6 +25,7 @@
 #include "QTest"
 #include "helpform.h"
 #include "dialogabout.h"
+#include"config.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -63,16 +64,13 @@ void MainWindow::setup(){
     connect(&hmiData,SIGNAL(time1sOuted()),this,SLOT(Timeout1s()));
     connect(&hmiData,SIGNAL(clothFinishCountChanged(int)),label_FinishCount,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(clothSetCountChanged(int)),label_setCount,SLOT(setNum(int)));
-    connect(&patternData,SIGNAL(patternChanged(const QString&,const QString&,const QString&,
-                                               const QString&,const QString&)),
-                                               SLOT(onpatternChange()));
+    connect(&patternData,SIGNAL(patternChanged(QString,QString)), SLOT(onpatternChange(QString,QString)));
     connect(&hmiData,SIGNAL(hmi_loopend(int)),label_loopEnd,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(hmi_loopleft(int)),label_loopLeft,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(hmi_loopStart(int)),label_loopStart,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(hmi_loopend(int)),label_loopEnd,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(hmi_loopTatal(int)),label_loopCount,SLOT(setNum(int)));
-    connect(&hmiData,SIGNAL(hmi_cntNumber(unsigned short)),this,
-            SLOT(runPatternRowChange(unsigned short)));
+    connect(&hmiData,SIGNAL(hmi_cntNumber(unsigned short)),SLOT(runPatternRowChange(unsigned short)));
     connect(&hmiData,SIGNAL(hmi_jitouxiangduizhengshu(int)),label_zwz,SLOT(setNum(int)));
     connect(&hmiData,SIGNAL(xtGuilingError()),SLOT(onXtGuilingError()));
     connect(&hmiData,SIGNAL(xtRunOrGuiling(bool)),qMdPushButton_5,SLOT(setChecked(bool)));
@@ -95,10 +93,10 @@ void MainWindow::setup(){
 
 }
 
-
-void  MainWindow::onpatternChange(){
+void  MainWindow::onpatternChange(const QString &patterndir, const QString &patternname){
+    Q_UNUSED(patterndir);
     label_totalLine->setNum(patternData.tatalcntrow);
-    label_patternFile->setText(patternData.patternName);
+    label_patternFile->setText(patternname);
 }
 
 void MainWindow::onHmidataRuning(bool val){
@@ -160,7 +158,25 @@ void MainWindow::runPatternRowChange(unsigned short cntnumber){
     label_fuzhuLuolazhi->setNum(patternData.wrkFuzhuLuolaZhi(fuzhuluola));
     label_songsha->setNum(patternData.cnt_songSha(cntnumber));
     label_shazuiTf->setNum(patternData.cnt_shazuiTf(cntnumber));
-    label_yaochuang->setText(patternData.cnt_yaoChuang(cntnumber));
+    //yaochuang////////////////
+    QPattern::YCPOSITION pos;
+    char yaochuangval;
+    patternData.cnt_yaoChuang(cntnumber,pos,yaochuangval);
+    QString yaochuangstr;
+    if(yaochuangval>0)
+        yaochuangstr.append("R");
+    else if(yaochuangval<0)
+        yaochuangstr.append("L");
+    yaochuangstr.append(QString::number(qAbs(yaochuangval)));
+    if(pos==QPattern::ZHENDUIZHEN)
+        yaochuangstr.append("*");
+    if((pos==QPattern::FANZHENFU)||(pos==QPattern::FANZHENZHE)){
+        QPalette pa;
+        pa.setColor(QPalette::WindowText,Qt::red);
+        label_yaochuang->setPalette(pa);
+    }
+    label_yaochuang->setText(yaochuangstr);
+    //end yaochuang ///////////
     label_yajiao->setNum(patternData.cnt_yaJiao(cntnumber));
     label_tingche->setText(patternData.cnt_tingChe(cntnumber)?tr("是"):tr("否"));
     label_qizhengdian->setNum(patternData.wrk_qizhengdian());
@@ -173,7 +189,7 @@ void MainWindow::onXtGuilingError(){
 }
 
 void MainWindow::on_qMdPushButton_clicked()
-{   QFormFile *formfile = new QFormFile;
+{   QFormFile *formfile = new QFormFile(&patternData);
     formfile->show();
 }
 
@@ -246,9 +262,7 @@ void MainWindow::on_qMdPushButton_14_clicked()
 void MainWindow::on_qMdPushButton_5_clicked(bool checked)
 {
     qMdPushButton_5->setChecked(!checked);
-    if(!checked){ //in run state
-        hmiData.xtGuiling();
-    }
+     hmiData.xtGuiling();
 }
 
 void MainWindow::on_qMdPushButton_6_clicked(bool checked)
@@ -344,8 +358,8 @@ void MainWindow::on_pushButton_6_clicked()
 
 void MainWindow::on_pushButton_4_clicked()
 {
-    QFormFile *formfile = new QFormFile;
-        formfile->show();
+    QFormFile *formfile = new QFormFile(&patternData);
+    formfile->show();
 }
 
 void MainWindow::on_pushButton_9_clicked()

@@ -10,9 +10,9 @@ class DialogTingche : public QDialog, private Ui::DialogTingche
     Q_OBJECT
 
 public:
-    explicit DialogTingche(QPatternData *pattern,QWidget *parent = 0);
+    explicit DialogTingche(QPattern *pattern,QWidget *parent = 0);
 private:
-    QPatternData *pattern;
+    QPattern *pattern;
     QTingcheModel *model;
 
 private slots:

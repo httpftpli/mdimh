@@ -3,18 +3,17 @@
 
 #include <qsyslog.h>
 #include <namespace.h>
-#define DUAL_SYSTEM 1
 //#define SYSTEST
 
 class QHMIData;
 class QComm;
-class QPatternData;
+class QPattern;
 class QParam;
 class QSysLog;
 class QProgressIndicator;
 extern QHMIData hmiData;
 extern QComm qComm;
-extern QPatternData patternData;  //defiled in glabaldata.cpp file
+extern QPattern patternData;  //defiled in glabaldata.cpp file
 extern QParam paramaData;    //defiled in glabaldata.cpp file
 extern QSysLog sysLog;
 extern QProgressIndicator *ProgressIndiForm;
@@ -25,5 +24,6 @@ extern QProgressIndicator *ProgressIndiForm;
 
 extern Md::Result sysInit();
 extern QString secondToString(int sec);
+extern void MessageOutput(QtMsgType type, const char *msg);
 
 #endif // GLOBALDATA_H

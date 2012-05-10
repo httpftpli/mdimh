@@ -6,7 +6,7 @@
 #include "qmdmessagebox.h"
 
 
-PatFileForm::PatFileForm(QWidget *parent, QPatternData *data) :
+PatFileForm::PatFileForm(QWidget *parent, QPattern *data) :
     QWidget(parent),pattern(data){
     setupUi(this);
     ////////////////////////////
@@ -59,10 +59,6 @@ PatFileForm::~PatFileForm(){
         patternData.deloadFile(Md::HAVEPAT);
 }
 
-void PatFileForm::on_pushButton_clicked()
-{
-    patmodel->resetBuf();
-}
 
 void PatFileForm::decideButtonRl(int column){
     pushButton_columnleft->setDisabled(column==1);

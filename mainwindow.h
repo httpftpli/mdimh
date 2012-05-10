@@ -5,6 +5,7 @@
 #include"namespace.h"
 #include <QShortcut>
 #include "globaldata.h"
+#include"config.h"
 
 class paramform;
 class FormHead;
@@ -22,7 +23,7 @@ public slots:
 #if DUAL_SYSTEM
     void onDankouLock(bool);
 #endif
-    void onpatternChange();
+    void onpatternChange(const QString &patterndir,const QString &patternname);
     void Timeout1s();
 
 private slots:
@@ -69,6 +70,7 @@ private slots:
     void on_qMdPushButton_18_clicked();
 
     void on_qMdPushButton_19_clicked();
+
 
 private:
     QStringList azllist,hzllist;

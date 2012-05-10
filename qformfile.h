@@ -4,12 +4,11 @@
 #include "ui_qformfile.h"
 #include <QDir>
 #include <QList>
+#include <QProgressDialog>
+
+class QPattern;
 
 
-/////////////////////////
-
-
-/////////////////////////////
 
 
 class QFormFile : public QWidget, private Ui::QFormFile
@@ -17,7 +16,7 @@ class QFormFile : public QWidget, private Ui::QFormFile
     Q_OBJECT
 
 public:
-    explicit QFormFile(QWidget *parent = 0);
+    explicit QFormFile(QPattern *p,QWidget *parent = 0);
     ////////////////////////////////////
     // QList<MyFileinfo> filelist;
     const QString udispath;
@@ -26,16 +25,8 @@ public:
     QString dircurrentpath;
 
 
-    /////////////////////////////////////
-
-
-    //////////////////////////////////////
-
-    //////////////////////////////////////
-
-
 private:
-
+    QPattern *pattern;
 private slots:
     void on_tableView_clicked(QModelIndex index);
     void on_tableView_2_clicked(QModelIndex index);
@@ -47,8 +38,6 @@ private slots:
     void on_qMdPushButton_8_clicked();
     void on_qMdPushButton_4_clicked();
     void on_qMdPushButton_6_clicked();
-
-
 };
 
 

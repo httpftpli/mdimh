@@ -9,16 +9,18 @@ class QShazuiExchForm : public QDialog, private Ui::QShazuiExchForm
     Q_OBJECT
 
 public:
-    explicit QShazuiExchForm(QWidget *parent ,QPatternData *data);
+    explicit QShazuiExchForm(QWidget *parent ,QPattern *data);
 
 private slots:
     void on_pushButton_6_clicked();
     void addNewShazui();
     void setCurrentShazuiText();
+    void on_pushButton_4_clicked();
+
 private:
     bool checkchange();
 private:
-    QPatternData  *pattern;
+    QPattern  *pattern;
     QLabel *labelarray1[8];
     QLabel *labelarray2[8];
     QPushButton *pushbuttonarray1[8];

@@ -1,10 +1,11 @@
 #include "headtestform.h"
 #include "globaldata.h"
 #include "QDebug"
-#include"communicat.h"
+#include "communicat.h"
 #include "QGridLayout"
-#include<QTest>
-#include"qhmidata.h"
+#include <QTest>
+#include "qhmidata.h"
+#include "config.h"
 
 headTestForm::headTestForm(QComm *com,QHMIData *data,QWidget *parent) :
     QWidget(parent),pcom(com),hmidata(data),inautotesting(FALSE),

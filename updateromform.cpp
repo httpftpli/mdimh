@@ -3,6 +3,7 @@
 #include "globaldata.h"
 #include<QMessageBox>
 #include<qmdmessagebox.h>
+#include"communicat.h"
 
 updateRomForm::updateRomForm(QWidget *parent) :
     QDialog(parent){

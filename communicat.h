@@ -7,7 +7,6 @@
 #include <QTimer>
 #include <QVariant>
 #include <QUdpSocket>
-#include <QFile>
 #include <QMutex>
 #include <QElapsedTimer>
 
@@ -42,7 +41,7 @@
 
 #define  htoni(A) ntohi(A)
 
-
+class QFile;
 
 class QComm :public QThread{
    Q_OBJECT
@@ -51,9 +50,9 @@ public:
    bool isAvailable();
    void MainMotorTest(unsigned char direction,unsigned char speedpercent);
    bool DumuMotorTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,
-                      Md::POSFLAG_LFETRIGHT motor,unsigned short val);
+                      Md::POSFLAG_LEFTRIGHT motor,unsigned short val);
    bool DumuMotorTest(unsigned char motor, unsigned short val);
-   bool pinTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,Md::POSFLAG_LFETRIGHT lf,
+   bool pinTest(Md::SYSTEMFLAG sys,Md::POSFLAG_FRONTREAR fr,Md::POSFLAG_LEFTRIGHT lf,
                 unsigned char pin,unsigned char val);
    bool pinTest(unsigned long long pin,unsigned char stat);
    bool shazuiTest(Md::SYSTEMFLAG sys,unsigned char shazui, unsigned char stat);
@@ -78,16 +77,19 @@ public:
    int goToLine(unsigned short line);
    int sazuiDownUp(bool up);
    int sazuiReplaceSwap(bool replaceorswap,unsigned char leftsazui,unsigned char rightsazui);
-   int cntUpdate(unsigned short line,unsigned char *buf);
+   int cntUpdate(int line,unsigned char *buf);
    int patUpdate(unsigned short line,unsigned char *buf,unsigned short patlinelen);
    int headStopAside();
    int pollSysVersion(QString &mainbordVersion,QString &bagVersion);
    int TogSysStat(unsigned char stat);
    int sendParamaInRun(unsigned short setcount,unsigned short finishcount,unsigned char RateLimit,
                     unsigned char OneStop,unsigned char alarmLimit,unsigned char DanKouLock);
-   int sendFile(const QString &filepath,unsigned short fileid,bool samehint,QWidget *parent);
+   int sendCntFileInfo(unsigned int lenoffile);
+   int sendPatFileInfo(unsigned int lenoffile);
+   int sendCntFileData(unsigned short pack,unsigned char *buf);
+   int sendPatFileData(unsigned short pack,unsigned char *buf);
    int SendShazuiKb(const QString &sazfilepath=QString());
-   int SendParama(QFile &wrkfile,  QFile &spafile,int packet,QWidget *parent=NULL);
+   int SendParama(char *wrkbuf,  char *spabuf,int packet);
    int paramaUpdata(unsigned char id,unsigned short *buf,int len,bool halfwordorbyte);
    int paramaUpdata(unsigned char yiyincunzhenshu,unsigned short chijvjiaozheng,unsigned short zongzhengshu);
    int IsInBoot();
@@ -118,8 +120,9 @@ private:
    unsigned short ackbuflen;
    char rcvbuf[256];         //used to save communication protocal data;
    unsigned short rcvbuflen;           //used to save len of the rcvbuf
+   void readshorts(char *scr,unsigned short *dst, int  from,int count);
+   void readshorts(char *scr,unsigned char *dst,int from,int count);
    void readshorts(QDataStream &stream,unsigned short * buf,int count);
-   void readshorts(QDataStream &stream,unsigned char * buf,int count);
    void acktoctrl(unsigned char fun,unsigned char data); //called by ReadPendingDatagrams ,
                                                    //run in secondanary thread
    bool writeackdata(char *buf,unsigned short len);

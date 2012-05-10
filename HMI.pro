@@ -105,7 +105,9 @@ HEADERS  += \
     formhead.h \
     formheadtest.h \
     helpform.h \
-    dialogabout.h
+    dialogabout.h \
+    config.h \
+    constdata.h
 
 FORMS    += \
     qformfile.ui \

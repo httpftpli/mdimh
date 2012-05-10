@@ -3,8 +3,9 @@
 #include "qhmidata.h"
 #include "qparam.h"
 #include <QHBoxLayout>
+#include <QStringList>
 
-FormHead::FormHead(QPatternData * data,QHMIData *hmi, QParam *p,QWidget *parent) :
+FormHead::FormHead(QPattern * data,QHMIData *hmi, QParam *p,QWidget *parent) :
         QWidget(parent),pattern(data),hmidata(hmi),param(p),cntnumber(1),
         pixmapright(":/image/resource/1w.png"),
         pixmapleft(":/image/resource/1x.png")
@@ -20,12 +21,9 @@ FormHead::FormHead(QPatternData * data,QHMIData *hmi, QParam *p,QWidget *parent)
     plablearray[5] = label_sz6;
     plablearray[6] = label_sz7;
     plablearray[7] = label_sz8;
-    azllist<<tr("空")<<tr("翻针")<<tr("编织");
-    hzllist<<tr("空")<<tr("吊目")<<tr("接针")<<tr("吊目2")<<tr("编松2");
-
 }
 
-void  FormHead::setKouAtribute(Md::POS_LFETRIGHT kou){
+void  FormHead::setKouAtribute(Md::POS_LEFTRIGHT kou){
     this->kou = kou;
 }
 
@@ -39,10 +37,12 @@ void FormHead::onCntNumber(unsigned short cntnumber){
     label_hbhh->setNum(pattern->cnt_huabanhang(cntnumber,kou,Md::POSREAR));
     label_hbhq->setNum(pattern->cnt_huabanhang(cntnumber,kou,Md::POSFRONT));
     ///////动作/////////////////////////////////////
-    label_awdzh->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,kou,Md::POSREAR)));
-    label_awdzq->setText(azllist.value(pattern->cnt_Azhiling(cntnumber,kou,Md::POSFRONT)));
-    label_hwdzh->setText(azllist.value(pattern->cnt_Hzhiling(cntnumber,kou,Md::POSREAR)));
-    label_hwdzq->setText(azllist.value(pattern->cnt_Hzhiling(cntnumber,kou,Md::POSFRONT)));
+    unsigned char zhilingindex = pattern->cnt_Zhiling(cntnumber,kou,Md::POSREAR);
+    label_awdzh->setText(QPattern::CntZhilingMap.value(zhilingindex).at(0));
+    label_hwdzh->setText(QPattern::CntZhilingMap.value(zhilingindex).at(1));
+    zhilingindex = pattern->cnt_Zhiling(cntnumber,kou,Md::POSFRONT);
+    label_awdzq->setText(QPattern::CntZhilingMap.value(zhilingindex).at(0));
+    label_hwdzq->setText(QPattern::CntZhilingMap.value(zhilingindex).at(1));
     ////////色代号//////////////////////////////
     label_awsch->setText(pattern->cnt_seDaiHaoA(cntnumber,kou,Md::POSREAR));
     label_hwsch->setText(pattern->cnt_seDaiHaoH(cntnumber,kou,Md::POSREAR));

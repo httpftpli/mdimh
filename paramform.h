@@ -3,6 +3,7 @@
 #include "ui_paramform.h"
 #include "data.h"
 #include "globaldata.h"
+#include"config.h"
 
 class FormJqgzcs;
 
@@ -34,10 +35,8 @@ public:
     };
 
     explicit paramform(QComm *com,QWidget *parent = 0);
-
     ~paramform();
-
-    void setPattern(QPatternData *pattern);
+    void setPattern(QPattern *pattern);
     void setParama(QParam *parama);
     void setIndex(ParamFormIndex index);
 
@@ -45,9 +44,6 @@ protected:
     bool event(QEvent *e);
 private slots:
     void on_listWidget_currentRowChanged(int currentRow);
-    void on_pushButton_spasave_clicked();
-    void on_pushButton_wrksave_clicked();
-    void on_pushButton_wrkreset_clicked();
     void on_lineEdit_qzd_textChanged(QString );
     void on_spinBox_valueChanged(int );
     void on_tabWidget_currentChanged(int index);
@@ -62,7 +58,7 @@ signals:
 private:
     void creatextgzcsform(int indexofpage);
     void createjqgzcsform(int indexofpage);
-    QPatternData *patterndata;
+    QPattern *patterndata;
     QParam *paramadata;
     QDMZModel *dmzmodel;
     QLLModel *llmodel;

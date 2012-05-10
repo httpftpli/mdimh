@@ -2,7 +2,8 @@
 #include "data.h"
 #include "globaldata.h"
 #include <QFlags>
-
+#include"config.h"
+#include"communicat.h"
 #include "formjqgzcs.h"
 #if DUAL_SYSTEM
 #include "formxtcs2.h"
@@ -24,16 +25,11 @@ paramform::paramform(QComm *com, QWidget *parent) :
     setPattern(&patternData);
     //qDebug()<<"setPattern:"<<QTime::currentTime().toString("ss-zzz");
     setParama(&paramaData);
-    //qDebug()<<"setParama:"<<QTime::currentTime().toString("ss-zzz");
-    patterndata->loadFile(Md::HAVEWRK);
     label_13->setText(patterndata->wrkFileName);
     label_11->setText(paramadata->spafilename);
     //qDebug()<<"patterndata.loadfile"<<QTime::currentTime().toString("ss-zzz");
     //qDebug()<<"set model"<<QTime::currentTime().toString("ss-zzz");
     ///////////////////////////////
-    connect(patterndata,SIGNAL(wrkDirty(bool)),pushButton_wrksave,SLOT(setEnabled(bool)));
-    connect(patterndata,SIGNAL(wrkDirty(bool)),pushButton_wrkreset,SLOT(setEnabled(bool)));
-    connect(paramadata,SIGNAL(dirty(bool)),pushButton_spasave,SLOT(setEnabled(bool)));
     connect(this,SIGNAL(indexchanged(int)),stackedWidget,SLOT(setCurrentIndex(int)));
     connect(this,SIGNAL(indexchanged(int)),SLOT(indexchange(int)));
     //connect(paramadata,SIGNAL(dirty(bool)),pushButton_spareset,SLOT(setEnabled(bool)));
@@ -51,7 +47,7 @@ paramform::~paramform(){
     //this->paramadata->releaseBuf();
 }
 
-void paramform::setPattern(QPatternData *pattern){
+void paramform::setPattern(QPattern *pattern){
     this->patterndata = pattern;
 }
 
@@ -62,8 +58,8 @@ void paramform::setParama(QParam *parama){
 
 void paramform::on_qMdPushButton_clicked()
 {
-    paramadata->save(TRUE,FALSE);
-    paramadata->releaseBuf();
+    paramadata->updataAll();
+    patterndata->wrk_updataAll();
     deleteLater();
 }
 
@@ -71,8 +67,6 @@ void paramform::on_qMdPushButton_clicked()
 
 void paramform::on_stackedWidget_currentChanged(int yyy )
 {
-    if(yyy>7)
-        paramadata->loadFile();
     switch(yyy){
     case 0:
         if(dmzmodel==NULL){
@@ -435,22 +429,4 @@ void paramform::on_lineEdit_qzd_textChanged(QString )
         patterndata->wrk_setData(WrkItemHd_QiZenDian,0,d);
     }
 }
-
-void paramform::on_pushButton_wrkreset_clicked()
-{
-    patterndata->refreshBuf(Md::HAVEWRK);
-    update();
-}
-
-
-void paramform::on_pushButton_wrksave_clicked()
-{
-    patterndata->Save(Md::HAVEWRK,Md::HAVEWRK);
-}
-
-void paramform::on_pushButton_spasave_clicked()
-{
-    paramadata->save(TRUE);
-}
-
 

@@ -106,7 +106,7 @@ void FormHeadTest::sanjiaotest(int sanjiao)
 void FormHeadTest::dumutest(int dumu)
 {
     QPushButton *button = (dumu==Md::POSREAR)?pushButton_d1:pushButton_d0;
-    pcom->DumuMotorTest(sys,fr,(Md::POSFLAG_LFETRIGHT)dumu,button->isChecked()?500:0);
+    pcom->DumuMotorTest(sys,fr,(Md::POSFLAG_LEFTRIGHT)dumu,button->isChecked()?500:0);
 }
 
 void FormHeadTest::lpingtestauto()

@@ -1,7 +1,7 @@
 #include "dialogtingche.h"
 #include "data.h"
 
-DialogTingche::DialogTingche(QPatternData *p, QWidget *parent):
+DialogTingche::DialogTingche(QPattern *p, QWidget *parent):
     QDialog(parent),pattern(p),model(NULL){
     setupUi(this);
     model = new QTingcheModel(pattern,this);

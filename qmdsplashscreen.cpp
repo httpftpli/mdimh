@@ -6,13 +6,8 @@ QMdSplashScreen::QMdSplashScreen(const QPixmap & pixmap ,
 {
 }
 
-void QMdSplashScreen::showCntMessage(int percent){
-    showMessage(tr("正在下载CNT文件 ------------  \%%1")
+void QMdSplashScreen::showPatternSendMessage(int percent){
+    showMessage(tr("正在下载花型 ------------  \%%1")
                 .arg(percent),Qt::AlignBottom);
-}
-
-void QMdSplashScreen::showPatMessage(int percent){
-    showMessage(tr("正在下载PAT文件-------------  \%%1")
-                        .arg(percent),Qt::AlignBottom);
 }
 

@@ -2,7 +2,6 @@
 #define QSYSLOG_H
 
 #include <QAbstractTableModel>
-#include<QFile>
 #include<QDateTime>
 #include<QString>
 #include<QQueue>

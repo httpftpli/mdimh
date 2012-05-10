@@ -17,6 +17,7 @@
 
 int main(int argc, char *argv[])
 {
+    //qInstallMsgHandler(MessageOutput);
     QMdApplication a(argc, argv);
     a.setApplicationVersion("V1.00");
 #ifdef  Q_WS_X11
@@ -29,7 +30,6 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(textcode);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     MainWindow w;
-    qComm.start();
     Md::Result r= sysInit();
     if(r!=Md::Ok){
         QMdMessageBox box;

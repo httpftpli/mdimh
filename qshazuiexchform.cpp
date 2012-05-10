@@ -1,7 +1,7 @@
 #include "qshazuiexchform.h"
 
 
-QShazuiExchForm::QShazuiExchForm(QWidget *parent, QPatternData *data) :
+QShazuiExchForm::QShazuiExchForm(QWidget *parent, QPattern *data) :
     QDialog(parent),pattern(data),currentshazui(NULL){
     setupUi(this);
     ///////////////////////////////
@@ -104,4 +104,9 @@ bool QShazuiExchForm::checkchange(){
                 return TRUE;
     }
     return FALSE;
+}
+
+void QShazuiExchForm::on_pushButton_4_clicked()
+{
+
 }

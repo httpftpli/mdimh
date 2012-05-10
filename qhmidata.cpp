@@ -6,6 +6,9 @@
 #include <QProcess>
 #include"customerid.h"
 #include "qparam.h"
+#include"config.h"
+#include<QSettings>
+#include"communicat.h"
 
 
 QHMIData::QHMIData(QParam *param,QComm *qcomm,QObject *parent):
@@ -198,31 +201,15 @@ int QHMIData::TogSysStat(SysStat stat){
     case SysIdle:
         val =0x00;
         break;
-    case SysRun:{
-            switch(customerId){
-            case 0x31:
-                val =0x0b;
-                break;
-            default:
-                val = 0x01;
-                break;
-            }
-            break;
-        }
+    case SysRun:
+        val = 72;//0x01;    72 73 下面的机器  0b 0a;
+        break;
     case SysTest:
         val = 0x02;
         break;
-    case SysReset:{
-            switch(customerId){
-            case 0x31:
-                val =0x0a;
-                break;
-            default:
-                val = 0x03;
-                break;
-            }
-            break;
-        }
+    case SysReset:
+        val =73; // 0x03;
+        break;
     case SysInParam:
         val = 0x04;
         break;
@@ -232,6 +219,14 @@ int QHMIData::TogSysStat(SysStat stat){
     return pcomm->TogSysStat(val);
 }
 
+bool QHMIData::mainboardRomAvailable()
+{
+    int commResult  = pcomm->IsInBoot();
+    if(commResult & Md::InBootState)
+        return FALSE;
+    else
+        return TRUE;
+}
 
 void QHMIData::loadParam(const QString &inifilepath){
     QSettings sysset(inifilepath,QSettings::IniFormat,this);
@@ -247,8 +242,7 @@ void QHMIData::loadParam(const QString &inifilepath){
     xtrunorguiling = sysset.value("run/resetrun").toBool();
     customerId = sysset.value("system/cd").toString().toInt(0);
     patternVailable = sysset.value("pattern/vailable").toBool();
-    patFilePath = sysset.value("pattern/patFileName").toString();
-    cntFilePath = sysset.value("pattern/cntFileName").toString();
+    patternPath = sysset.value("pattern/path").toString();
     loopFilePath = sysset.value("pattern/loopFileName").toString();
     spaFilePath = sysset.value("param/spaFileName").toString();
     udiskDirPath = sysset.value("system/udiskFilePath").toString();
@@ -294,8 +288,7 @@ void QHMIData::saveSysCfgFile(){
     sysset.setValue("run/stopperone",QString::number(stopperone));
     sysset.setValue("run/linelock",QString::number(linelock));
     sysset.setValue("run/resetrun",QString::number(xtrunorguiling));
-    sysset.setValue("pattern/patFileName",patFilePath);
-    sysset.setValue("pattern/cntFileName",cntFilePath);
+    sysset.setValue("pattern/path",patternPath);
     sysset.setValue("history/stoptime",stopTimeHistory);
     sysset.setValue("history/runtime",runTimeHistory);
     sysset.sync();
@@ -383,40 +376,32 @@ bool QHMIData::dankouLock(){
 
 #endif
 
-int QHMIData::xtGuiling(){
-    unsigned char code;
-    switch(customerId){
-    case 31:
-        code = 0x0a;
-        break;
-    default:
-        code = 0x03;
-        break;
-    }
-    if(pcomm->TogSysStat(code)==Md::Ok){
+bool QHMIData::xtGuiling(){
+    if(TogSysStat(SysReset)==Md::Ok){
         emit xtRunOrGuiling(FALSE);
         xtrunorguiling = FALSE;
+        return TRUE;
     }
+    return FALSE;
+}
+
+bool QHMIData::xtRun()
+{
+    if(TogSysStat(SysRun)==Md::Ok){
+        emit xtRunOrGuiling(TRUE);
+        xtrunorguiling = TRUE;
+        return TRUE;
+    }
+    return FALSE;
 }
 
 void QHMIData::start(){
     timer700ms.start();
     isinitfinish = TRUE;
-    if(xtrunorguiling){
-        unsigned char code;
-        switch(customerId){
-        case 31:
-            code =0x0b;
-            break;
-        default:
-            code = 0x01;
-            break;
-        }
-        emit xtRunOrGuiling(TRUE);
-        pcomm->TogSysStat(code);
-    }else{
+    if(xtrunorguiling)
+        xtRun();
+    else
         xtGuiling();
-    }
 }
 
 int QHMIData::setclothSetCount(unsigned short val,bool send){
@@ -449,12 +434,11 @@ int QHMIData::clothSetCount(){
     return clothsetcount;
 }
 
-void QHMIData::on_patternChange(const QString &patternname,const QString &cntfilepath, const QString &patfilepath,
-                              const QString &wrkfilepath , const QString &sazfilepath){
-    partternName = patternname;
-    if((cntFilePath!=cntfilepath)||(patFilePath!=patfilepath)){
-        cntFilePath = cntfilepath;
-        patFilePath = patfilepath;
+void QHMIData::on_patternChange(const QString &dirpath,const QString &name){
+    partternName = name;
+    QString path = dirpath+"/"+name;
+    if(patternPath!=path){
+        patternPath = path;
         setclothFinishCount(0,TRUE);
     }
 }

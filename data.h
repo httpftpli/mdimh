@@ -7,39 +7,20 @@
 #include<QString>
 #include<QAbstractListModel>
 #include<QAbstractTableModel>
-#include<QFile>
 #include<QStyledItemDelegate>
-#include<QSplashScreen>
-#include<QPixmap>
-#include<QSettings>
-#include"communicat.h"
-#include"QSortFilterProxyModel"
+#include<QSortFilterProxyModel>
 #include<pattern.h>
-#include<QVariant>
 #include<namespace.h>
 #include<QIntValidator>
-#include<QLineEdit>
 #include<QPointer>
 #include<QDateTime>
+#include"constdata.h"
 //#include<QApplication>
 
 
 class QParam;
-
-
-#define ADDR_ParaXiTong_BASE 0
-#define ADDR_ParaXiTong ADDR_ParaXiTong_BASE+0           //Bag4 //共24个:系统参数起始地址(有密码)
-#define ADDR_ParaDanMianDMBC ADDR_ParaXiTong_BASE+0x50     //Bag4 //共8个  :单面度目补偿[0]后左,[1]后右,[2]前左,[3]前右
-#define ADDR_ParaSiPinDMBC ADDR_ParaXiTong_BASE+0x160    //Bag4 //共8个  :四平度目补偿[0]后左,[1]后右,[2]前左,[3]前右
-#define ADDR_ParaLingWeiDMBC ADDR_ParaXiTong_BASE+0x170  //Bag4 //共8个  :不工作度目零位补偿[0]后左,[1]后右,[2]前左,[3]前右
-#define ADDR_ParaYaoCuang ADDR_ParaXiTong_BASE+0x180     //Bag4 //共33个:摇床位置修正,33个
-#define ADDR_ParaFanZenYC ADDR_ParaXiTong_BASE+0x200     //Bag4 //共16个:翻针摇床位置修正
-#define ADDR_ParaFanZenZYC ADDR_ParaXiTong_BASE+0x220    //Bag4 //共16个:+翻针摇床位置修正
-#define ADDR_ParaFanZenFYC ADDR_ParaXiTong_BASE+0x240    //Bag4 //共16个:-翻针摇床位置修正
-#define ADDR_ParaJiQiGongZuo ADDR_ParaXiTong_BASE+0x260  //Bag1 //共34个:机器工作参数起始地址
-
-
-
+class QLineEdit;
+class QVariant;
 class QSysLogModel;
 
 
@@ -62,25 +43,24 @@ class QPatModel :public QAbstractTableModel{
     Q_OBJECT
 public:
 
-    QPatModel( QPatternData *pattern,QObject * parent = 0);
+    QPatModel( QPattern *pattern,QObject * parent = 0);
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
     QVariant headerData(int section, Qt::Orientation orientation,int role = Qt::DisplayRole )const;
     QVariant data(const QModelIndex &index, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    bool resetBuf();
 signals:
 
 private:
-    QPatternData *pattern;
+    QPattern *pattern;
     int bits10;
 };
 
 class QDMZModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QDMZModel( QPatternData *data ,QObject * parent = 0 ):QAbstractTableModel(parent),patterndata(data){
+    QDMZModel( QPattern *data ,QObject * parent = 0 ):QAbstractTableModel(parent),patterndata(data){
     }
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -89,7 +69,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
 private:
-    QPatternData *patterndata;
+    QPattern *patterndata;
 
 };
 
@@ -133,7 +113,7 @@ private:
 class QLLModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QLLModel( QPatternData *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
+    QLLModel( QPattern *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
                     patterndata(data){}
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -141,14 +121,14 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    QPatternData *patterndata;
+    QPattern *patterndata;
 };
 
 
 class QZDJModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QZDJModel( QPatternData *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
+    QZDJModel( QPattern *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
                                patterndata(data)  {}
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -157,14 +137,14 @@ public:
     //QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    QPatternData *patterndata;
+    QPattern *patterndata;
 };
 
 
 class QSSModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QSSModel( QPatternData *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
+    QSSModel( QPattern *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
                 patterndata(data)  {}
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -173,13 +153,13 @@ public:
     //QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    QPatternData *patterndata;
+    QPattern *patterndata;
 };
 
 class QSZTFModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QSZTFModel( QPatternData *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
+    QSZTFModel( QPattern *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
                   patterndata(data)  {}
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -188,13 +168,13 @@ public:
     //QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    QPatternData *patterndata;
+    QPattern *patterndata;
 };
 
 class QYTXSZXZModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QYTXSZXZModel( QPatternData *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
+    QYTXSZXZModel( QPattern *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
                 patterndata(data)
     {
     }
@@ -204,7 +184,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    QPatternData *patterndata;
+    QPattern *patterndata;
 private:
 };
 
@@ -212,7 +192,7 @@ private:
 class QYTXSZTFModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QYTXSZTFModel( QPatternData *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
+    QYTXSZTFModel( QPattern *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
                                          patterndata(data)  {}
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -221,13 +201,13 @@ public:
     //QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    QPatternData *patterndata;
+    QPattern *patterndata;
 };
 
 class QCJPModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QCJPModel( QPatternData *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
+    QCJPModel( QPattern *data ,QObject * parent = 0 ):QAbstractTableModel(parent),
                            patterndata(data) {}
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -236,14 +216,14 @@ public:
     //QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    QPatternData *patterndata;
+    QPattern *patterndata;
 };
 
 
 class QPZKModel :public QAbstractTableModel{
     Q_OBJECT
 public:
-    QPZKModel( QPatternData *data,int zkcount=8,QObject * parent = 0 ):
+    QPZKModel( QPattern *data,int zkcount=8,QObject * parent = 0 ):
                     QAbstractTableModel(parent),patterndata(data),count(zkcount){}
     void modelReset();
     int	rowCount ( const QModelIndex & parent = QModelIndex() ) const ;
@@ -253,7 +233,7 @@ public:
     //QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    QPatternData *patterndata;
+    QPattern *patterndata;
 private:
     mutable unsigned short count;
 };
@@ -263,7 +243,7 @@ private:
 class QCntLoopModel:public QAbstractTableModel{
     Q_OBJECT
 public:
-    QCntLoopModel( QPatternData *data ,QObject * parent = 0 );
+    QCntLoopModel( QPattern *data ,QObject * parent = 0 );
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
@@ -272,14 +252,14 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool insertRows(int row, int count,const QModelIndex &parent);
     bool removeRows(int row, int count,const QModelIndex &parent);
-    void save(bool send);
+    void save();
     void resetVal();
 signals:
     void datasValid(bool);
 private:
-    QMap<int,QPatternData::CntLoopType> loopmap;
-    QMap<int,QPatternData::CntLoopType> loopmapcopy;
-    QPatternData *patterndata;
+    QMap<int,QPattern::CntLoopType> loopmap;
+    QMap<int,QPattern::CntLoopType> loopmapcopy;
+    QPattern *patterndata;
     bool checkdatavalid();
 };
 
@@ -294,7 +274,7 @@ public:
         unsigned short Start;
         unsigned short End;
     };
-   QSzkbModel(QPatternData *pattern ,QObject * parent = 0):QAbstractTableModel(parent),
+   QSzkbModel(QPattern *pattern ,QObject * parent = 0):QAbstractTableModel(parent),
                 patterndata(pattern),szkblist(pattern->sazbuf) {
    }
    void saveToFile();
@@ -309,8 +289,8 @@ public:
 signals:
    void datasValid(bool);
 private:
-   QPatternData *patterndata;
-   QList<QPatternData::SzkbData> szkblist;
+   QPattern *patterndata;
+   QList<QPattern::SzkbData> szkblist;
    bool checkdatavalid();
 };
 
@@ -318,7 +298,7 @@ private:
 class QTingcheModel:public QAbstractTableModel{
      Q_OBJECT
 public:
-   QTingcheModel(QPatternData *pattern ,QObject * parent = 0);
+   QTingcheModel(QPattern *pattern ,QObject * parent = 0);
    void saveToFile();
    int rowCount(const QModelIndex &parent) const;
    int columnCount(const QModelIndex &parent) const;
@@ -330,7 +310,7 @@ public:
    bool removeRows(int row, int count,const QModelIndex &parent);
    bool	insertCntRow (unsigned short cntrow);
 private:
-   QPatternData *patterndata;
+   QPattern *patterndata;
    QMap<unsigned short,unsigned char > cntrows;
 };
 

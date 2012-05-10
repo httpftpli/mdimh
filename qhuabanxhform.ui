@@ -21,7 +21,7 @@
     <rect>
      <x>10</x>
      <y>420</y>
-     <width>371</width>
+     <width>381</width>
      <height>51</height>
     </rect>
    </property>
@@ -49,6 +49,19 @@
       </property>
       <property name="text">
        <string>删除行</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>重置</string>
       </property>
      </widget>
     </item>

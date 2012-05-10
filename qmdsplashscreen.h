@@ -9,8 +9,7 @@ public:
     QMdSplashScreen(const QPixmap & pixmap = QPixmap(),
                     Qt::WindowFlags f = 0 );
 public slots:
-    void showCntMessage(int percent);  //开机显示下载进度时使用
-    void showPatMessage(int percent);  //开机显示下载进度时使用
+    void showPatternSendMessage(int percent);  //开机显示下载进度时使用
 };
 
 #endif // QMDSPLASHSCREEN_H

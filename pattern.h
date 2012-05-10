@@ -1,15 +1,13 @@
 #ifndef PATTERN_H
 #define PATTERN_H
 
-#include<QFile>
-#include<QSize>
-#include<QFlags>
+
 #include<QSharedPointer>
-#include<QVector>
 #include<namespace.h>
 #include<QSet>
-#include "communicat.h"
-#include "globaldata.h"
+#include"config.h"
+#include"constdata.h"
+#include <QDir>
 
 
 #define LEN_OF_WRK 0x6E1
@@ -61,26 +59,10 @@
 #define CNT_CRCH                126	//自定义
 #define CNT_YaJiaoDuan		127
 
+class QFile;
+class QSize;
+class QComm;
 
-enum WrkAddr{
-    WrkAddr_Base = 0x0000, //铁电存储器中参数的起始地址
-    WrkAddr_GongZuo = WrkAddr_Base+0x0, //(未用)
-    WrkAddr_DuMuZi = WrkAddr_Base+0x000, //Bag2 //共192个  :度目值24档
-    WrkAddr_SuDuZi = WrkAddr_Base+0x180, //Bag1 //共24个  :速度24档
-    WrkAddr_ShaZuiTF = WrkAddr_Base+0x200, //Bag3 //共128个:纱嘴停放位置
-    WrkAddr_JuanBu = WrkAddr_Base+0x300, //Bag1 //共24个  :步进卷布24档
-    WrkAddr_JuanBuFZ = WrkAddr_Base+0x350 ,//Bag2 //共24个  :辅助卷布24档
-    WrkAddr_LeftSongSa = WrkAddr_Base+0x400, //Bag5 //共24个  :左送纱
-    WrkAddr_RightSongSa = WrkAddr_Base+0x420, //Bag5 //共24个  :右送纱
-    WrkAddr_YTXTingFang = WrkAddr_Base+0x450, //Bag6 //共16个  :引塔夏纱嘴停放
-    WrkAddr_YTXXiuZen = WrkAddr_Base+0x500, //Bag6 //共192个:引塔夏纱嘴修正
-    WrkAddr_CJP_FanZen = WrkAddr_Base+0x600, //Bag5 //共48个  :后,前沉降片翻针位段数
-    WrkAddr_CJP_BianZi = WrkAddr_Base+0x640, //Bag5 //共48个  :后,前沉降片编织位段数
-    WrkAddr_PzkSaZui = WrkAddr_Base+0x680, //Bag6 //共64个  :片展开纱嘴对应表
-    WrkAddr_PzkClose = WrkAddr_Base+0x6E0, //Bag6 //共1个    :片展开关闭状态(1表示关闭)
-    WrkAddr_ZanKaiPianSu =WrkAddr_Base+0x6F0, //Bag1 // 1个         :展开片数
-    WrkAddr_QiZenDian = WrkAddr_Base+0x6F5//Bag1 //机器工作参数中的起针点
-};
 enum WrkItemHd {
     WrkItemHd_DuMuZi = 0,
     WrkItemHd_SuDuZi,
@@ -108,6 +90,8 @@ struct WrkItemDsp{
     short valrangetop;
 };
 
+
+
 const struct WrkItemDsp wrkItemDsp[WrkItemHd_Guide]={
    /*      addr             |runsendid |  len   |offsetinbag|bottom |top  */
 #if DUAL_SYSTEM
@@ -130,8 +114,10 @@ const struct WrkItemDsp wrkItemDsp[WrkItemHd_Guide]={
     { WrkAddr_QiZenDian,          1,        1,      0,         0,     800}
 };
 
+static const unsigned char CNT_ZHILINGVAL[9]={0x00,0x01,0x07,0x08,0xa,0x0b,0x0d,0x0e,0x0f};
 
-class QPatternData : public QObject{
+
+class QPattern : public QObject{
     friend class QParam;
     Q_OBJECT
 public:
@@ -155,8 +141,21 @@ public:
              NoCntFile = 0x104,
              NoPatFile = 0x105,
              NoWrkFile = 0x106,
+             FaultPatternDir = 0x107,
              Ok          = 0
          };
+    enum YCPOSITION{
+        ZHENDUICHI = 0x00,
+        ZHENDUIZHEN = 0x01,
+        FANZHENZHE =  0x02,
+        FANZHENFU =   0x03
+    };
+    enum ORDER{
+        Descending_Order,
+        Ascending_Order,
+        No_Order
+    };
+
     struct SzkbData{
          unsigned short ZuSa;
          unsigned short FuSa; //纱嘴号1~8
@@ -172,10 +171,42 @@ public:
 
 
     Q_DECLARE_FLAGS(FileStateFlag, FileState)
-    QPatternData(QComm *s,QObject *parent=0);
-    ~QPatternData();
-    Result          setFile(const QString &cntfilepath,const QString &patfilepath);
-    Md::HAVEFILEFLAG loadFile(Md::HAVEFILEFLAG flag=Md::HAVEALL);
+
+    static QMap<unsigned char ,QStringList>CntZhilingMap;
+    static QMap<unsigned char ,unsigned char> CntZhilingIndexMap;
+
+    QPattern(QComm *s,QObject *parent=0);
+    ~QPattern();
+    template<typename T>inline static  T string2bitarray(const QString &str){
+        T r = 0;
+        for(int i=0;i<str.size();i++){
+            char ch = str.at(i).toAscii();
+            if(('0'<=ch)&&('9'>=ch))
+                ch = ch-'0';
+            else if(('A'<=ch)&&('F'>=ch))
+                ch = ch-'A'+10;
+            else if(('a'<=ch)&&('f'>=ch))
+                ch = ch-'a'+10;
+            else
+                continue;
+            r |= 1<<ch;
+        }
+        return r;
+    }
+
+    template<typename T>inline static  QString bitarray2string(T val,ORDER order){
+        int numofbit = sizeof(val)*8;
+        QString str;
+        for(int i = 0;i<numofbit;i++){
+            if((val&(1<<i))!=0)
+                (order==Ascending_Order)?str.append(QString::number(i,16)):
+                                         str.prepend(QString::number(i,16));
+        }
+        return str;
+    }
+
+    Result         setFile(const QString &pattern);
+    int               sendPattern();
     bool            isWrkfileSys() const;
     bool            isPatternAvailable() const;
     void            refreshBuf(Md::HAVEFILEFLAG flag);
@@ -185,8 +216,8 @@ public:
     Result          loadLoop(const QString &prmfilepath);
     int             Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag=Md::HAVENO);
     unsigned char   shaZui(int row,unsigned char system);    //返回沙嘴捆绑后当前行的沙嘴
-    unsigned char   shaZui(int row,Md::POS_LFETRIGHT kou);    //返回沙嘴捆绑后当前行的沙嘴
-    unsigned char   duMuZhiWork(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontrear ,unsigned char dumuindex);
+    unsigned char   shaZui(int row,Md::POS_LEFTRIGHT kou);    //返回沙嘴捆绑后当前行的沙嘴
+    unsigned char   duMuZhiWork(int row,Md::POS_LEFTRIGHT kou,Md::POS_FRONTREAR frontrear ,unsigned char dumuindex);
     int             sendShazuiKb();
     QSize           patternSize() const;
 
@@ -194,10 +225,12 @@ public:
     int cnt_SetData(int row,unsigned char index,unsigned short data,unsigned char len, bool download);
     unsigned char  cnt_yaJiao(int row)const;
     void        cnt_setYajiao(int row,unsigned char yajiao);
-    QString        cnt_yaoChuang(int row)const;
+    void           cnt_yaoChuang(int row,YCPOSITION &pos,char &val);
+    void        cnt_setYaoChang(int row,YCPOSITION pos,char val);
+
     unsigned char  cnt_duMuZu(int row, unsigned char sys,bool &doubleOrSigle, bool usehistorydumu);
-    unsigned char  cnt_duMuZu(int row, Md::POS_LFETRIGHT kou,bool &doubleOrSigle,bool usehistorydumu);
-    void        cnt_setDuMuZu(int row, Md::POS_LFETRIGHT kou,bool doubleorsignle,unsigned char dumu);
+    unsigned char  cnt_duMuZu(int row, Md::POS_LEFTRIGHT kou,bool &doubleOrSigle,bool usehistorydumu);
+    void        cnt_setDuMuZu(int row, Md::POS_LEFTRIGHT kou,bool doubleorsignle,unsigned char dumu);
     unsigned int   cnt_dumuUsed();
     unsigned char  cnt_spead(int row);
     void        cnt_setSpeed(int row, unsigned char speed);
@@ -206,29 +239,35 @@ public:
     unsigned char  cnt_fuzuLuola(int row);
     void        cnt_setFuzuLuola(int row, unsigned char fluola);
     unsigned char  cnt_songSha(int row);
-    void           cnt_setSongsha(int row, unsigned char songsha);
+    void        cnt_setSongsha(int row, unsigned char songsha);
     unsigned char  cnt_shazuiTf(int row);
     void        cnt_setShazuiTf(int row, unsigned char shazuitf);
     unsigned char  cnt_tingChe(int row);
     void        cnt_setTingChe(int row,bool tingche);
-    int            cnt_Azhiling(int row,unsigned char system,Md::POS_FRONTREAR);
-    int            cnt_Azhiling(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR);
-    int            cnt_Hzhiling(int row,unsigned char system,Md::POS_FRONTREAR);
-    int            cnt_Hzhiling(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR);
+
+    unsigned char   cnt_Zhiling(int row,unsigned char system,Md::POS_FRONTREAR);
+    unsigned char   cnt_Zhiling(int row,Md::POS_LEFTRIGHT kou,Md::POS_FRONTREAR);
+    void          cnt_setZhiling(int row,unsigned char system,Md::POS_FRONTREAR fr,unsigned char val);
+    void          cnt_setZhiling(int row,Md::POS_LEFTRIGHT kou,Md::POS_FRONTREAR fr,unsigned char val);
+
     QString        cnt_seDaiHaoA(int row,unsigned char system,Md::POS_FRONTREAR frontorrear);
-    QString        cnt_seDaiHaoA(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontorrear);
-    void        cnt_setSeDaiHaoA(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR fr,QString str);
+    void        cnt_setSeDaiHaoA(int row,unsigned char system,Md::POS_FRONTREAR fr,unsigned short val);
+    QString        cnt_seDaiHaoA(int row,Md::POS_LEFTRIGHT kou,Md::POS_FRONTREAR frontorrear);
+    void        cnt_setSeDaiHaoA(int row,Md::POS_LEFTRIGHT kou,Md::POS_FRONTREAR fr,unsigned short val);
+
     QString        cnt_seDaiHaoH(int row,unsigned char system,Md::POS_FRONTREAR frontorrear);
-    QString        cnt_seDaiHaoH(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR frontorrear);
-    void        cnt_setSeDaiHaoH(int row,Md::POS_LFETRIGHT kou,Md::POS_FRONTREAR fr,QString str);
+    void        cnt_setSeDaiHaoH(int row,unsigned char system,Md::POS_FRONTREAR fr,unsigned short val);
+    QString        cnt_seDaiHaoH(int row,Md::POS_LEFTRIGHT kou,Md::POS_FRONTREAR frontorrear);
+    void        cnt_setSeDaiHaoH(int row,Md::POS_LEFTRIGHT kou,Md::POS_FRONTREAR fr,unsigned short val);
+
     unsigned char  cnt_shaZui(int row,unsigned char system);
-    unsigned char  cnt_shaZui(int row,Md::POS_LFETRIGHT kou);
-    void        cnt_setShaZui(int row,Md::POS_LFETRIGHT kou,unsigned char shazuibitmap);
-    unsigned short cnt_huabanhang(int row,Md::POS_LFETRIGHT sys_kou,Md::POS_FRONTREAR frontorrear);
+    unsigned char  cnt_shaZui(int row,Md::POS_LEFTRIGHT kou);
+    void        cnt_setShaZui(int row,Md::POS_LEFTRIGHT kou,unsigned char shazuibitmap);
+    unsigned short cnt_huabanhang(int row,Md::POS_LEFTRIGHT sys_kou,Md::POS_FRONTREAR frontorrear);
     unsigned short cnt_huabanhang(int row,unsigned char sys,Md::POS_FRONTREAR pos);
-    void        cnt_setHuabanhang(int row,Md::POS_LFETRIGHT kou ,Md::POS_FRONTREAR fr,int huabanrow);
+    void        cnt_setHuabanhang(int row,Md::POS_LEFTRIGHT kou ,Md::POS_FRONTREAR fr,int huabanrow);
     QMap<int,CntLoopType> cnt_LoopTable() const;
-    void        cnt_setLoopTable(QMap<int,CntLoopType> loop);
+    int cnt_setLoopTable(QMap<int,CntLoopType> loop);
 
     char           pat_FechData(int row,unsigned short column) const;
     void           pat_SetData(int row,unsigned short column,unsigned char data);
@@ -236,17 +275,20 @@ public:
     unsigned short wrk_qizhengdian();
     short          wrk_fechData(WrkItemHd handle,int offset);
     void           wrk_setData(WrkItemHd handle,int offset,short data);
+    int             wrk_updataAll();
     int            wrkSpeedZhi(unsigned int index);
     int            wrkMainLuolaZhi(unsigned int index);
     int            wrkFuzhuLuolaZhi(unsigned int index);
 
     QString patternName;
-    QString patternDirPath;
+    QString patFileName;
     QString patFilePath;
+    QString cntFileName;
     QString cntFilePath;
     QString wrkFilePath;
     QString wrkFileName;
     QString sazFilePath;
+    QString sazFileName;
     unsigned char shazuiused_r;  //右口用到的沙嘴；
     unsigned char shazuiused_l;  //左口用到的沙嘴；
     QList<SzkbData> sazbuf;      //沙嘴捆绑数据
@@ -261,12 +303,13 @@ public:
     QSet<WrkItemHd> wrkModifiedHandle; //用于保存修改的wrk包号
 
 signals:
-    void patternChanged(const QString &patternName,const QString &cntfilepath,const QString &patfilepath,
-                        const QString &wrkfilepath,const QString &sazfilepath);
+    void patternChanged(const QString &dirpath , const QString &name);
     void patDirty(bool val);
     void cntDirty(bool val);
     void wrkDirty(bool val);
+    void patternSendPercent(int val);
 private:
+    QString patterndirpath;
     QSharedPointer<QFile> cntfile;
     QSharedPointer<QFile> patfile;
     QSharedPointer<QFile> wrkfile;
@@ -278,20 +321,28 @@ private:
     bool isdualdumuzu;
 #endif
     unsigned int dumuzu_used;
-    int _azlfordisplay(unsigned char data);
-    int _hzlfordisplay(unsigned char data);
-    unsigned char _azlfromdisplay(int index);
-    unsigned char _hzlfromdisplay(int index);
+    static int _azlfordisplay(unsigned char data);
+    static int _hzlfordisplay(unsigned char data);
+    static unsigned char _azlfromdisplay(int index);
+    static unsigned char _hzlfromdisplay(int index);
 
-    inline unsigned char kou2sys(Md::POS_LFETRIGHT kou,int cntnumber);
+    static inline unsigned char kou2sys(Md::POS_LEFTRIGHT kou,int cntnumber);
     //inline unsigned char sys2kou(unsigned char sys,int cntnumber);
+
     bool iswrkfilesys;
     bool ispatternavalible;
     int wrk_updata(WrkItemHd hd);
+    static QMap<unsigned char ,QStringList> initcntzhilingmap();
+    static QMap<unsigned char ,unsigned char> initcntzhilingindexmap();
+    void reset();
+    bool parsepatternpath(const QString &patternpath);
+    Result probecnt();
+    Result probepat();
+    void probewrk();
+    void probesaz();
+
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(QPatternData::FileStateFlag)
-
-
+Q_DECLARE_OPERATORS_FOR_FLAGS(QPattern::FileStateFlag)
 
 #endif // PATTERN_H

@@ -17,6 +17,7 @@
 #include "qparam.h"
 #include<QApplication>
 #include<QFileSystemModel>
+#include<config.h>
 
 
 const char  ProgramEncrypt::EncryptTable[256]={0xD5,0xFD,0xC3,0xB6,0xBE,0xD9,0x55,0x53,
@@ -68,7 +69,7 @@ void ProgramEncrypt::Decrypt(char *buf,unsigned short len){
 
 
 
-QPatModel::QPatModel( QPatternData *pattern,QObject * parent):
+QPatModel::QPatModel( QPattern *pattern,QObject * parent):
                         QAbstractTableModel(parent),pattern(pattern),bits10(0){
         int column = pattern->tatalcolumn;
         while(column){
@@ -80,7 +81,6 @@ QPatModel::QPatModel( QPatternData *pattern,QObject * parent):
 int QPatModel::rowCount(const QModelIndex &parent)const {
     Q_UNUSED(parent)
     return pattern->tatalpatrow;
-
 }
 
 
@@ -88,7 +88,6 @@ int QPatModel::rowCount(const QModelIndex &parent)const {
 int QPatModel::columnCount(const QModelIndex &parent)const{
     Q_UNUSED(parent)
     return pattern->tatalcolumn;
-
 }
 
 QVariant QPatModel::headerData(int section, Qt::Orientation orientation,int role )const{
@@ -111,15 +110,15 @@ QVariant QPatModel::headerData(int section, Qt::Orientation orientation,int role
 
 QVariant QPatModel::data(const QModelIndex &index, int role) const{
     int r= pattern->tatalpatrow;
-    int c = pattern->tatalcolumn;
-    if(role==Qt::TextAlignmentRole){
-        return int(Qt::AlignHCenter);
-    }else if(role == Qt::DisplayRole){
+    if(Qt::DisplayRole ==role){
         int row = index.row();
         int column = index.column();
         return QString(pattern->pat_FechData(r-row,column));
-    }else
+    }else if(Qt::TextAlignmentRole==role){
+        return int(Qt::AlignHCenter);
+    }else{
         return QVariant();
+    }
 }
 
 
@@ -142,13 +141,6 @@ bool QPatModel::setData(const QModelIndex &index, const QVariant &value, int rol
 Qt::ItemFlags QPatModel::flags(const QModelIndex &index) const{
     return QAbstractTableModel::flags(index)|Qt::ItemIsEditable;
 }
-
-
-bool QPatModel::resetBuf(){
-    pattern->refreshBuf(Md::HAVEPAT);
-    reset();
-}
-
 
 
 
@@ -758,6 +750,7 @@ bool  QYTXSZTFModel::setData(const QModelIndex &index, const QVariant &value, in
 
 
 Qt::ItemFlags  QYTXSZTFModel::flags(const QModelIndex &index) const{
+    Q_UNUSED(index);
     return Qt::ItemIsEnabled|Qt::ItemIsSelectable|Qt::ItemIsEditable;
 }
 
@@ -992,7 +985,7 @@ QVariant QPZKModel::headerData(int section, Qt::Orientation orientation, int rol
 
 ////////////loop////////////////////////////////////
 
-QCntLoopModel::QCntLoopModel( QPatternData *data ,QObject * parent):QAbstractTableModel(parent),
+QCntLoopModel::QCntLoopModel( QPattern *data ,QObject * parent):QAbstractTableModel(parent),
                                                         patterndata(data){
     loopmap = patterndata->cnt_LoopTable();
     loopmapcopy = loopmap;
@@ -1039,16 +1032,19 @@ bool QCntLoopModel::setData(const QModelIndex &index, const QVariant &value, int
     int row = index.row();
     int column = index.column();
     int data = value.toInt();
-    if(column ==0)
-        loopmapcopy[loopmapcopy.keys.at(row)].startline = data;
-    if(column ==1){
-        if(loopmapcopy[loopmapcopy.keys.at(row)].endline!=data){
-            loopmapcopy[loopmapcopy.keys.at(row)].endline = value.toInt();
+    int key = loopmapcopy.keys().at(row);
+    if(column==0)
+        loopmapcopy[key].startline = data;
+    else if(column==1){
+        if(loopmapcopy[key].endline!=data){
+            QPattern::CntLoopType looptemp = loopmapcopy.take(key);
+            looptemp.endline = data;
+            loopmapcopy.insert(data,looptemp);
             reset();
         }
     }
-    if(column ==2)
-        loopmapcopy[loopmapcopy.keys.at(row)].numofloop = value.toInt();
+    else if(column==2)
+        loopmapcopy[key].numofloop = value.toInt();
     emit dataChanged(index,index);
     emit datasValid(checkdatavalid());
     return TRUE;
@@ -1060,13 +1056,15 @@ Qt::ItemFlags QCntLoopModel::flags(const QModelIndex &index) const{
 
 bool QCntLoopModel::insertRows(int row,int count, const QModelIndex &parent){
     Q_UNUSED(parent)
+    if(loopmapcopy.contains(0))
+        return FALSE;
     beginInsertRows(QModelIndex(),row,row+count-1);
-    QPatternData::CntLoopType loop;
+    QPattern::CntLoopType loop;
     for(int i=0;i<count;i++){
         loop.startline = 0;
         loop.endline = 0;
         loop.numofloop = 0;
-        looplistcopy.insert(row,loop);
+        loopmapcopy.insert(0,loop);
     }
     endInsertRows();
     emit datasValid(checkdatavalid());
@@ -1075,33 +1073,43 @@ bool QCntLoopModel::insertRows(int row,int count, const QModelIndex &parent){
 
 bool QCntLoopModel::removeRows(int row,int count, const QModelIndex &parent){
     Q_UNUSED(parent);
+    QList<int> keys = loopmapcopy.keys();
     beginRemoveRows(QModelIndex(),row,row+count-1);
-    for(int i=0;i<count;i++){
-        looplistcopy.removeAt(row);
+    for(int i=row;i<(count+row);i++){
+        loopmapcopy.remove(keys.at(i));
     }
     endRemoveRows();
     emit datasValid(checkdatavalid());
     return TRUE;
 }
 
-void QCntLoopModel::save(bool send){
-    QPatternData::CntLoopType loop;
-    QList<QPatternData::CntLoopType> looplistclear;
-    looplistclear = looplist;
-    for(int i=0;i<looplistclear.size();i++){//clear old loop data
-        looplist[i].numofloop = 0;
-        looplist[i].startline = 0;
+void QCntLoopModel::save(){
+    QPattern::CntLoopType loop;
+    QMap<int,QPattern::CntLoopType> loopmapsave;
+    QList<int>keys;
+    keys = loopmap.keys();
+    foreach(int key,keys){
+        loop = loopmap.value(key);
+        loop.numofloop = 0;
+        loop.startline = 0;
+        loopmapsave.insert(key,loop);
     }
-    patterndata->cnt_setLoopTable(looplistclear);
-    patterndata->cnt_setLoopTable(looplistcopy);
+    keys = loopmapcopy.keys();
+    foreach(int key,keys){
+        loop = loopmapcopy.value(key);
+        loopmapsave.insert(key,loop);
+    }
+    if(Md::Ok==patterndata->cnt_setLoopTable(loopmapsave))
+        loopmap = loopmapcopy;
 }
 
 void QCntLoopModel::resetVal(){
-
+    loopmapcopy = loopmap;
+    reset();
 }
 
 bool QCntLoopModel::checkdatavalid(){
-    foreach(QPatternData::CntLoopType loop,looplistcopy){
+    foreach(QPattern::CntLoopType loop,loopmapcopy){
         if(((loop.startline%2==0)||(loop.endline%2==1)
         ||(loop.startline>loop.endline)))
         return FALSE;
@@ -1146,7 +1154,7 @@ QVariant QSzkbModel::data(const QModelIndex &index, int role) const{
         return QVariant();
     int row = index.row();
     int column = index.column();
-    QPatternData::SzkbData szkbdata = szkblist.at(row);
+    QPattern::SzkbData szkbdata = szkblist.at(row);
     if(column ==0)
         return QString::number(szkbdata.ZuSa);
     if(column ==1)
@@ -1184,7 +1192,7 @@ Qt::ItemFlags QSzkbModel::flags(const QModelIndex &index) const{
 bool QSzkbModel::insertRows(int row,int count, const QModelIndex &parent){
     Q_UNUSED(parent)
     beginInsertRows(QModelIndex(),row,row+count-1);
-    QPatternData::SzkbData szkb;
+    QPattern::SzkbData szkb;
     for(int i=0;i<count;i++){
         szkb.ZuSa = 0;
         szkb.FuSa = 0;
@@ -1215,7 +1223,7 @@ void QSzkbModel::saveToFile(){
 bool QSzkbModel::checkdatavalid(){
     unsigned char shazuiraw = patterndata->shazuiused_l|
                               patterndata->shazuiused_r;
-    foreach(QPatternData::SzkbData data,szkblist){
+    foreach(QPattern::SzkbData data,szkblist){
         unsigned char zs = 1<<(data.ZuSa-1);
         unsigned char fs = 1<<(data.FuSa-1);
         int start = data.Start;
@@ -1230,7 +1238,7 @@ bool QSzkbModel::checkdatavalid(){
 
 ////////////////停车编辑//////////////////
 
-QTingcheModel::QTingcheModel(QPatternData *pattern ,QObject * parent):QAbstractTableModel(parent),
+QTingcheModel::QTingcheModel(QPattern *pattern ,QObject * parent):QAbstractTableModel(parent),
              patterndata(pattern){
         for(int i=1;i<=patterndata->tatalcntrow;i++){
             if(patterndata->cnt_FechData(i,CNT_TingCe,1)==1)
@@ -1269,9 +1277,12 @@ QVariant QTingcheModel::data(const QModelIndex &index, int role) const{
 
 
 bool QTingcheModel::insertCntRow (unsigned short cntrow){
+    if(patterndata->cnt_SetData(cntrow,CNT_TingCe,1,1,TRUE)==Md::Ok){
         cntrows.insert(cntrow,1);
-        patterndata->cnt_SetData(cntrow,CNT_TingCe,1,1);
         reset();
+        return TRUE;
+    }
+    return FALSE;
 }
 
 bool QTingcheModel::removeRows(int row,int count, const QModelIndex &parent){
@@ -1279,8 +1290,9 @@ bool QTingcheModel::removeRows(int row,int count, const QModelIndex &parent){
     beginRemoveRows(QModelIndex(),row,row+count-1);
     for(int i=0;i<count;i++){
         unsigned short cntrow = cntrows.keys().at(row+i);
-        cntrows.remove(cntrow);
-        patterndata->cnt_SetData(cntrow,CNT_TingCe,0,1);
+        if(patterndata->cnt_SetData(cntrow,CNT_TingCe,0,1,TRUE)==Md::Ok){
+            cntrows.remove(cntrow);
+        }
     }
     endRemoveRows();
     return TRUE;

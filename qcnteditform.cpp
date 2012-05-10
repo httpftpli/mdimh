@@ -1,7 +1,8 @@
 #include "qcnteditform.h"
 #include "qmdmessagebox.h"
+#include"globaldata.h"
 
-QCntEditForm::QCntEditForm(QWidget *parent,QPatternData *data) :
+QCntEditForm::QCntEditForm(QWidget *parent,QPattern *data) :
     QWidget(parent),pattern(data){
     setupUi(this);
     ///////////////////////////
@@ -30,11 +31,27 @@ QCntEditForm::QCntEditForm(QWidget *parent,QPatternData *data) :
     lineEdit_row->setText("1");
     rowToggle(1);
     label_totalrow->setNum(pattern->tatalcntrow);
+
+    for(int i=0;i<sizeof(CNT_ZHILINGVAL);i++){
+        QString str = QPattern::CntZhilingMap.value(CNT_ZHILINGVAL[i]).join(" , ");
+        comboBox_zllh->addItem(str);
+        comboBox_zllq->addItem(str);
+        comboBox_zlrh->addItem(str);
+        comboBox_zlrq->addItem(str);
+    }
     ////////////////////////////
+}
+
+bool QCntEditForm::event(QEvent *event)
+{
+    if(event->type()==QEvent::Show)
+        rowToggle(this->row);
+    QWidget::event(event);
 }
 
 
 void QCntEditForm::rowToggle(int row){
+    this->row = row;
     lineEdit_row->setText(QString::number(row));
     /*********花板行*****************************/
     lineEdit_hbhl->setText(QString::number(pattern->cnt_huabanhang(row,Md::POSLEFT,Md::POSREAR)));
@@ -42,32 +59,18 @@ void QCntEditForm::rowToggle(int row){
     lineEdit_hbhl_q->setText(QString::number(pattern->cnt_huabanhang(row,Md::POSLEFT,Md::POSFRONT)));
     lineEdit_hbhr_q->setText(QString::number(pattern->cnt_huabanhang(row,Md::POSRIGHT,Md::POSFRONT)));
 
-    /**********左口后床指令A*********************/
-    int indextmp = pattern->cnt_Azhiling(row,Md::POSLEFT,Md::POSREAR);
-    comboBox_zlal->setCurrentIndex(indextmp);
-    /**********左口后床指令H*********************/
-    indextmp = pattern->cnt_Hzhiling(row,Md::POSLEFT,Md::POSREAR);
-    comboBox_zlhl->setCurrentIndex(indextmp);
-    /**********左口前床指令A*********************/
-    indextmp = pattern->cnt_Azhiling(row,Md::POSLEFT,Md::POSFRONT);
-    comboBox_zlal_q->setCurrentIndex(indextmp);
-    /**********左口前床指令H*********************/
-    indextmp = pattern->cnt_Hzhiling(row,Md::POSLEFT,Md::POSFRONT);
-    comboBox_zlhl_q->setCurrentIndex(indextmp);
-
-    /**********右口后床指令A*********************/
-    indextmp = pattern->cnt_Azhiling(row,Md::POSRIGHT,Md::POSREAR);
-    comboBox_zlar->setCurrentIndex(indextmp);
-    /**********右口后床指令H*********************/
-    indextmp = pattern->cnt_Hzhiling(row,Md::POSRIGHT,Md::POSREAR);
-    comboBox_zlhr->setCurrentIndex(indextmp);
-    /**********右口前床指令A*********************/
-    indextmp = pattern->cnt_Azhiling(row,Md::POSRIGHT,Md::POSFRONT);
-    comboBox_zlar_q->setCurrentIndex(indextmp);
-    /**********右口前床指令H*********************/
-    indextmp = pattern->cnt_Hzhiling(row,Md::POSRIGHT,Md::POSFRONT);
-    comboBox_zlhr_q->setCurrentIndex(indextmp);
-
+    /**********左口后床指令*********************/
+    int indextmp = QPattern::CntZhilingIndexMap.value(pattern->cnt_Zhiling(row,Md::POSLEFT,Md::POSREAR));
+    comboBox_zllh->setCurrentIndex(indextmp);
+    /**********左口前床指令*********************/
+    indextmp =  QPattern::CntZhilingIndexMap.value(pattern->cnt_Zhiling(row,Md::POSLEFT,Md::POSFRONT));
+    comboBox_zllq->setCurrentIndex(indextmp);
+    /**********右口后床指令*********************/
+    indextmp =  QPattern::CntZhilingIndexMap.value(pattern->cnt_Zhiling(row,Md::POSRIGHT,Md::POSREAR));
+    comboBox_zlrh->setCurrentIndex(indextmp);
+    /**********右口前床指令*********************/
+    indextmp =  QPattern::CntZhilingIndexMap.value(pattern->cnt_Zhiling(row,Md::POSRIGHT,Md::POSFRONT));
+    comboBox_zlrq->setCurrentIndex(indextmp);
 
     /**********左口后床色代号A*********************/
     lineEdit_sdhal->setText(pattern->cnt_seDaiHaoA(row,Md::POSLEFT,Md::POSREAR));
@@ -116,7 +119,17 @@ void QCntEditForm::rowToggle(int row){
     /**********停车*********************/
     lineEdit_tc->setText(pattern->cnt_tingChe(row)?tr("是"):tr("否"));
     /**********摇床*********************/
-    lineEdit_yc->setText(pattern->cnt_yaoChuang(row));
+    QPattern::YCPOSITION pos;
+    char yaochuangval;
+    patternData.cnt_yaoChuang(row,pos,yaochuangval);
+    QString yaochuangstr;
+    yaochuangstr.append(QString::number(yaochuangval));
+    if((pos==QPattern::FANZHENFU)||(pos==QPattern::FANZHENZHE)){
+        QPalette pa;
+        pa.setColor(QPalette::WindowText,Qt::red);
+        lineEdit_yc->setPalette(pa);
+    }
+    lineEdit_yc->setText(yaochuangstr);
     /**********循环首*********************/
     lineEdit_xhs->setText(QString::number(pattern->cnt_FechData(row,CNT_LoopStart,2)));
     /**********循环次数*********************/

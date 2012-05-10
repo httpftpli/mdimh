@@ -4,10 +4,6 @@
 
 unsigned short CRC16(unsigned char *dat, unsigned short len);
 
-
-
-
-
 #endif // ALGORITHM_H
 
 

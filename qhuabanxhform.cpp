@@ -35,5 +35,12 @@ void QHuabanXhForm::on_pushButton_5_clicked()
 
 void QHuabanXhForm::on_pushButton_4_clicked()
 {
-    qobject_cast<QCntLoopModel *>(tableView->model())->save(TRUE);
+    qobject_cast<QCntLoopModel *>(tableView->model())->save();
+}
+
+void QHuabanXhForm::on_pushButton_3_clicked()
+{
+    QCntLoopModel *model;
+    model = qobject_cast<QCntLoopModel *>(tableView->model());
+    model->resetVal();
 }

@@ -6,7 +6,7 @@
 #include <QPixmap>
 #include "namespace.h"
 
-class QPatternData;
+class QPattern;
 class QHMIData;
 class QParam;
 
@@ -15,19 +15,17 @@ class FormHead : public QWidget, private Ui::FormHead
     Q_OBJECT
 
 public:
-    explicit FormHead(QPatternData *,QHMIData *,QParam *,QWidget *parent = 0);
-    void setKouAtribute(Md::POS_LFETRIGHT kou);
+    explicit FormHead(QPattern *,QHMIData *,QParam *,QWidget *parent = 0);
+    void setKouAtribute(Md::POS_LEFTRIGHT kou);
 private:
-    QPatternData *pattern;
+    QPattern *pattern;
     QHMIData *hmidata;
     QParam *param;
     QPixmap pixmapright;
     QPixmap pixmapleft;
     QLabel *plablearray[8];
-    QStringList azllist;
-    QStringList hzllist;
     int cntnumber;
-    Md::POS_LFETRIGHT kou;
+    Md::POS_LEFTRIGHT kou;
 protected slots:
     void onCntNumber(unsigned short number);
     void onParamChanded();

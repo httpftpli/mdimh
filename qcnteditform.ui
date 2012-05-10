@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>802</width>
+    <width>806</width>
     <height>600</height>
    </rect>
   </property>
@@ -68,33 +68,37 @@
                 </item>
                 <item>
                  <layout class="QGridLayout" name="gridLayout">
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="label_8">
+                  <item row="3" column="1" colspan="2">
+                   <widget class="QComboBox" name="comboBox_zllh">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="label_3">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>指令</string>
+                     <string>A位</string>
                     </property>
                    </widget>
                   </item>
                   <item row="0" column="2">
-                   <widget class="QLabel" name="label_2">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
+                   <widget class="QLabel" name="label_4">
                     <property name="text">
-                     <string>色代号</string>
+                     <string>H位</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="2">
+                  <item row="2" column="1">
                    <widget class="QLineEdit" name="lineEdit_sdhal">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -120,84 +124,30 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_3">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>A位</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="0">
-                   <widget class="QLabel" name="label_4">
+                   <widget class="QLabel" name="label_2">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="text">
-                     <string>H位</string>
+                     <string>色代号</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1">
-                   <widget class="QComboBox" name="comboBox_zlal">
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_8">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                    <item>
-                     <property name="text">
-                      <string>空</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>翻针</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>编织</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QComboBox" name="comboBox_zlhl">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
+                    <property name="text">
+                     <string>指令</string>
                     </property>
-                    <item>
-                     <property name="text">
-                      <string>空</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>吊目</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>接针</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>吊目2</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>编松2</string>
-                     </property>
-                    </item>
                    </widget>
                   </item>
                  </layout>
@@ -543,7 +493,20 @@
                 </item>
                 <item>
                  <layout class="QGridLayout" name="gridLayout_4">
-                  <item row="0" column="1">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_6">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>色代行</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
                    <widget class="QLabel" name="label_10">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -557,52 +520,6 @@
                    </widget>
                   </item>
                   <item row="0" column="2">
-                   <widget class="QLabel" name="label_6">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>色代行</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdhal_q">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="2">
-                   <widget class="QLineEdit" name="lineEdit_sdhhl_q">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_11">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>A位</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
                    <widget class="QLabel" name="label_12">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -615,64 +532,47 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1">
-                   <widget class="QComboBox" name="comboBox_zlal_q">
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="label_11">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                    <item>
-                     <property name="text">
-                      <string>空</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>翻针</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>编织</string>
-                     </property>
-                    </item>
+                    <property name="text">
+                     <string>A位</string>
+                    </property>
                    </widget>
                   </item>
-                  <item row="2" column="1">
-                   <widget class="QComboBox" name="comboBox_zlhl_q">
+                  <item row="2" column="1" colspan="2">
+                   <widget class="QComboBox" name="comboBox_zllq">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                    <item>
-                     <property name="text">
-                      <string>空</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>吊目</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>接针</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>吊目2</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>编松2</string>
-                     </property>
-                    </item>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="lineEdit_sdhal_q">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QLineEdit" name="lineEdit_sdhhl_q">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -708,7 +608,7 @@
                <property name="title">
                 <string>后床</string>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_9" stretch="1,3">
+               <layout class="QVBoxLayout" name="verticalLayout_9" stretch="1,0">
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_19">
                   <item>
@@ -738,7 +638,7 @@
                 </item>
                 <item>
                  <layout class="QGridLayout" name="gridLayout_8">
-                  <item row="0" column="1">
+                  <item row="3" column="0">
                    <widget class="QLabel" name="label_15">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -751,7 +651,20 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="2">
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="label_17">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>A位</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
                    <widget class="QLabel" name="label_16">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -764,7 +677,24 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="2">
+                  <item row="0" column="2">
+                   <widget class="QLabel" name="label_18">
+                    <property name="text">
+                     <string>H位</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1" colspan="2">
+                   <widget class="QComboBox" name="comboBox_zlrh">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
                    <widget class="QLineEdit" name="lineEdit_sdhar">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -788,86 +718,6 @@
                     <property name="readOnly">
                      <bool>true</bool>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_17">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>A位</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_18">
-                    <property name="text">
-                     <string>H位</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QComboBox" name="comboBox_zlar">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <item>
-                     <property name="text">
-                      <string>空</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>翻针</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>编织</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QComboBox" name="comboBox_zlhr">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <item>
-                     <property name="text">
-                      <string>空</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>吊目</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>接针</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>吊目2</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>编松2</string>
-                     </property>
-                    </item>
                    </widget>
                   </item>
                  </layout>
@@ -1207,7 +1057,33 @@
                 </item>
                 <item>
                  <layout class="QGridLayout" name="gridLayout_12">
-                  <item row="0" column="1">
+                  <item row="1" column="2">
+                   <widget class="QLabel" name="label_51">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>H位</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_50">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>A位</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
                    <widget class="QLabel" name="label_48">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -1220,7 +1096,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="2">
+                  <item row="2" column="0">
                    <widget class="QLabel" name="label_49">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -1233,7 +1109,17 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="2">
+                  <item row="3" column="1" colspan="2">
+                   <widget class="QComboBox" name="comboBox_zlrq">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
                    <widget class="QLineEdit" name="lineEdit_sdhar_q">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1251,92 +1137,6 @@
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_50">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>A位</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_51">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>H位</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QComboBox" name="comboBox_zlar_q">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <item>
-                     <property name="text">
-                      <string>空</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>翻针</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>编织</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QComboBox" name="comboBox_zlhr_q">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <item>
-                     <property name="text">
-                      <string>空</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>吊目</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>接针</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>吊目2</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>编松2</string>
-                     </property>
-                    </item>
                    </widget>
                   </item>
                  </layout>

@@ -188,14 +188,12 @@ public:
 public slots:
     void On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val);
     void on_patternChange(const QString &dirpath,const QString &name);
-    void on_clothFinish();
 public slots:
     void onParamChanged();
 
 signals:
     void DataChanged_ToCtrl(unsigned short index,QVariant val);
     void DataChanged_ToHMI(unsigned short index,QVariant val);
-    void hmi_finishCount(int val);
     void hmi_loopend(int val);
     void hmi_loopStart(int val);
     void hmi_direction(Md::DIRECTION);

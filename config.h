@@ -2,6 +2,5 @@
 #define CONFIG_H
 
 #define DUAL_SYSTEM 1
-#define PATTRNFILE_BYTE_PER_SENDPACKET 512
 
 #endif // CONFIG_H

@@ -129,7 +129,11 @@ void QHMIData::On_DataChanged_FromCtrl(unsigned short index,const QVariant &Val)
         stream >> finishcount;
         if(finishcount!=dataBuf[RUN_COUNT_FINISH]){
            dataBuf[RUN_COUNT_FINISH] = finishcount;
-           emit hmi_finishCount(finishcount);
+           runTimeHistory = runTime;
+           stopTimeHistory = stopTime;
+           runTime = 0;
+           stopTime = 0;
+           emit clothFinishCountChanged(finishcount);
         }
 
      break;
@@ -244,7 +248,7 @@ void QHMIData::loadParam(const QString &inifilepath){
     patternVailable = sysset.value("pattern/vailable").toBool();
     patternPath = sysset.value("pattern/path").toString();
     loopFilePath = sysset.value("pattern/loopFileName").toString();
-    spaFilePath = sysset.value("param/spaFileName").toString();
+    spaFilePath = sysset.value("param/spafile").toString();
     udiskDirPath = sysset.value("system/udiskFilePath").toString();
     sysLogFilePath = sysset.value("system/syslogfile").toString();
     stopTimeHistory = sysset.value("history/stoptime").toLongLong();
@@ -292,6 +296,7 @@ void QHMIData::saveSysCfgFile(){
     sysset.setValue("history/stoptime",stopTimeHistory);
     sysset.setValue("history/runtime",runTimeHistory);
     sysset.sync();
+    system("cat sysconfig.conf >> /dev/null && sync");  //NOTICE: qsetting will lost filedata ,so call shell command
 }
 
 int QHMIData::sendParamaInRun(){//dankoulock在机器系统参数中
@@ -441,11 +446,4 @@ void QHMIData::on_patternChange(const QString &dirpath,const QString &name){
         patternPath = path;
         setclothFinishCount(0,TRUE);
     }
-}
-
-void QHMIData::on_clothFinish( ){
-    runTimeHistory = runTime;
-    stopTimeHistory = stopTime;
-    runTime = 0;
-    stopTime = 0;
 }

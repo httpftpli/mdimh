@@ -62,11 +62,8 @@ public:
     void jumpTo(int row,int column,QAbstractItemView::ScrollHint scrollhint);
 
     /////////////////////////////////////////
-    ~PatFileForm();
 private:
     QPattern *pattern;
-    /////////////////////////////////////////
-    Md::HAVEFILEFLAG oldflag ;//保存patterndata
     QPatModel *patmodel;
 
 private slots:

@@ -11,8 +11,9 @@ QShazuiKbForm::QShazuiKbForm(QWidget *parent) :
     QMdItemDelegate *delegate = new QMdItemDelegate(this);
     delegate->setRange(1,patternData.tatalcntrow,-1,2);
     delegate->setRange(1,patternData.tatalcntrow,-1,3);
-    unsigned char shazuiraw = patternData.shazuiused_l|
-                              patternData.shazuiused_r;
+    unsigned char shazuil,shazuir;
+    patternData.cnt_shaZuiUsed(shazuil,shazuir);
+    unsigned char shazuiraw = shazuil|shazuir;
 
     QString shazuiuse('[');
     QString shazuiunuse('[');

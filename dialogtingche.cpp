@@ -30,5 +30,5 @@ void DialogTingche::on_pushButton_3_clicked()
 
 void DialogTingche::on_pushButton_4_clicked()
 {
-    pattern->refreshBuf(Md::HAVECNT);
+    //pattern->refreshBuf(Md::HAVECNT);
 }

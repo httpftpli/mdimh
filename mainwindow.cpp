@@ -113,13 +113,10 @@ void MainWindow::onHmidataRuning(bool val){
 void MainWindow::onPowerDown()
 {
     hmiData.saveSysCfgFile();
-    QProcess::execute("quit.sh");
     sysLog.save();
     qComm.quit();
     qComm.wait();
-    QMdMessageBox box;
-    box.exec(tr("系统关机"),tr("正在关机"),QMessageBox::Information,
-             QMessageBox::NoButton,QMessageBox::NoButton);
+    QApplication::quit();
 }
 
 void MainWindow::Timeout1s(){
@@ -442,8 +439,7 @@ void MainWindow::on_pushButton_13_clicked()
     qComm.wait();
     hmiData.saveSysCfgFile();
     sysLog.save();
-    QProcess::execute("quit.sh");
-    close();
+    QApplication::quit();
 }
 
 void MainWindow::on_qMdPushButton_18_clicked()

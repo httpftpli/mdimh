@@ -907,10 +907,8 @@ QVariant  QPZKModel::data(const QModelIndex &index, int role) const{
     }
     if(role==Qt::BackgroundColorRole){
         if(0==row){
-            unsigned char shazuiraw =  this->patterndata->shazuiused_l|
-                                       this->patterndata->shazuiused_r;
-            unsigned char shazuikb = this->patterndata->shaZuiKb;
-            if(shazuiraw&(1<<(column-1)))
+            unsigned char shazuikb = patterndata->saz_shaZuiUsed();
+            if(cntshazuiused&(1<<(column-1)))
                 return QColor(Qt::green);
             if(shazuikb&(1<<(column-1)))
                 return QColor(Qt::yellow);
@@ -960,10 +958,8 @@ Qt::ItemFlags  QPZKModel::flags(const QModelIndex &index) const{
     else if(0==column)
         return (1==row)?Qt::ItemIsEnabled:(Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
     else{
-        unsigned char shazuiraw =  this->patterndata->shazuiused_l|
-                                   this->patterndata->shazuiused_r;
-        unsigned char shazuikb = this->patterndata->shaZuiKb;
-        if(shazuiraw&(1<<(column-1)))
+        unsigned char shazuikb =patterndata->saz_shaZuiUsed();
+        if(cntshazuiused&(1<<(column-1)))
             return Qt::ItemIsEnabled|Qt::ItemIsSelectable|Qt::ItemIsEditable;
         if(shazuikb&(1<<(column-1)))
             return Qt::ItemIsEnabled|Qt::ItemIsSelectable|Qt::ItemIsEditable;
@@ -1215,20 +1211,23 @@ bool QSzkbModel::removeRows(int row,int count, const QModelIndex &parent){
     return TRUE;
 }
 
+unsigned char QSzkbModel::cntShaZuiUsed()
+{
+    return cntshazuiuse;
+}
+
 void QSzkbModel::saveToFile(){
     this->patterndata->sazbuf = this->szkblist;
     this->patterndata->Save(Md::HAVESAZ,Md::HAVESAZ);
 }
 
 bool QSzkbModel::checkdatavalid(){
-    unsigned char shazuiraw = patterndata->shazuiused_l|
-                              patterndata->shazuiused_r;
     foreach(QPattern::SzkbData data,szkblist){
         unsigned char zs = 1<<(data.ZuSa-1);
         unsigned char fs = 1<<(data.FuSa-1);
         int start = data.Start;
         int end = data.End;
-        if(((zs&shazuiraw)==0)||((fs&shazuiraw)!=0)||
+        if(((zs&cntshazuiuse)==0)||((fs&cntshazuiuse)!=0)||
                     (start<1)||(start>=end))
             return FALSE;
     }

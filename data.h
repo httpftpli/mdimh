@@ -224,7 +224,11 @@ class QPZKModel :public QAbstractTableModel{
     Q_OBJECT
 public:
     QPZKModel( QPattern *data,int zkcount=8,QObject * parent = 0 ):
-                    QAbstractTableModel(parent),patterndata(data),count(zkcount){}
+        QAbstractTableModel(parent),patterndata(data),count(zkcount){
+        unsigned char shazuiright,shazuileft;
+        patterndata->cnt_shaZuiUsed(shazuileft,shazuiright);
+        cntshazuiused = shazuileft|shazuiright;
+    }
     void modelReset();
     int	rowCount ( const QModelIndex & parent = QModelIndex() ) const ;
     int columnCount(const QModelIndex &parent) const;
@@ -236,6 +240,7 @@ public:
     QPattern *patterndata;
 private:
     mutable unsigned short count;
+    unsigned char cntshazuiused;
 };
 
 
@@ -276,6 +281,9 @@ public:
     };
    QSzkbModel(QPattern *pattern ,QObject * parent = 0):QAbstractTableModel(parent),
                 patterndata(pattern),szkblist(pattern->sazbuf) {
+       unsigned char szl,szr;
+       patterndata->cnt_shaZuiUsed(szl,szr);
+       cntshazuiuse = szl|szr;
    }
    void saveToFile();
    int rowCount(const QModelIndex &parent) const;
@@ -286,12 +294,14 @@ public:
    Qt::ItemFlags flags(const QModelIndex &index) const;
    bool insertRows(int row, int count,const QModelIndex &parent);
    bool removeRows(int row, int count,const QModelIndex &parent);
+   unsigned char cntShaZuiUsed();
 signals:
    void datasValid(bool);
 private:
    QPattern *patterndata;
    QList<QPattern::SzkbData> szkblist;
    bool checkdatavalid();
+   unsigned char cntshazuiuse;
 };
 
 

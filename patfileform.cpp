@@ -29,7 +29,6 @@ PatFileForm::PatFileForm(QWidget *parent, QPattern *data) :
     intv2->setRange(1,pattern->tatalcolumn);
     lineEdit->setValidator(intv1);
     lineEdit_3->setValidator(intv2);
-    oldflag = patternData.loadStatus();
     connect(patitemdelegate,SIGNAL(editing(QModelIndex)),SLOT(tableViewIsEditing(QModelIndex)));
     connect(pattern,SIGNAL(patDirty(bool)),qMdPushButton_4,SLOT(setEnabled(bool)));
     connect(&pos,SIGNAL(rowChanged(QString)),lineEdit,SLOT(setText(QString)));
@@ -52,11 +51,6 @@ void PatFileForm::on_qMdPushButton_3_clicked()
 {
     hide();
     deleteLater();
-}
-
-PatFileForm::~PatFileForm(){
-    if((oldflag&Md::HAVEPAT)==0)
-        patternData.deloadFile(Md::HAVEPAT);
 }
 
 

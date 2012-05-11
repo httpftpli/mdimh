@@ -44,8 +44,8 @@ QShazuiExchForm::QShazuiExchForm(QWidget *parent, QPattern *data) :
 
 
 void QShazuiExchForm::addNewShazui(){
-    unsigned char szleft = pattern->shazuiused_l;
-    unsigned char szright = pattern->shazuiused_r;
+    unsigned char szleft ,szright;
+    pattern->cnt_shaZuiUsed(szleft,szright);
     for(int i=0;i<8;i++){
         delete pushbuttonarray1[i];
         delete pushbuttonarray2[i];

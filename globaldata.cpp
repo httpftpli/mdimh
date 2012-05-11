@@ -21,8 +21,6 @@ QProgressIndicator *ProgressIndiForm;
 
 
 Md::Result sysInit(){
-    QObject::connect(&hmiData,SIGNAL(hmi_finishCount(int)),&hmiData,
-                     SLOT(on_clothFinish()));
     QObject::connect(&paramaData,SIGNAL(changed()),&hmiData,SLOT(onParamChanged()));
     QObject::connect(&patternData,SIGNAL(patternChanged(QString,QString)),
             &hmiData,SLOT(on_patternChange(QString,QString)));
@@ -46,7 +44,8 @@ Md::Result sysInit(){
         sleep(3);
         return Md::NotPatCntSaz;
     }
-    paramaData.setFile(hmiData.spaFilePath);
+    if(!paramaData.setFile(hmiData.spaFilePath))
+          splash->showMessage(QObject::tr("参数载入:------------参数载入错误"),Qt::AlignBottom);
 
     ////start communication//////////////
     qComm.start();

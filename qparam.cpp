@@ -16,6 +16,8 @@ QParam::QParam(QComm *send, QObject *parent):
 }
 
 QParam::~QParam(){
+    if(spafile)
+        spafile->flush();
 }
 
 bool QParam::setFile(const QString &spafilepath){

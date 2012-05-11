@@ -209,10 +209,8 @@ public:
     int               sendPattern();
     bool            isWrkfileSys() const;
     bool            isPatternAvailable() const;
-    void            refreshBuf(Md::HAVEFILEFLAG flag);
-    void            deloadFile(Md::HAVEFILEFLAG flag=Md::HAVEALL);
+   //void            refreshBuf(Md::HAVEFILEFLAG flag);
 
-    Md::HAVEFILEFLAG loadStatus();
     Result          loadLoop(const QString &prmfilepath);
     int             Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag=Md::HAVENO);
     unsigned char   shaZui(int row,unsigned char system);    //返回沙嘴捆绑后当前行的沙嘴
@@ -266,6 +264,7 @@ public:
     unsigned short cnt_huabanhang(int row,Md::POS_LEFTRIGHT sys_kou,Md::POS_FRONTREAR frontorrear);
     unsigned short cnt_huabanhang(int row,unsigned char sys,Md::POS_FRONTREAR pos);
     void        cnt_setHuabanhang(int row,Md::POS_LEFTRIGHT kou ,Md::POS_FRONTREAR fr,int huabanrow);
+    bool cnt_shaZuiUsed(unsigned char &left,unsigned char &right ); //outparam :left right ,is shazui map from bit0 ;
     QMap<int,CntLoopType> cnt_LoopTable() const;
     int cnt_setLoopTable(QMap<int,CntLoopType> loop);
 
@@ -279,6 +278,8 @@ public:
     int            wrkSpeedZhi(unsigned int index);
     int            wrkMainLuolaZhi(unsigned int index);
     int            wrkFuzhuLuolaZhi(unsigned int index);
+    unsigned char saz_shaZuiUsed();
+
 
     QString patternName;
     QString patFileName;
@@ -289,10 +290,9 @@ public:
     QString wrkFileName;
     QString sazFilePath;
     QString sazFileName;
-    unsigned char shazuiused_r;  //右口用到的沙嘴；
-    unsigned char shazuiused_l;  //左口用到的沙嘴；
+    unsigned char shazuiused_r;  //TODO: maybe will del右口用到的沙嘴；
+    unsigned char shazuiused_l;  ////TODO:maybe will del左口用到的沙嘴；
     QList<SzkbData> sazbuf;      //沙嘴捆绑数据
-    unsigned char shaZuiKb;      //捆绑的沙嘴，从sazbuf中提取；
 
     int tatalcntrow;
     int tatalpatrow;
@@ -340,6 +340,12 @@ private:
     Result probepat();
     void probewrk();
     void probesaz();
+    void probeprm();
+    inline unsigned short __cntfetchshortdata(int row,unsigned char offset )const;
+    inline unsigned short __cntfetchchardata(int row,unsigned char offset)const;
+    inline unsigned char __cnt_shazui(int row,unsigned char system)const;
+    inline unsigned char __cnt_shazui(int row, Md::POS_LEFTRIGHT kou)const;
+
 
 };
 

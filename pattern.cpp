@@ -16,7 +16,7 @@ QMap<unsigned char ,QStringList> QPattern::CntZhilingMap = QPattern::initcntzhil
 QMap<unsigned char ,unsigned char> QPattern::CntZhilingIndexMap = QPattern::initcntzhilingindexmap();
 
 QPattern::QPattern(QComm *s,QObject *parent):QObject(parent),
-                            shaZuiKb(0),cntbuf(NULL),
+                            cntbuf(NULL),
                             patfile(NULL), wrkfile(NULL),
                             cntfile(NULL),patbuf(NULL),dumu_history_sys1(1),
                             dumu_history_sys2(1),
@@ -29,12 +29,12 @@ QPattern::QPattern(QComm *s,QObject *parent):QObject(parent),
 }
 
 QPattern::~QPattern(){
-    if(cntbuf!=NULL){
-        cntbuf=NULL;
-    }
-    if(patbuf!=NULL){
-       patbuf = NULL;
-    }
+    if(wrkfile)
+        wrkfile->flush();
+    if(cntfile)
+        cntfile->flush();
+    if(patfile)
+        patfile->flush();
     return;
 }
 
@@ -52,6 +52,7 @@ QPattern::Result QPattern::setFile(const QString &pattern){
         reset();
         return r;
     }
+    probeprm();
     r=probepat();
     if(r!=Ok){
         reset();
@@ -305,7 +306,7 @@ bool QPattern::parsepatternpath(const QString &patternpath)
     }
     cntfile = QSharedPointer<QFile>(new QFile(patterndirpath+QString("/")+cntFileName));
     if(cntfile->open(QIODevice::ReadWrite)){
-        cntbuf = cntfile->map(0,cntfile->size()/PATTRNFILE_BYTE_PER_SENDPACKET*PATTRNFILE_BYTE_PER_SENDPACKET);
+        cntbuf = cntfile->map(0,cntfile->size());
     }else{
         WARNLOG(cntFileName+tr("打开失败"));
         return CntFileError;
@@ -325,7 +326,7 @@ bool QPattern::parsepatternpath(const QString &patternpath)
 #endif
     // scan pattern finish flag,scan shazui
     for(tatalcntrow=1;;tatalcntrow++){
-        unsigned char sl,sr,d1;
+        /*unsigned char sl=0,sr=0,d1=0;
         sl = cnt_shaZui(tatalcntrow,Md::POSLEFT);
         sr = cnt_shaZui(tatalcntrow,Md::POSRIGHT);
         shazuiused_l|=sl;
@@ -334,7 +335,7 @@ bool QPattern::parsepatternpath(const QString &patternpath)
         if((d1<25)&&(d1!=0))
             dumuzu_used = dumuzu_used|(1<<(d1-1));
         else if((d1<125)&&(d1>100))
-            dumuzu_used = dumuzu_used|(1<<(d1-100));
+            dumuzu_used = dumuzu_used|(1<<(d1-100));*/
         if((1==cntbuf[tatalcntrow*128+CNT_End])||((tatalcntrow+1)*128>cntfile->size()))
             break;
     }
@@ -360,7 +361,7 @@ inline unsigned char QPattern::kou2sys(Md::POS_LEFTRIGHT kou, int cntnumber)
 }
 
 
-void QPattern::refreshBuf(Md::HAVEFILEFLAG flag){
+/*void QPattern::refreshBuf(Md::HAVEFILEFLAG flag){
     if((flag&Md::HAVEPAT)&&patbuf&&(!patModifiedRow.isEmpty())){
         // NOTE: may add refresh patbuf
         //patModifiedRow.clear();
@@ -380,37 +381,7 @@ void QPattern::refreshBuf(Md::HAVEFILEFLAG flag){
         // NOTE: may add refresh cntbuf
         //cntModifiedRow.clear();
         //emit cntDirty(FALSE);
-    }
-}
-
-void QPattern::deloadFile(Md::HAVEFILEFLAG flag){
-    /*if((flag&Md::HAVECNT)&&cntbuf){
-        delete []cntbuf;
-        cntbuf = NULL;
-    }
-    if((flag&Md::HAVEPAT)&&patbuf){
-        delete []patbuf;
-        patbuf = NULL;
-    }*/
-    if((flag&Md::HAVEWRK)&&wrkbuf){
-        delete []wrkbuf;
-        wrkbuf = NULL;
-    }
-}
-
-Md::HAVEFILEFLAG QPattern::loadStatus(){
-    Md::HAVEFILEFLAG r = Md::HAVENO;
-    if(cntbuf){
-        r|=Md::HAVECNT;
-    }
-    if(patbuf){
-        r|=Md::HAVEPAT;
-    }
-    if(wrkbuf){
-        r|=Md::HAVEWRK;
-    }
-    return r;
-}
+ */
 
 
 QPattern::Result QPattern::loadLoop(const QString &prmfilepath){
@@ -522,12 +493,6 @@ int QPattern::sendShazuiKb(){
 }
 
 short QPattern::wrk_fechData(WrkItemHd handle,int offset){
-    if(!wrkbuf){
-        wrkbuf = new unsigned short[2500];
-        wrkfile->open(QIODevice::ReadOnly);
-        wrkfile->read((char *)wrkbuf,wrkfile->size());
-        wrkfile->close();
-    }
     int addr = wrkItemDsp[handle].addr;
     return wrkbuf[offset+addr];
 }
@@ -547,16 +512,14 @@ QSize QPattern::patternSize()const{
 
 
 inline unsigned short QPattern::cnt_FechData(int row,unsigned char addr,unsigned char len) const{
-    if(!isPatternAvailable())
-        return -1;
-    if(len>2)
-        return -1;
-    if(cntbuf==NULL)
-        return -1;
-    if(len==1)
-        return this->cntbuf[row*128+addr];
-    if(len==2)
-        return *(unsigned short *)(cntbuf+row*128+addr);
+    Q_ASSERT(len<3);
+    if(cntbuf){
+        if(len==1)
+            return  __cntfetchshortdata(row,addr);
+        if(len==2)
+            return __cntfetchchardata(row,addr);
+    }
+    return -1;
 }
 
 
@@ -581,19 +544,19 @@ unsigned char QPattern::shaZui(int row, Md::POS_LEFTRIGHT kou)
 
 unsigned char QPattern::cnt_shaZui(int row,unsigned char system){
     Q_ASSERT((system==1)||(system==2));
-    unsigned char addr = (system==1)?CNT_S1_SaZui:CNT_S2_SaZui;
-    unsigned short sz = cnt_FechData(row,addr,2);
-    unsigned  char szh = (unsigned char)(sz>>8);
-    if((sz&0x00ff)==0x80){
-        return szh;
-    }
-    return 0x0;
+    if(ispatternavalible&&cntbuf)
+        return __cnt_shazui(row,system);
+    else
+        return 0;
 }
 
+
 unsigned char QPattern::cnt_shaZui(int row, Md::POS_LEFTRIGHT kou)
-{
-    unsigned char sys = kou2sys(kou,row);
-    return cnt_shaZui(row,sys);
+{   
+    if(ispatternavalible&&cntbuf)
+        return __cnt_shazui(row,kou);
+    else
+        return 0;
 }
 
 void QPattern::cnt_setShaZui(int row, Md::POS_LEFTRIGHT kou, unsigned char shazuibitmap)
@@ -785,12 +748,27 @@ void QPattern::cnt_setHuabanhang(int row, Md::POS_LEFTRIGHT kou, Md::POS_FRONTRE
 
 }
 
+bool QPattern::cnt_shaZuiUsed(unsigned char &left, unsigned char &right)
+{
+    left = 0;
+    right = 0;
+    if(!(ispatternavalible&&cntbuf))
+        return FALSE;
+    unsigned char sl=0,sr=0;
+    for(int i=1;i<=tatalcntrow;i++){
+        sl|= __cnt_shazui(i,Md::POSLEFT);
+        sr|= __cnt_shazui(i,Md::POSRIGHT);
+    }
+    left = sl;
+    right = sr;
+    return TRUE;
+}
+
 QMap<int,QPattern::CntLoopType> QPattern::cnt_LoopTable() const
 {
     QMap<int,QPattern::CntLoopType> loopmap;
     if(!cntbuf)
         return loopmap;
-    QList<CntLoopType> list;
     for(int i=1;i<=tatalcntrow;i++){
        unsigned short numofloop = cnt_FechData(i,CNT_LoopNum,2);
         if(numofloop){
@@ -806,6 +784,8 @@ QMap<int,QPattern::CntLoopType> QPattern::cnt_LoopTable() const
 
 int QPattern::cnt_setLoopTable(QMap<int, CntLoopType> loop)
 {
+    if(loop.isEmpty())
+        return Md::Ok;
     QList<int> keys = loop.keys();
     foreach(int key,keys){
         CntLoopType loopitem = loop.value(key);
@@ -815,6 +795,7 @@ int QPattern::cnt_setLoopTable(QMap<int, CntLoopType> loop)
         if(cnt_SetData(key,CNT_LoopStart,start,2,TRUE)!=Md::Ok)
            return Md::CommError;
     }
+    cntfile->flush();
     return Md::Ok;
 }
 
@@ -1148,6 +1129,14 @@ int  QPattern::wrkFuzhuLuolaZhi(unsigned int index){
     return wrk_fechData(WrkItemHd_JuanBuFZ,index);
 }
 
+unsigned char QPattern::saz_shaZuiUsed()
+{
+    unsigned char sz = 0;
+    foreach(SzkbData d,sazbuf)
+        sz |=1<<(d.FuSa-1);
+    return sz;
+}
+
 QPattern::Result QPattern::probepat()
 {
     QDir dir(patterndirpath);
@@ -1196,6 +1185,7 @@ void QPattern::probewrk()
         iswrkfilesys = FALSE;
     }
     wrkfile = QSharedPointer<QFile>(new QFile(wrkfilepath));
+    wrkfile->open(QIODevice::ReadWrite);
     wrkbuf = (unsigned short *)(wrkfile->map(0,wrkfile->size()));
 }
 
@@ -1218,11 +1208,66 @@ void QPattern::probesaz()
             stream>>temp.ZuSa>>temp.FuSa>>temp.Start>>temp.End;
             if(temp.ZuSa==0)
                 break;
-            shaZuiKb|=1<<(temp.FuSa-1);
             sazbuf<<temp;
         }
         sazfile.close();
     }
 }
 
+void QPattern::probeprm()
+{
+    QDir dir(patterndirpath);
+    QDataStream stream;
+    stream.setByteOrder(QDataStream::LittleEndian);
+    QStringList  list = dir.entryList(QStringList()<<(patternName+"*.PRM"),QDir::Files);
+    if(!list.isEmpty()){
+        CntLoopType loop;
+        QMap<int ,CntLoopType> loopmap;
+        QFile file(patterndirpath+'/'+list.at(0));
+        file.open(QIODevice::ReadOnly);
+        stream.setDevice(&file);
+        unsigned short beginrow,endrow,loopcount,temp;
+        do{
+            stream>>beginrow>>endrow>>loopcount,temp;
+            if((beginrow>tatalcntrow)||(endrow>tatalcntrow)||
+                    (beginrow==0)||(endrow==0)||(loopcount==0))
+                continue;
+            if((!(beginrow%2))||(endrow%2))
+                continue;
+            loop.startline = beginrow;
+            loop.endline = endrow;
+            loop.numofloop = loopcount;
+            loopmap.insert(endrow, loop);
+        }while(!stream.atEnd());
+        cnt_setLoopTable(loopmap);
+        file.close();
+        file.remove();
+    }
+}
 
+inline unsigned short QPattern::__cntfetchshortdata(int row, unsigned char offset) const
+{
+    return *(unsigned short *)(cntbuf+row*128+offset);
+}
+
+inline unsigned short QPattern::__cntfetchchardata(int row, unsigned char offset) const
+{
+    return cntbuf[row*128+offset];
+}
+
+inline unsigned char QPattern::__cnt_shazui(int row,unsigned char system)const{
+    unsigned char addr = (system==1)?CNT_S1_SaZui:CNT_S2_SaZui;
+    unsigned short sz = __cntfetchshortdata(row,addr);
+    unsigned  char szh = (unsigned char)(sz>>8);
+    if((sz&0x00ff)==0x80)
+        return szh;
+    else
+        return 0;
+}
+
+
+inline unsigned char QPattern::__cnt_shazui(int row, Md::POS_LEFTRIGHT kou)const
+{
+    unsigned char sys = kou2sys(kou,row);
+    return __cnt_shazui(row,sys);
+}

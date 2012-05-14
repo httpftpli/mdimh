@@ -303,7 +303,7 @@ QVariant  QDMZModel::data(const QModelIndex &index, int role) const{
         return QString::number(dat);
     }
     if(Qt::BackgroundColorRole==role){
-        if(patterndata->cnt_dumuUsed()&(1<<row))
+        if(dumuused&(1<<row))
             return QVariant();
         else
             return QColor(0,0,0,100);
@@ -327,9 +327,9 @@ bool  QDMZModel::setData(const QModelIndex &index, const QVariant &value, int ro
 #else
         patterndata->wrk_setData(WrkItemHd_DuMuZi,4*row+column,dat);
 #endif
-        return TRUE;
+        return true;
     }else
-        return FALSE;
+        return false;
 }
 
 

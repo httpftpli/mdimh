@@ -120,7 +120,7 @@ void QCntEditForm::rowToggle(int row){
     lineEdit_tc->setText(pattern->cnt_tingChe(row)?tr("是"):tr("否"));
     /**********摇床*********************/
     QPattern::YCPOSITION pos;
-    char yaochuangval;
+    signed char yaochuangval;
     patternData.cnt_yaoChuang(row,pos,yaochuangval);
     QString yaochuangstr;
     yaochuangstr.append(QString::number(yaochuangval));

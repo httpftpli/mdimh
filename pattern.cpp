@@ -20,11 +20,11 @@ QPattern::QPattern(QComm *s,QObject *parent):QObject(parent),
                             patfile(NULL), wrkfile(NULL),
                             cntfile(NULL),patbuf(NULL),dumu_history_sys1(1),
                             dumu_history_sys2(1),
-                            shazuiused_r(0),shazuiused_l(0),pcomm(s),
+                            shazuiused_r(0),shazuiused_l(0),
 #if DUAL_SYSTEM
                             isdualdumuzu(FALSE),
 #endif
-    dumuzu_used(0){
+    pcomm(s){
 
 }
 
@@ -266,7 +266,6 @@ void QPattern::reset()
     tatalcolumn = 0;
     tatalcntrow = 0;
     tatalpatrow = 0;
-    dumuzu_used = 0;
     patbyteperrow = 0;
 #if DUAL_SYSTEM
     this->isdualdumuzu = FALSE;
@@ -324,32 +323,11 @@ bool QPattern::parsepatternpath(const QString &patternpath)
         isdualdumuzu = FALSE;
     }
 #endif
-    // scan pattern finish flag,scan shazui
-    for(tatalcntrow=1;;tatalcntrow++){
-        /*unsigned char sl=0,sr=0,d1=0;
-        sl = cnt_shaZui(tatalcntrow,Md::POSLEFT);
-        sr = cnt_shaZui(tatalcntrow,Md::POSRIGHT);
-        shazuiused_l|=sl;
-        shazuiused_r|=sr;
-        d1 = cntbuf[tatalcntrow*128+CNT_DuMu];
-        if((d1<25)&&(d1!=0))
-            dumuzu_used = dumuzu_used|(1<<(d1-1));
-        else if((d1<125)&&(d1>100))
-            dumuzu_used = dumuzu_used|(1<<(d1-100));*/
+    // scan pattern finish flag
+    for(tatalcntrow=1;;tatalcntrow++){       
         if((1==cntbuf[tatalcntrow*128+CNT_End])||((tatalcntrow+1)*128>cntfile->size()))
             break;
     }
-#if DUAL_SYSTEM
-    if(isdualdumuzu){
-        for(int i=1;i<=tatalcntrow;i++){
-            char d2 = cntbuf[i*128+CNT_DuMu];
-            if((d2<25)&&(d2!=0))
-                dumuzu_used = dumuzu_used|(1<<(d2-1));
-            else if((d2<125)&&(d2>100))
-                dumuzu_used = dumuzu_used|(1<<(d2-100));
-        }
-    }
-#endif
     cntfile->flush();
     return Ok;
 }
@@ -390,8 +368,9 @@ QPattern::Result QPattern::loadLoop(const QString &prmfilepath){
 
 int QPattern::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag){
     if(saveflag&Md::HAVESAZ){
-        if(sazFilePath.isNull())
+        if(sazFilePath.isNull()){
             sazFilePath = patterndirpath+'/'+patternName+".SAZ";
+        }
         QFile sazfile(sazFilePath);
         sazfile.open(QIODevice::ReadWrite);
         sazfile.resize(512);
@@ -489,7 +468,17 @@ int QPattern::Save(Md::HAVEFILEFLAG saveflag,Md::HAVEFILEFLAG downloadflag){
 }
 
 int QPattern::sendShazuiKb(){
-    return pcomm->SendShazuiKb(sazFilePath);
+    unsigned char buf[512];
+    unsigned char count = sazbuf.size();
+    if(count>128)
+        count = 128;
+    for(int i=0;i<count;i++){
+        *(unsigned short*)(buf+i*8) = sazbuf.at(i).ZuSa;
+        *(unsigned short*)(buf+i*8+2) = sazbuf.at(i).FuSa;
+        *(unsigned short*)(buf+i*8+4) = sazbuf.at(i).Start;
+        *(unsigned short*)(buf+i*8+6) = sazbuf.at(i).End;
+    }
+    pcomm->SendShazuiKb(count,buf);
 }
 
 short QPattern::wrk_fechData(WrkItemHd handle,int offset){
@@ -804,7 +793,7 @@ unsigned short QPattern::wrk_qizhengdian(){
     return this->wrk_fechData(WrkItemHd_QiZenDian,0);
 }
 
-void QPattern::cnt_yaoChuang(int row, YCPOSITION &pos, char &val)
+void QPattern::cnt_yaoChuang(int row, YCPOSITION &pos, signed char &val)
 {
     unsigned char ycfx = cnt_FechData(row,CNT_YaoCuangDir);
     char ycz = cnt_FechData(row,CNT_YaoCuangZi);
@@ -923,7 +912,28 @@ void QPattern::cnt_setDuMuZu(int row, Md::POS_LEFTRIGHT kou, bool doubleorsignle
 
 unsigned int QPattern::cnt_dumuUsed()
 {
-    return dumuzu_used|(1<<22)|(1<<23)|1;
+   unsigned int dumu=0;
+    if(!(ispatternavalible&&cntbuf))
+        return 0;
+    for(int i=1;i<=tatalcntrow;i++){
+        unsigned short d1 = __cntfetchchardata(i,CNT_DuMu);
+        if((d1<25)&&(d1!=0))
+            dumu = dumu|(1<<(d1-1));
+        else if((d1<125)&&(d1>100))
+            dumu = dumu|(1<<(d1-101));
+    }
+#if DUAL_SYSTEM
+    if(isdualdumuzu){
+        for(int i=1;i<=tatalcntrow;i++){
+            unsigned short d2 = __cntfetchchardata(i,CNT_DuMu_ExS2);
+            if((d2<25)&&(d2!=0))
+                dumu |= 1<<(d2-1);
+            else if((d2<125)&&(d2>100))
+                dumu |= 1<<(d2-101);
+        }
+    }
+#endif
+    return dumu|(1<<22)|(1<<23)|1;
 }
 
 unsigned char QPattern::cnt_spead(int row){

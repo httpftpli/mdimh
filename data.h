@@ -61,6 +61,7 @@ class QDMZModel :public QAbstractTableModel{
     Q_OBJECT
 public:
     QDMZModel( QPattern *data ,QObject * parent = 0 ):QAbstractTableModel(parent),patterndata(data){
+        dumuused = patterndata->cnt_dumuUsed();
     }
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -70,6 +71,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 private:
     QPattern *patterndata;
+    unsigned int dumuused;
 
 };
 
@@ -302,6 +304,7 @@ private:
    QList<QPattern::SzkbData> szkblist;
    bool checkdatavalid();
    unsigned char cntshazuiuse;
+
 };
 
 

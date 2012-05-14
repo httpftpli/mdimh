@@ -762,36 +762,19 @@ int QComm::paramaUpdata(unsigned char yiyincunzhenshu, unsigned short chijvjiaoz
     return Md::ParamUpdataFail;
 }
 
-int  QComm::SendShazuiKb(const QString &sazfilepath){
+int  QComm::SendShazuiKb(unsigned char entrycount,unsigned char *buf){
     *(unsigned short *)d_send = htons(519);
     *(unsigned char *)(d_send+2) = 0x84;
     memset(d_send+4,0,512);
-
-    if(!sazfilepath.isEmpty()){
-        QFile sazfile(sazfilepath);
-        if(!sazfile.exists()){
-            ERRORLOG(tr("找不到沙嘴捆绑文件"));
-            goto ELSE;
-        }
-        sazfile.open(QIODevice::ReadOnly);
-        QDataStream stream(&sazfile);
-        stream.setByteOrder(QDataStream::LittleEndian);
-        unsigned short data;
-        int count=0;
-        while(count!=512/2){
-            readshorts(stream,&data,1);
-            if(data==0)
-                break;
-            count++;
-        }
-        count = count/4;
-        *(unsigned char *)(d_send+3) = count;
-        sazfile.seek(0);
-        readshorts(stream,(unsigned short *)&d_send[4],count*4);
-        sazfile.close();
-    }else
-ELSE:
-    *(unsigned char *)(d_send+3) =0;
+    if(entrycount>128)
+        entrycount = 128;
+    if(entrycount){
+        *(unsigned char *)(d_send+3) =entrycount;
+        for(int i =0;i<(entrycount*4);i++)
+            *(unsigned short*)(d_send+4+i*2) = htons(*(unsigned short *)(buf+i*2));
+    }else{
+        *(unsigned char *)(d_send+3) =0;
+    }
     unsigned char ackval;
     if(!programsend(ackval)){
         return Md::CommError;
@@ -869,7 +852,7 @@ int QComm::IsInBoot(){
 }
 
 
-int QComm::SendBin(QFile &binfile,QWidget *parent){
+int QComm::SendBin(QFile &binfile){
      //send ox55 0xaa entern to boot status
      *(unsigned short *)d_send = htons(07);
      *(unsigned char *)(d_send+2) = 0xc0;
@@ -893,7 +876,6 @@ int QComm::SendBin(QFile &binfile,QWidget *parent){
          return Md::CommError;
     ///////erase////////////////////////////
      unsigned char comack;
-     QProgressDialog progressdialog(parent);
     *(unsigned short *)d_send = htons(07);
     *(unsigned char *)(d_send+2) = 0xc2;
     *(unsigned char *)(d_send+3) = 0x55;
@@ -904,26 +886,19 @@ int QComm::SendBin(QFile &binfile,QWidget *parent){
     ////////wait for erase process
     QElapsedTimer time;
     time.start();
-    progressdialog.setRange(0,100);
-    progressdialog.setLabelText(tr("擦除进度"));
-    progressdialog.setCancelButton(0);
-    progressdialog.setAutoClose(FALSE);
-    progressdialog.show();
-
     unsigned char rcvval;
     while(!time.hasExpired(20000)){
         if(!rcv(0xc3,rcvval,10000))
             return Md::EraseError;
         if(rcvval == 0xaa)
             return Md::EraseError;
-        progressdialog.setValue(rcvval);
+        emit romEraserPercent(rcvval);
         if(rcvval == 100)
             break;
     }
     if(time.elapsed()>=20000)
         return Md::EraseError;
     ProgramEncrypt encrypt;
-    progressdialog.setLabelText(tr("烧写进度"));
     binfile.open(QIODevice::ReadOnly);
     for(int i=0;i<(binfile.size()/512+1);i++){
         *(unsigned short *)d_send = htons(520);
@@ -939,8 +914,7 @@ int QComm::SendBin(QFile &binfile,QWidget *parent){
             binfile.close();
             return Md::BurnError;
         }
-        progressdialog.setValue(512*i*100/binfile.size());
-
+        emit romWritePercent(512*i*100/binfile.size());
     }
     *(unsigned short *)d_send = htons(7);
     *(unsigned char *)(d_send+2) = 0xc5;
@@ -949,14 +923,14 @@ int QComm::SendBin(QFile &binfile,QWidget *parent){
         binfile.close();
         return Md::CommError;
     }
-    progressdialog.setValue(100);
+    emit romWritePercent(100);
     binfile.close();
     return  Md::Ok;
 }
 
 
 ////////////////send bag////////////////////////////////
-int QComm::SendBag(QString &bagfilename,QWidget *parent){
+int QComm::SendBag(QString &bagfilename){
     QFile file(bagfilename);
     if(!file.exists())
         return Md::FileNotExist;
@@ -990,29 +964,21 @@ int QComm::SendBag(QString &bagfilename,QWidget *parent){
     if(comack == 0xAA)
         return Md::EraseError;
     ////////wait for erase process
-    QProgressDialog progressdialog(parent);
     QElapsedTimer time;
     time.start();
-    progressdialog.setRange(0,100);
-    progressdialog.setLabelText(tr("擦除进度"));
-    progressdialog.setCancelButton(0);
-    progressdialog.setAutoClose(FALSE);
-    progressdialog.show();
-    bool isack;
     unsigned char rcvval;
     while(!time.hasExpired(10000)){
         if(!rcv(0xd3,rcvval,5000))
             return Md::EraseError;
         if(rcvval == 0xaa)
             return Md::EraseError;
-        progressdialog.setValue(rcvval);
+        emit bagRomEraserPercent(rcvval);
         if(comack == 100)
             break;
     }
     if(time.elapsed()>=10000)
         return Md::EraseError;
     //////////start burn//////////////////
-    progressdialog.setLabelText(tr("烧写进度"));
     int bagcount = file.size()/64+((file.size()%64)?1:0);
     for(int i=0;i<bagcount;i++){
         *(unsigned short *)d_send = htons(64+3+6);
@@ -1029,7 +995,7 @@ int QComm::SendBag(QString &bagfilename,QWidget *parent){
         if(comack==0xaa){
             return Md::BurnError;
         }
-        progressdialog.setValue((i+1)*100/bagcount);
+        emit bagRomWritePercent((i+1)*100/bagcount);
     }
 
     ///////////////end burn//////////////

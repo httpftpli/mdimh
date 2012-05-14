@@ -157,7 +157,7 @@ void MainWindow::runPatternRowChange(unsigned short cntnumber){
     label_shazuiTf->setNum(patternData.cnt_shazuiTf(cntnumber));
     //yaochuang////////////////
     QPattern::YCPOSITION pos;
-    char yaochuangval;
+    signed char yaochuangval;
     patternData.cnt_yaoChuang(cntnumber,pos,yaochuangval);
     QString yaochuangstr;
     if(yaochuangval>0)

@@ -223,7 +223,7 @@ public:
     int cnt_SetData(int row,unsigned char index,unsigned short data,unsigned char len, bool download);
     unsigned char  cnt_yaJiao(int row)const;
     void        cnt_setYajiao(int row,unsigned char yajiao);
-    void           cnt_yaoChuang(int row,YCPOSITION &pos,char &val);
+    void           cnt_yaoChuang(int row,YCPOSITION &pos,signed char &val);
     void        cnt_setYaoChang(int row,YCPOSITION pos,char val);
 
     unsigned char  cnt_duMuZu(int row, unsigned char sys,bool &doubleOrSigle, bool usehistorydumu);
@@ -320,7 +320,6 @@ private:
 #if DUAL_SYSTEM
     bool isdualdumuzu;
 #endif
-    unsigned int dumuzu_used;
     static int _azlfordisplay(unsigned char data);
     static int _hzlfordisplay(unsigned char data);
     static unsigned char _azlfromdisplay(int index);

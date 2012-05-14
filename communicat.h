@@ -88,15 +88,14 @@ public:
    int sendPatFileInfo(unsigned int lenoffile);
    int sendCntFileData(unsigned short pack,unsigned char *buf);
    int sendPatFileData(unsigned short pack,unsigned char *buf);
-   int SendShazuiKb(const QString &sazfilepath=QString());
+   int SendShazuiKb(unsigned char entrycount, unsigned char *buf);
    int SendParama(char *wrkbuf,  char *spabuf,int packet);
    int paramaUpdata(unsigned char id,unsigned short *buf,int len,bool halfwordorbyte);
    int paramaUpdata(unsigned char yiyincunzhenshu,unsigned short chijvjiaozheng,unsigned short zongzhengshu);
    int IsInBoot();
-   int SendBin(QFile &binfile,QWidget *parent=NULL);
-   int SendBag(QString &bagfilename,QWidget *parent = NULL);
+   int SendBin(QFile &binfile);
+   int SendBag(QString &bagfilename);
    int checkCustomerId(unsigned short id);
-
 
 private:
    bool isavailable;
@@ -143,6 +142,10 @@ signals:
    void CommFail();
    void commPercent(int percent);
    void DataChangedFromCtrl(unsigned short index,QVariant val);
+   void romEraserPercent(unsigned int val);
+   void romWritePercent(unsigned int val);
+   void bagRomEraserPercent(unsigned int val);
+   void bagRomWritePercent(unsigned int val);
 private slots:
    void ReadPendingDatagrams(); //derection conneted by run(),run in the run thread
 protected:

@@ -85,8 +85,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
 #endif
 
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            int valbottom =wrkItemDsp[WrkItemHd_DuMuZi].valrangebottom;
-            int valtop =wrkItemDsp[WrkItemHd_DuMuZi].valrangetop;
+            int valbottom =QPattern::wrkItemValBottem(QPattern::WrkItemHd_DuMuZi);
+            int valtop =QPattern::wrkItemValTop(QPattern::WrkItemHd_DuMuZi);
             delegate->setRange(valbottom,valtop);
             tableView->setItemDelegate(delegate);
         }
@@ -95,8 +95,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
         if(llmodel==NULL){
             llmodel = new QLLModel(patterndata,this);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            int valbottom =wrkItemDsp[WrkItemHd_JuanBu].valrangebottom;
-            int valtop = wrkItemDsp[WrkItemHd_JuanBu].valrangetop;
+            int valbottom =QPattern::wrkItemValBottem(QPattern::WrkItemHd_JuanBu);
+            int valtop =QPattern:: wrkItemValTop(QPattern::WrkItemHd_JuanBu);
             delegate->setRange(valbottom,+valtop);
             tableView_2->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
             tableView_2->verticalHeader()->setResizeMode(QHeaderView::Fixed);
@@ -105,8 +105,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
 
             zdjmodel = new QZDJModel(patterndata,this);
             QMdItemDelegate *delegate2 = new QMdItemDelegate(this);
-            int valbottom1 =wrkItemDsp[WrkItemHd_SuDuZi].valrangebottom;
-            int valtop1 = wrkItemDsp[WrkItemHd_SuDuZi].valrangetop;
+            int valbottom1 =QPattern::wrkItemValBottem(QPattern::WrkItemHd_SuDuZi);
+            int valtop1 = QPattern::wrkItemValTop(QPattern::WrkItemHd_SuDuZi);
             delegate2->setRange(valbottom1,valtop1);
             tableView_3->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
             tableView_3->verticalHeader()->setResizeMode(QHeaderView::Fixed);
@@ -117,8 +117,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
    case 2:
         if(ssmodel ==NULL){
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            int valbottom =wrkItemDsp[WrkItemHd_LeftSongSa].valrangebottom;
-            int valtop = wrkItemDsp[WrkItemHd_LeftSongSa].valrangetop;
+            int valbottom =QPattern::wrkItemValBottem(QPattern::WrkItemHd_LeftSongSa);
+            int valtop = QPattern::wrkItemValTop(QPattern::WrkItemHd_LeftSongSa);
             delegate->setRange(valbottom,valtop);
             ssmodel = new QSSModel(patterndata,this);
             tableView_4->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
@@ -132,8 +132,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
         if(sztfmodel ==NULL){
             sztfmodel = new QSZTFModel(patterndata,this);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            int valbottom =wrkItemDsp[WrkItemHd_ShaZuiTF].valrangebottom;
-            int valtop =wrkItemDsp[WrkItemHd_ShaZuiTF].valrangetop;
+            int valbottom =QPattern::wrkItemValBottem(QPattern::WrkItemHd_ShaZuiTF);
+            int valtop =QPattern::wrkItemValTop(QPattern::WrkItemHd_ShaZuiTF);
             delegate->setRange(valbottom,valtop);
             tableView_5->setItemDelegate(delegate);
             tableView_5->setModel(sztfmodel);
@@ -152,8 +152,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
    case 4:
         if(ytxszxzmodel ==NULL){
             ytxszxzmodel = new QYTXSZXZModel(patterndata,this);
-            int valbottom =wrkItemDsp[WrkItemHd_YTXXiuZen].valrangebottom;
-            int valtop =wrkItemDsp[WrkItemHd_YTXXiuZen].valrangetop;
+            int valbottom =QPattern::wrkItemValBottem(QPattern::WrkItemHd_YTXXiuZen);
+            int valtop =QPattern::wrkItemValTop(QPattern::WrkItemHd_YTXXiuZen);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
             delegate->setRange(valbottom,valtop);
             tableView_11->setItemDelegate(delegate);
@@ -171,8 +171,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
         }
         if(ytxsztfmodel ==NULL){
             ytxsztfmodel = new QYTXSZTFModel(patterndata,this);
-            int valbottom =wrkItemDsp[WrkItemHd_YTXTingFang].valrangebottom;
-            int valtop = wrkItemDsp[WrkItemHd_YTXTingFang].valrangetop;
+            int valbottom =QPattern::wrkItemValBottem(QPattern::WrkItemHd_YTXTingFang);
+            int valtop = QPattern::wrkItemValTop(QPattern::WrkItemHd_YTXTingFang);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
             delegate->setRange(valbottom,valtop);
             tableView_12->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
@@ -184,8 +184,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
         if(cjpmodel==NULL){
             cjpmodel = new QCJPModel(patterndata,this);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            int valbottom =wrkItemDsp[WrkItemHd_CJP_BianZi].valrangebottom;
-            int valtop =wrkItemDsp[WrkItemHd_CJP_BianZi].valrangetop;
+            int valbottom =QPattern::wrkItemValBottem(QPattern::WrkItemHd_CJP_BianZi);
+            int valtop =QPattern::wrkItemValTop(QPattern::WrkItemHd_CJP_BianZi);
             delegate->setRange(valbottom,valtop);
             tableView_13->verticalHeader()->setResizeMode(QHeaderView::Fixed);
             tableView_13->setItemDelegate(delegate);
@@ -207,8 +207,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             pzkmodel = new QPZKModel(patterndata,8,this);            
             tableView_pzk->setModel(pzkmodel);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            int valbottom =wrkItemDsp[WrkItemHd_PzkSaZui].valrangebottom;
-            int valtop = wrkItemDsp[WrkItemHd_PzkSaZui].valrangetop;
+            int valbottom =QPattern::wrkItemValBottem(QPattern::WrkItemHd_PzkSaZui);
+            int valtop = QPattern::wrkItemValTop(QPattern::WrkItemHd_PzkSaZui);
             delegate->setRange(valbottom,valtop);
             tableView_pzk->setItemDelegate(delegate);
             tableView_pzk->verticalHeader()->setResizeMode(QHeaderView::Fixed);
@@ -219,7 +219,7 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
         break;
     }
    case 7:{
-        unsigned short qzd = patterndata->wrk_fechData(WrkItemHd_QiZenDian,0);
+        unsigned short qzd = patterndata->wrk_fechData(QPattern::WrkItemHd_QiZenDian,0);
         lineEdit_qzd->setText(QString::number(qzd));
         break;
     }
@@ -228,8 +228,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             dmbcmodel = new QDMBCModel(paramadata,this);
             tableView_dmbc->setModel(dmbcmodel);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            int valbottom =spaItemDsp[SpaItemHd_Dmdmbc].valrangebottom;
-            int valtop = spaItemDsp[SpaItemHd_Dmdmbc].valrangetop;
+            int valbottom =QParam::spaItemValBottom(QParam::SpaItemHd_Dmdmbc);
+            int valtop = QParam::spaItemValTop(QParam::SpaItemHd_Dmdmbc);
             delegate->setRange(valbottom,valtop);
             tableView_dmbc->setItemDelegate(delegate);
             tableView_dmbc->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
@@ -241,8 +241,8 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             ycwzxzmodel= new QYCWZXZModel(paramadata,pcomm,this);
             tableView_ycwzxz->setModel(ycwzxzmodel);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            int valbottom =spaItemDsp[SpaItemHd_Ycwzxz].valrangebottom;
-            int valtop = spaItemDsp[SpaItemHd_Ycwzxz].valrangetop;
+            int valbottom =QParam::spaItemValBottom(QParam::SpaItemHd_Ycwzxz);
+            int valtop = QParam::spaItemValTop(QParam::SpaItemHd_Ycwzxz);
             delegate->setRange(valbottom,valtop);
             tableView_ycwzxz->setItemDelegate(delegate);
             tableView_ycwzxz->setSpan(0,2,1,6);
@@ -257,10 +257,9 @@ void paramform::on_stackedWidget_currentChanged(int yyy )
             tableView_fzyc->setSpan(0,4,1,2);
             tableView_fzyc->setModel(fzycwzxzmodel);
             QMdItemDelegate *delegate = new QMdItemDelegate(this);
-            delegate->setRange(spaItemDsp[SpaItemHd_Fzycwzxz].valrangebottom,
-                               spaItemDsp[SpaItemHd_Fzycwzxz].valrangetop
-                               );
-
+            int valbottom =QParam::spaItemValBottom(QParam::SpaItemHd_Fzycwzxz);
+            int valtop = QParam::spaItemValTop(QParam::SpaItemHd_Fzycwzxz);
+            delegate->setRange(valbottom, valtop);
             tableView_fzyc->setItemDelegate(delegate);
             tableView_fzyc->verticalHeader()->setResizeMode(0,QHeaderView::ResizeToContents);
 
@@ -404,7 +403,7 @@ void paramform::on_tabWidget_currentChanged(int index)
 void paramform::on_spinBox_valueChanged(int val)
 {
     if(pzkmodel){
-        pzkmodel->patterndata->wrk_setData(WrkItemHd_ZanKaiPianSu,0,val);
+        pzkmodel->patterndata->wrk_setData(QPattern::WrkItemHd_ZanKaiPianSu,0,val);
         pzkmodel->modelReset();
     }
 }
@@ -426,7 +425,7 @@ void paramform::on_lineEdit_qzd_textChanged(QString )
     int i=0;
     if(valid&&(valid->validate(str,i)==QValidator::Acceptable)){
         unsigned short d = lineEdit_qzd->text().toInt();
-        patterndata->wrk_setData(WrkItemHd_QiZenDian,0,d);
+        patterndata->wrk_setData(QPattern::WrkItemHd_QiZenDian,0,d);
     }
 }
 

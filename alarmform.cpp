@@ -8,7 +8,7 @@
 
 
 AlarmForm::AlarmForm(QHMIData *d, QWidget *parent):
-        hmidata(d),QWidget(parent),flashtimes(0){
+        QWidget(parent),hmidata(d),flashtimes(0){
 
     connect(d,SIGNAL(alarm(unsigned char)),SLOT(onAlarm(unsigned char)));
     connect(&timer,SIGNAL(timeout()),SLOT(onTimeOut()));

@@ -32,8 +32,11 @@ QCntEditForm::QCntEditForm(QWidget *parent,QPattern *data) :
     rowToggle(1);
     label_totalrow->setNum(pattern->tatalcntrow);
 
-    for(int i=0;i<sizeof(CNT_ZHILINGVAL);i++){
-        QString str = QPattern::CntZhilingMap.value(CNT_ZHILINGVAL[i]).join(" , ");
+    for(unsigned int i=0;;i++){
+        QStringList list = QPattern::cnt_ZhilingStringlist(i);
+        if(list.isEmpty())
+            break;
+        QString str =list.join(" , ");
         comboBox_zllh->addItem(str);
         comboBox_zllq->addItem(str);
         comboBox_zlrh->addItem(str);
@@ -46,7 +49,7 @@ bool QCntEditForm::event(QEvent *event)
 {
     if(event->type()==QEvent::Show)
         rowToggle(this->row);
-    QWidget::event(event);
+    return QWidget::event(event);
 }
 
 
@@ -60,16 +63,16 @@ void QCntEditForm::rowToggle(int row){
     lineEdit_hbhr_q->setText(QString::number(pattern->cnt_huabanhang(row,Md::POSRIGHT,Md::POSFRONT)));
 
     /**********左口后床指令*********************/
-    int indextmp = QPattern::CntZhilingIndexMap.value(pattern->cnt_Zhiling(row,Md::POSLEFT,Md::POSREAR));
+    int indextmp =pattern->cnt_ZhilingIndex(row,Md::POSLEFT,Md::POSREAR);
     comboBox_zllh->setCurrentIndex(indextmp);
     /**********左口前床指令*********************/
-    indextmp =  QPattern::CntZhilingIndexMap.value(pattern->cnt_Zhiling(row,Md::POSLEFT,Md::POSFRONT));
+    indextmp =  pattern->cnt_ZhilingIndex(row,Md::POSLEFT,Md::POSFRONT);
     comboBox_zllq->setCurrentIndex(indextmp);
     /**********右口后床指令*********************/
-    indextmp =  QPattern::CntZhilingIndexMap.value(pattern->cnt_Zhiling(row,Md::POSRIGHT,Md::POSREAR));
+    indextmp =  pattern->cnt_ZhilingIndex(row,Md::POSRIGHT,Md::POSREAR);
     comboBox_zlrh->setCurrentIndex(indextmp);
     /**********右口前床指令*********************/
-    indextmp =  QPattern::CntZhilingIndexMap.value(pattern->cnt_Zhiling(row,Md::POSRIGHT,Md::POSFRONT));
+    indextmp = pattern->cnt_ZhilingIndex(row,Md::POSRIGHT,Md::POSFRONT);
     comboBox_zlrq->setCurrentIndex(indextmp);
 
     /**********左口后床色代号A*********************/

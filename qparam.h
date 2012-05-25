@@ -7,7 +7,6 @@
 #include"config.h"
 #include"constdata.h"
 
-#define LENOFSPA 0x1000
 
  class QComm;
  class QParam;
@@ -33,28 +32,7 @@ const QVariant::Type JQGZCS_DATATYPE[]={
   QVariant::Int,       QVariant::Int,        QVariant::Int
 };
 
-enum SpaItemHd {
-    SpaItemHd_Xtcs = 0,
-    SpaItemHd_Dmdmbc,
-    SpaItemHd_Spmdbc,
-    SpaItemHd_Bgzdmlwbc,
-    SpaItemHd_Ycwzxz,
-    SpaItemHd_Fzycwzxz,
-    SpaItemHd_Fzycwzxz_z,
-    SpaItemHd_Fzycwzxz_f,
-    SpaItemHd_Jqgzcs,
-    SpaItemHd_Guide
-};
 
-struct SpaItemDsp{
-    unsigned short addr;
-    unsigned char runsendid;
-    unsigned short len;
-    unsigned short offsetinbag;
-    short valrangebottom;
-    short valrangetop;
-    //short **valrange;
-};
 
 const unsigned short JQGZCS_RANGE[][2]={
     {10,100}, {20,60}, {5,30},  {4,20},  {6,12},
@@ -72,35 +50,39 @@ const unsigned short XTCS_RANGE[][2]={
 };
 
 
-const struct SpaItemDsp spaItemDsp[SpaItemHd_Guide] = {
- /*   ADDR            |runsendid | len |offsetinbag|valrangetop|valrangebottom  */
-    {SpaAddr_XiTong,          7,        29,     0,          0,           0      },
-#if DUAL_SYSTEM
-    {SpaAddr_DanMianDMBC,        8,         8,     0,        -200,         200    },
-    {SpaAddr_SiPinDMBC,        9,         8,     0,        -200,         200    },
-    {SpaAddr_LingWeiDMBC,     10,        8,     0,        -200,         200    },
-#else
-    {SpaAddr_DanMianDMBC,        8,         4,     0,        -200,         200    },
-    {SpaAddr_SiPinDMBC,        9,         4,     0,        -200,         200    },
-    {SpaAddr_LingWeiDMBC,     10,        4,     0,        -200,         200    },
-#endif
-    {SpaAddr_YaoCuang,        11,        33,    0,        -500,         500    },
-    {SpaAddr_FanZenYC,      12,        16,    0,        -500,         500    },
-    {SpaAddr_FanZenZYC,    13,        16,    0,        -500,         500    },
-    {SpaAddr_FanZenFYC,    14,        16,    0,        -500,         500    },
-    {SpaAddr_JiQiGongZuo ,        1,        50,    0,         0,            0,   }
-};
-
-
 class QParam : public QObject
 {
+
     friend class QPattern;
     Q_OBJECT
-    public:
+public:
+    enum SpaItemHd {
+        SpaItemHd_Xtcs = 0,
+        SpaItemHd_Dmdmbc,
+        SpaItemHd_Spmdbc,
+        SpaItemHd_Bgzdmlwbc,
+        SpaItemHd_Ycwzxz,
+        SpaItemHd_Fzycwzxz,
+        SpaItemHd_Fzycwzxz_z,
+        SpaItemHd_Fzycwzxz_f,
+        SpaItemHd_Jqgzcs,
+        SpaItemHd_Guide
+    };
+    struct SpaItemDsp{
+        unsigned short addr;
+        unsigned char runsendid;
+        unsigned short len;
+        unsigned short offsetinbag;
+        short valrangebottom;
+        short valrangetop;
+        //short **valrange;
+    };
     //enum HeadPosDir{BackLeft = 0,BackRight =1,FrontLeft =2,FrontRight =3};
 
     explicit QParam(QComm *send,QObject *parent = 0);
     ~QParam();
+    static int spaItemValBottom(SpaItemHd hd);
+    static int spaItemValTop(SpaItemHd hd);
     QSharedPointer<QFile> spafile;
     QString spafilepath;
     QString spafilename;
@@ -117,6 +99,7 @@ class QParam : public QObject
     int updataPivotal();
 
 private:
+    static const struct SpaItemDsp spaItemDsp[SpaItemHd_Guide];
     short *spabuf;
     QSet<SpaItemHd> modifyedItem;
     QComm *pcomm;

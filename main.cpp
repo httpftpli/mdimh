@@ -15,11 +15,13 @@
 
 
 
+
 int main(int argc, char *argv[])
 {
     //qInstallMsgHandler(MessageOutput);
     QMdApplication a(argc, argv);
     a.setApplicationVersion("V1.00");
+
 #ifdef  Q_WS_X11
     a.setStyle("plastique");
 #endif

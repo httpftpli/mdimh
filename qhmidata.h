@@ -17,7 +17,7 @@ const unsigned char  INPUT_MAP[32][2] = {  //显示序号与开关量的映射�
 };
 
 const QString CWBJ_ErrorCode[60]={
-QObject::trUtf8(" "),             //  communication error                        //[0]
+" ",                                                                    //  communication error                        //[0]
 QObject::trUtf8("主电机没有准备信号!"),           // "Moto is not ready!",
 QObject::trUtf8("摇床电机没有准备信号!"),          //"Move is not ready!",
 QObject::trUtf8("机头左限位报警!"),                 // "Left limite alarm!",
@@ -150,7 +150,6 @@ public:
     int totalStopTime;
     int currentStopTime;
     int commResult;
-    QComm *pcomm;
     bool isInBoot;
     bool isRuning();
     void loadParam(const QString &inifilepath);
@@ -226,20 +225,20 @@ private  slots:
     void on_CommTimerOut(unsigned char);
 private:
     int timeid1s;
-    bool isinitfinish;
     QTimer timer700ms;
     QParam *pparam;
+    QComm *pcomm;
     bool speedlimit;
     bool stopperone;
     bool alarmlimit;
     bool linelock;
-
     bool dankoulock;
     bool shazuiup;
     bool isruning;
     bool xtrunorguiling;
     unsigned short clothfinishcount;
     unsigned short clothsetcount;
+    bool isinitfinish;
     QQueue<int > alarmque;
     QQueue<int > commerrorcode;
     QString mainboardversion,bagversion;

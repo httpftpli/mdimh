@@ -13,6 +13,11 @@ QT       += webkit
 
 TARGET = HMI
 TEMPLATE = app
+TRANSLATIONS += hmi.ts
+CODECFORTR   =  UTF-8
+
+QMAKE_LFLAGS += -Wl,-Map,hmi.map
+
 
 
 SOURCES += main.cpp\
@@ -139,7 +144,6 @@ RESOURCES += \
     resouce.qrc
 
 #CONFIG+=assistant
-
 
 linux-arm-g++{
     DEFINES += ARM6410

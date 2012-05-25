@@ -113,7 +113,7 @@ QVariant QPatModel::data(const QModelIndex &index, int role) const{
     if(Qt::DisplayRole ==role){
         int row = index.row();
         int column = index.column();
-        return QString(pattern->pat_FechData(r-row,column));
+        return QString(pattern->pat_FechDataString(r-row,column));
     }else if(Qt::TextAlignmentRole==role){
         return int(Qt::AlignHCenter);
     }else{
@@ -295,9 +295,9 @@ QVariant  QDMZModel::data(const QModelIndex &index, int role) const{
     int column = index.column();
     if(role==Qt::DisplayRole){
 #if DUAL_SYSTEM
-        short dat = patterndata->wrk_fechData(WrkItemHd_DuMuZi,8*row+column);
+        short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_DuMuZi,8*row+column);
 #else
-        short dat = patterndata->wrk_fechData(WrkItemHd_DuMuZi,4*row+column);
+        short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_DuMuZi,4*row+column);
 
 #endif
         return QString::number(dat);
@@ -323,9 +323,9 @@ bool  QDMZModel::setData(const QModelIndex &index, const QVariant &value, int ro
         int column = index.column();
         short dat = value.toString().toInt();
 #if DUAL_SYSTEM
-        patterndata->wrk_setData(WrkItemHd_DuMuZi,8*row+column,dat);
+        patterndata->wrk_setData(QPattern::WrkItemHd_DuMuZi,8*row+column,dat);
 #else
-        patterndata->wrk_setData(WrkItemHd_DuMuZi,4*row+column,dat);
+        patterndata->wrk_setData(QPattern::WrkItemHd_DuMuZi,4*row+column,dat);
 #endif
         return true;
     }else
@@ -376,8 +376,8 @@ QVariant  QLLModel::data(const QModelIndex &index, int role) const{
     if(role==Qt::DisplayRole){
         int row = index.row();
         int column = index.column();
-        WrkItemHd handle = column?WrkItemHd_JuanBuFZ:
-                                         WrkItemHd_JuanBu;
+        QPattern::WrkItemHd handle = column?QPattern::WrkItemHd_JuanBuFZ:
+                                         QPattern::WrkItemHd_JuanBu;
         short dat = patterndata->wrk_fechData(handle,row);
         return QString::number(dat);
     }else{
@@ -395,8 +395,8 @@ bool  QLLModel::setData(const QModelIndex &index, const QVariant &value, int rol
         int row = index.row();
         int column = index.column();
         short dat = value.toString().toInt();
-        WrkItemHd handle = column?WrkItemHd_JuanBuFZ:
-                                         WrkItemHd_JuanBu;
+        QPattern::WrkItemHd handle = column?QPattern::WrkItemHd_JuanBuFZ:
+                                         QPattern::WrkItemHd_JuanBu;
         patterndata->wrk_setData(handle,row,dat);
         return TRUE;
     }else
@@ -440,7 +440,7 @@ QVariant  QZDJModel::data(const QModelIndex &index, int role) const{
         return QVariant();
     if(role==Qt::DisplayRole){
         int row = index.row();
-        short dat = patterndata->wrk_fechData(WrkItemHd_SuDuZi,row);
+        short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_SuDuZi,row);
         return QString::number(dat);
     }else{
         return QVariant();
@@ -456,7 +456,7 @@ bool  QZDJModel::setData(const QModelIndex &index, const QVariant &value, int ro
     if(role==Qt::EditRole){
         int row = index.row();
         short dat = value.toString().toInt();
-        patterndata->wrk_setData(WrkItemHd_SuDuZi,row,dat);
+        patterndata->wrk_setData(QPattern::WrkItemHd_SuDuZi,row,dat);
         return TRUE;
     }else
         return FALSE;
@@ -501,10 +501,10 @@ QVariant  QSSModel::data(const QModelIndex &index, int role) const{
         int row = index.row();
         int column = index.column();
         if(0==column){
-            short dat = patterndata->wrk_fechData(WrkItemHd_LeftSongSa,row);
+            short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_LeftSongSa,row);
             return QString::number(dat);
         }else if(1==column){
-            short dat = patterndata->wrk_fechData(WrkItemHd_RightSongSa,row);
+            short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_RightSongSa,row);
             return QString::number(dat);
         }
     }
@@ -521,11 +521,11 @@ bool  QSSModel::setData(const QModelIndex &index, const QVariant &value, int rol
         int row = index.row();
         int column = index.column();
         short dat = value.toString().toInt();
-        WrkItemHd handle;
+        QPattern::WrkItemHd handle;
         if(0==column){
-           handle =  WrkItemHd_LeftSongSa;
+           handle =  QPattern::WrkItemHd_LeftSongSa;
         }else if(1==column){
-           handle = WrkItemHd_RightSongSa;
+           handle = QPattern::WrkItemHd_RightSongSa;
         }else
             return FALSE;
         patterndata->wrk_setData(handle,row,dat);
@@ -577,7 +577,7 @@ QVariant  QSZTFModel::data(const QModelIndex &index, int role) const{
         if(0==row)
             return QString::number(column/2+1)+QString("号沙嘴");
         else{
-            short dat = patterndata->wrk_fechData(WrkItemHd_ShaZuiTF,(column/2)*16+(row-1)*2+column%2);
+            short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_ShaZuiTF,(column/2)*16+(row-1)*2+column%2);
             return QString::number(dat);
         }
     }
@@ -604,7 +604,7 @@ bool  QSZTFModel::setData(const QModelIndex &index, const QVariant &value, int r
         int row = index.row();
         int column = index.column();
         short dat = value.toString().toInt();
-        patterndata->wrk_setData(WrkItemHd_ShaZuiTF,(column/2)*16+(row-1)*2+column%2,dat);
+        patterndata->wrk_setData(QPattern::WrkItemHd_ShaZuiTF,(column/2)*16+(row-1)*2+column%2,dat);
         return TRUE;
     }else
         return FALSE;
@@ -654,7 +654,7 @@ QVariant  QYTXSZXZModel::data(const QModelIndex &index, int role) const{
             return QString::number(column/2+1)+QString("号沙嘴");
         }
         else{
-            short dat = patterndata->wrk_fechData(WrkItemHd_YTXXiuZen,(column/2)*24+(row-1)*2+column%2);
+            short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_YTXXiuZen,(column/2)*24+(row-1)*2+column%2);
             return QString::number(dat);
         }
     }
@@ -681,7 +681,7 @@ bool  QYTXSZXZModel::setData(const QModelIndex &index, const QVariant &value, in
         int row = index.row();
         int column = index.column();
         short dat = value.toString().toInt();
-        patterndata->wrk_setData(WrkItemHd_YTXXiuZen,(column/2)*24+(row-1)*2+column%2,dat);
+        patterndata->wrk_setData(QPattern::WrkItemHd_YTXXiuZen,(column/2)*24+(row-1)*2+column%2,dat);
         return TRUE;
     }else
         return FALSE;
@@ -726,7 +726,7 @@ QVariant  QYTXSZTFModel::data(const QModelIndex &index, int role) const{
     int column = index.row();
     int row = index.column();
     if(role==Qt::DisplayRole){
-        short dat = patterndata->wrk_fechData(WrkItemHd_YTXTingFang,row*2+column);
+        short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_YTXTingFang,row*2+column);
         return QString::number(dat);
     }
     return QVariant();
@@ -742,7 +742,7 @@ bool  QYTXSZTFModel::setData(const QModelIndex &index, const QVariant &value, in
         int column = index.row();
         int row = index.column();
         short dat = value.toString().toInt();
-        patterndata->wrk_setData(WrkItemHd_YTXTingFang,row*2+column,dat);
+        patterndata->wrk_setData(QPattern::WrkItemHd_YTXTingFang,row*2+column,dat);
         return TRUE;
     }else
         return FALSE;
@@ -795,8 +795,8 @@ QVariant  QCJPModel::data(const QModelIndex &index, int role) const{
         }
         if(row>2){
             row = row -3;
-            WrkItemHd handle = column/4?WrkItemHd_CJP_BianZi:
-                                             WrkItemHd_CJP_FanZen;
+            QPattern::WrkItemHd handle = column/4?QPattern::WrkItemHd_CJP_BianZi:
+                                            QPattern::WrkItemHd_CJP_FanZen;
             column = column%4;
             short dat = patterndata->wrk_fechData(handle,(column/2)*24+row*2+column%2);
             return QString::number(dat);
@@ -830,8 +830,8 @@ bool  QCJPModel::setData(const QModelIndex &index, const QVariant &value, int ro
         int row = index.row()-3;
         short dat = value.toString().toInt();
         int column = index.column();
-        WrkItemHd handle = column/4?WrkItemHd_CJP_BianZi:
-                                         WrkItemHd_CJP_FanZen;
+        QPattern::WrkItemHd handle = column/4?QPattern::WrkItemHd_CJP_BianZi:
+                                         QPattern::WrkItemHd_CJP_FanZen;
         column = column%4;
         patterndata->wrk_setData(handle,(column/2)*24+row*2+column%2,dat);
         return TRUE;
@@ -870,7 +870,7 @@ void QPZKModel::modelReset(){
 
 int QPZKModel::rowCount(const QModelIndex &parent) const{
     Q_UNUSED(parent)
-            count = this->patterndata->wrk_fechData(WrkItemHd_ZanKaiPianSu,0);
+            count = this->patterndata->wrk_fechData(QPattern::WrkItemHd_ZanKaiPianSu,0);
     return count+1;
 }
 
@@ -893,14 +893,14 @@ QVariant  QPZKModel::data(const QModelIndex &index, int role) const{
         if(column==0){
             return QString::number(row);
         }
-        short dat = this->patterndata->wrk_fechData(WrkItemHd_PzkSaZui,(row-1)*8+column-1);
+        short dat = this->patterndata->wrk_fechData(QPattern::WrkItemHd_PzkSaZui,(row-1)*8+column-1);
         return QString::number(dat);
     }
     if(role==Qt::CheckStateRole){
         if(column == 0){
             if(row ==0)
                 return QVariant();
-            short dat = patterndata->wrk_fechData(WrkItemHd_PzkSaZui,64);
+            short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_PzkSaZui,64);
             return (0==(dat&(1<<(row-1))))?Qt::Checked:Qt::Unchecked;
         }
         return QVariant();
@@ -916,7 +916,7 @@ QVariant  QPZKModel::data(const QModelIndex &index, int role) const{
         }else if(0==column)
             return QColor(Qt::gray);
         else{
-            short dat = patterndata->wrk_fechData(WrkItemHd_PzkSaZui,64);
+            short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_PzkSaZui,64);
             return (0==(dat&(1<<(row-1))))?QColor(0,0,200,100):QColor(0,0,0,100);
         }
     }
@@ -940,8 +940,8 @@ bool  QPZKModel::setData(const QModelIndex &index, const QVariant &value, int ro
         return FALSE;
     if(role ==Qt::CheckStateRole){
         short val = 1<<(row-1);
-        short dat = patterndata->wrk_fechData(WrkItemHd_PzkSaZui,64);
-        patterndata->wrk_setData(WrkItemHd_PzkSaZui,64,dat^val);
+        short dat = patterndata->wrk_fechData(QPattern::WrkItemHd_PzkSaZui,64);
+        patterndata->wrk_setData(QPattern::WrkItemHd_PzkSaZui,64,dat^val);
         reset();
         return TRUE;
     }
@@ -1239,10 +1239,7 @@ bool QSzkbModel::checkdatavalid(){
 
 QTingcheModel::QTingcheModel(QPattern *pattern ,QObject * parent):QAbstractTableModel(parent),
              patterndata(pattern){
-        for(int i=1;i<=patterndata->tatalcntrow;i++){
-            if(patterndata->cnt_FechData(i,CNT_TingCe,1)==1)
-                cntrows.insert(i-1,1);
-        }
+        cntrows = patterndata->cnt_tingCheMap();
 }
 
 
@@ -1322,11 +1319,11 @@ QVariant  QDMBCModel::data(const QModelIndex &index, int role) const{
         int column = index.column();
         switch(column){
         case 0:
-            return QString::number(param->fechData(SpaItemHd_Dmdmbc,row));
+            return QString::number(param->fechData(QParam::SpaItemHd_Dmdmbc,row));
         case 1:
-            return QString::number(param->fechData(SpaItemHd_Spmdbc,row));
+            return QString::number(param->fechData(QParam::SpaItemHd_Spmdbc,row));
         case 2:
-            return QString::number(param->fechData(SpaItemHd_Bgzdmlwbc,row));
+            return QString::number(param->fechData(QParam::SpaItemHd_Bgzdmlwbc,row));
         default:
             break;
         }
@@ -1345,13 +1342,13 @@ bool  QDMBCModel::setData(const QModelIndex &index, const QVariant &value, int r
         int val = value.toString().toInt();
         switch(column){
         case 0:
-            param->setData(SpaItemHd_Dmdmbc,row,val);
+            param->setData(QParam::SpaItemHd_Dmdmbc,row,val);
             break;
         case 1:
-            param->setData(SpaItemHd_Spmdbc,row,val);
+            param->setData(QParam::SpaItemHd_Spmdbc,row,val);
             break;
         case 2:
-            param->setData(SpaItemHd_Bgzdmlwbc,row,val);
+            param->setData(QParam::SpaItemHd_Bgzdmlwbc,row,val);
             break;
         default:
             break;
@@ -1436,7 +1433,7 @@ QVariant  QYCWZXZModel::data(const QModelIndex &index, int role) const{
             if(column==0)
                 return "0";
             else if(column==1)
-                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,0));
+                return QString::number(paramadata->fechData(QParam::SpaItemHd_Ycwzxz,0));
             else
                 return "";
         }else{
@@ -1444,19 +1441,19 @@ QVariant  QYCWZXZModel::data(const QModelIndex &index, int role) const{
             case 0:
                 return QString("R%1---").arg(row);
             case 1:
-                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,row));
+                return QString::number(paramadata->fechData(QParam::SpaItemHd_Ycwzxz,row));
             case 2:
                 return QString("L%1---").arg(row);
             case 3:
-                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,row+8));
+                return QString::number(paramadata->fechData(QParam::SpaItemHd_Ycwzxz,row+8));
             case 4:
                 return QString("R%1*--").arg(row-1);
             case 5:
-                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,row+16));
+                return QString::number(paramadata->fechData(QParam::SpaItemHd_Ycwzxz,row+16));
             case 6:
                 return QString("L%1*--").arg(row-1);
             case 7:
-                return QString::number(paramadata->fechData(SpaItemHd_Ycwzxz,row+24));
+                return QString::number(paramadata->fechData(QParam::SpaItemHd_Ycwzxz,row+24));
             default:
                 break;
             }
@@ -1475,9 +1472,9 @@ bool  QYCWZXZModel::setData(const QModelIndex &index, const QVariant &value, int
     int column = index.column();
     int val = value.toString().toInt();
     if(0==row)
-        paramadata->setData(SpaItemHd_Ycwzxz,0,val,FALSE);
+        paramadata->setData(QParam::SpaItemHd_Ycwzxz,0,val,FALSE);
     else
-        paramadata->setData(SpaItemHd_Ycwzxz,column/2*8+row,val,FALSE);
+        paramadata->setData(QParam::SpaItemHd_Ycwzxz,column/2*8+row,val,FALSE);
 
     switch(column){
     case 1:
@@ -1554,15 +1551,15 @@ QVariant QFZYCWZXZModel::data(const QModelIndex &index, int role) const{
         case 0:
             return (1==row)?QString("0.0"):((row<10)?QString("R%1.0").arg(row-1):QString("L%1.0").arg(row-9));
         case 1:
-            return param->fechData(SpaItemHd_Fzycwzxz,row-1);
+            return param->fechData(QParam::SpaItemHd_Fzycwzxz,row-1);
         case 2:
             return (1==row)?QString("0.+"):((row<10)?QString("R%1.*").arg(row-1):QString("L%1.*").arg(row-9));
         case 3:
-            return param->fechData(SpaItemHd_Fzycwzxz_z,row-1);
+            return param->fechData(QParam::SpaItemHd_Fzycwzxz_z,row-1);
         case 4:
             return (1==row)?QString("0.-"):((row<10)?QString("R%1.-").arg(row-1):QString("L%1.-").arg(row-9));
         case 5:
-            return param->fechData(SpaItemHd_Fzycwzxz_f,row-1);
+            return param->fechData(QParam::SpaItemHd_Fzycwzxz_f,row-1);
         default:
             return QString();
         }
@@ -1591,21 +1588,21 @@ bool QFZYCWZXZModel::setData(const QModelIndex &index, const QVariant &value, in
         int val = value.toInt();
         switch(column){
         case 1:
-            param->setData(SpaItemHd_Fzycwzxz,row-1,val,FALSE);
+            param->setData(QParam::SpaItemHd_Fzycwzxz,row-1,val,FALSE);
             row--;
             if(row>8)
                 row = -(row-8);
             pcomm->bedMotorTest(5,100*row,val);
             break;
         case 3:
-            param->setData(SpaItemHd_Fzycwzxz_z,row-1,val,FALSE);
+            param->setData(QParam::SpaItemHd_Fzycwzxz_z,row-1,val,FALSE);
             row--;
             if(row>8)
                 row = -(row-8);
             pcomm->bedMotorTest(4,100*row,val);
             break;
         case 5:
-            param->setData(SpaItemHd_Fzycwzxz_f,row-1,val,FALSE);
+            param->setData(QParam::SpaItemHd_Fzycwzxz_f,row-1,val,FALSE);
             row--;
             if(row>8)
                 row = -(row-8);

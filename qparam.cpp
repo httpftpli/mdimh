@@ -8,6 +8,24 @@
 #include"constdata.h"
 
 
+const struct QParam::SpaItemDsp QParam::spaItemDsp[QParam::SpaItemHd_Guide] = {
+ /*   ADDR            |runsendid | len |offsetinbag|valrangetop|valrangebottom  */
+    {SpaAddr_XiTong,          7,        29,     0,          0,           0      },
+#if DUAL_SYSTEM
+    {SpaAddr_DanMianDMBC,        8,         8,     0,        -200,         200    },
+    {SpaAddr_SiPinDMBC,        9,         8,     0,        -200,         200    },
+    {SpaAddr_LingWeiDMBC,     10,        8,     0,        -200,         200    },
+#else
+    {SpaAddr_DanMianDMBC,        8,         4,     0,        -200,         200    },
+    {SpaAddr_SiPinDMBC,        9,         4,     0,        -200,         200    },
+    {SpaAddr_LingWeiDMBC,     10,        4,     0,        -200,         200    },
+#endif
+    {SpaAddr_YaoCuang,        11,        33,    0,        -500,         500    },
+    {SpaAddr_FanZenYC,      12,        16,    0,        -500,         500    },
+    {SpaAddr_FanZenZYC,    13,        16,    0,        -500,         500    },
+    {SpaAddr_FanZenFYC,    14,        16,    0,        -500,         500    },
+    {SpaAddr_JiQiGongZuo ,        1,        50,    0,         0,            0,   }
+};
 
 
 QParam::QParam(QComm *send, QObject *parent):
@@ -18,6 +36,16 @@ QParam::QParam(QComm *send, QObject *parent):
 QParam::~QParam(){
     if(spafile)
         spafile->flush();
+}
+
+int QParam::spaItemValBottom(QParam::SpaItemHd hd)
+{
+    return  spaItemDsp[hd].valrangebottom;
+}
+
+int QParam::spaItemValTop(QParam::SpaItemHd hd)
+{
+     return  spaItemDsp[hd].valrangetop;
 }
 
 bool QParam::setFile(const QString &spafilepath){
@@ -94,8 +122,8 @@ int QParam::updata(SpaItemHd hd){
         unsigned short buf[dsp.len];
         for(int i=0;i<dsp.len;i++)
             buf[i] = spabuf[dsp.addr+i];
-        const WrkItemDsp qizendiandsp =wrkItemDsp[WrkItemHd_QiZenDian] ;
-        const WrkItemDsp ZanKaiPianSudsp =wrkItemDsp[WrkItemHd_ZanKaiPianSu] ;
+        const QPattern::WrkItemDsp qizendiandsp =QPattern::wrkItemDsp[QPattern::WrkItemHd_QiZenDian] ;
+        const QPattern::WrkItemDsp ZanKaiPianSudsp =QPattern::wrkItemDsp[QPattern::WrkItemHd_ZanKaiPianSu] ;
         buf[qizendiandsp.offsetinbag] = patternData.wrkbuf[qizendiandsp.addr];
         buf[ZanKaiPianSudsp.offsetinbag] = patternData.wrkbuf[ZanKaiPianSudsp.addr];
         return pcomm->paramaUpdata(qizendiandsp.runsendid,buf,dsp.len,TRUE);

@@ -37,12 +37,12 @@ void FormHead::onCntNumber(unsigned short cntnumber){
     label_hbhh->setNum(pattern->cnt_huabanhang(cntnumber,kou,Md::POSREAR));
     label_hbhq->setNum(pattern->cnt_huabanhang(cntnumber,kou,Md::POSFRONT));
     ///////动作/////////////////////////////////////
-    unsigned char zhilingindex = pattern->cnt_Zhiling(cntnumber,kou,Md::POSREAR);
-    label_awdzh->setText(QPattern::CntZhilingMap.value(zhilingindex).at(0));
-    label_hwdzh->setText(QPattern::CntZhilingMap.value(zhilingindex).at(1));
-    zhilingindex = pattern->cnt_Zhiling(cntnumber,kou,Md::POSFRONT);
-    label_awdzq->setText(QPattern::CntZhilingMap.value(zhilingindex).at(0));
-    label_hwdzq->setText(QPattern::CntZhilingMap.value(zhilingindex).at(1));
+     QStringList list  = pattern->cnt_ZhilingStringlist(cntnumber,kou,Md::POSREAR);
+    label_awdzh->setText(list.at(0));
+    label_hwdzh->setText(list.at(1));
+    list = pattern->cnt_ZhilingStringlist(cntnumber,kou,Md::POSFRONT);
+    label_awdzq->setText(list.at(0));
+    label_hwdzq->setText(list.at(1));
     ////////色代号//////////////////////////////
     label_awsch->setText(pattern->cnt_seDaiHaoA(cntnumber,kou,Md::POSREAR));
     label_hwsch->setText(pattern->cnt_seDaiHaoH(cntnumber,kou,Md::POSREAR));

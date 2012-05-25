@@ -15,13 +15,13 @@ FormJqgzcs::FormJqgzcs(QParam *data,QComm *comm, QWidget *parent):
         _26_pushButton,_27_spinBox   ,_28_spinBox   ,_29_spinBox,_30_spinBox
     };
 
-    for(int i=0;i<sizeof widget/sizeof widget[0];i++){
+    for(unsigned int i=0;i<sizeof widget/sizeof widget[0];i++){
         int val;
         signalmapper.setMapping(widget[i],widget[i]);
         if(i<23)
-            val = param->fechData(SpaItemHd_Jqgzcs,i+1);
+            val = param->fechData(QParam::SpaItemHd_Jqgzcs,i+1);
         else
-            val = param->fechData(SpaItemHd_Jqgzcs,i+2);
+            val = param->fechData(QParam::SpaItemHd_Jqgzcs,i+2);
         switch(i){
         case 4:{
                 QDoubleSpinBox *doublespinbox = qobject_cast<QDoubleSpinBox *>(widget[i]);
@@ -64,7 +64,7 @@ void FormJqgzcs::valeChanged(QWidget *obj){
     if(spinbox){
         int val = spinbox->value();
         int index = spinbox->property("index").toInt();
-        param->setData(SpaItemHd_Jqgzcs,index,val);
+        param->setData(QParam::SpaItemHd_Jqgzcs,index,val);
         if(14==index)
             pcomm->yajiaoTest(Md::POSFRONT,4,val);
         if(15==index)
@@ -75,14 +75,14 @@ void FormJqgzcs::valeChanged(QWidget *obj){
     if(doublespinbox){
         int val =doublespinbox->value()*10;
         int index = doublespinbox->property("index").toInt();
-        param->setData(SpaItemHd_Jqgzcs,index,val);
+        param->setData(QParam::SpaItemHd_Jqgzcs,index,val);
         return;
     }
     QPushButton *pushbutton = qobject_cast<QPushButton *>(obj);
     if(pushbutton){
         int val =pushbutton->isChecked();
         int index = pushbutton->property("index").toInt();
-        param->setData(SpaItemHd_Jqgzcs,index,val);
+        param->setData(QParam::SpaItemHd_Jqgzcs,index,val);
         return;
     }
 }

@@ -4,7 +4,6 @@
 #include "data.h"
 #include <QTimerEvent>
 #include <QProcess>
-#include"customerid.h"
 #include "qparam.h"
 #include"config.h"
 #include<QSettings>

@@ -49,13 +49,3 @@ void QMdTableView::mouseReleaseEvent ( QMouseEvent * event ){
         QTableView::mouseReleaseEvent(event);
     }
 }
-
-
-bool QMd1TableView::event(QEvent *event){
-
-}
-
-
-QMd1TableView::QMd1TableView(QWidget *parent):QTableView(parent){
-
-}

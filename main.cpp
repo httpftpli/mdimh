@@ -25,6 +25,10 @@ int main(int argc, char *argv[])
 //#ifdef  Q_WS_X11
     a.setStyle("plastique");
 //#endif
+#ifdef Q_WS_QWS
+    QFont font("WenQuanYi Zen Hei",13);
+   QApplication::setFont(font);
+#endif
 
     QTextCodec *textcode = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForCStrings(textcode);

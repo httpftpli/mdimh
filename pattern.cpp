@@ -312,7 +312,7 @@ bool QPattern::parsepatternpath(const QString &patternpath)
     QFileInfo fileinfo(file);
     if(fileinfo.dir().exists()){
         patternName = fileinfo.fileName();
-        patterndirpath = fileinfo.dir().absolutePath();
+        patterndirpath = QDir::current().relativeFilePath(fileinfo.dir().path());
         return true;
     }
     else{
@@ -1086,7 +1086,7 @@ int  QPattern::wrkMainLuolaZhi(unsigned int index)const
 
 int  QPattern::wrkFuzhuLuolaZhi(unsigned int index)const
 {
-    Q_ASSERT((index<25)&&(index>0));
+    RUN_ASSERT(index,(index<25)&&(index>0));
     if(index>24)
         index = 24;
     if(index<1)

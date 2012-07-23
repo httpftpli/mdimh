@@ -65,10 +65,6 @@ void ProgramEncrypt::Decrypt(char *buf,unsigned short len){
 }
 
 
-
-
-
-
 QPatModel::QPatModel( QPattern *pattern,QObject * parent):
                         QAbstractTableModel(parent),pattern(pattern),bits10(0){
         int column = pattern->tatalcolumn;
@@ -76,6 +72,9 @@ QPatModel::QPatModel( QPattern *pattern,QObject * parent):
             bits10++;
             column = column/10;
         }
+        QHash<int,QByteArray> roleName ;
+        roleName.insert(0,QByteArray());
+        //setRoleNames(roleName);
 }
 
 int QPatModel::rowCount(const QModelIndex &parent)const {
@@ -146,8 +145,6 @@ Qt::ItemFlags QPatModel::flags(const QModelIndex &index) const{
 
 /////////////////////////QMdItemDelegate//////////////////////////////////////////////
 
-
-
 bool QMdItemDelegate::fechValidatorstruct(ValidatorStruct &val,int row,int column)const{
     QPair<int,int> rc;
     rc.first = row;
@@ -184,6 +181,7 @@ void QMdItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & o
     }else
         QStyledItemDelegate::paint(painter,option,index);
 }
+
 void QMdItemDelegate::setItemSimplePaint(bool val){
     isitemsimplepaint = val;
 }

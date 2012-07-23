@@ -128,8 +128,6 @@ public:
 
     int dataBuf[GUARDIANS];
     QHMIData(QParam *param,QComm *send,QObject *parent = 0);
-
-    bool patternVailable;
     unsigned short customerId;
     int stopTimeHistory;
     int runTimeHistory;
@@ -140,15 +138,14 @@ public:
     QString sys_wrkFilePath;
     QString spaFilePath;
     QString sazFilePath;
-    QString loopFilePath;
     QString sysLogFilePath;
     QString udiskDirPath;
     QString sysconfigfilename;
     QString partternName;
-    int totalBzTime;
-    int currentBzTime;
-    int totalStopTime;
-    int currentStopTime;
+   // int totalBzTime;
+   // int currentBzTime;
+   // int totalStopTime;
+    //int currentStopTime;
     int commResult;
     bool isInBoot;
     bool isRuning();

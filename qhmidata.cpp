@@ -199,7 +199,7 @@ bool QHMIData::isRuning(){
 
 
 int QHMIData::TogSysStat(SysStat stat){
-    unsigned char val;
+    unsigned char val=0;
     switch(stat){
     case SysIdle:
         val =0x00;
@@ -234,26 +234,35 @@ bool QHMIData::mainboardRomAvailable()
 void QHMIData::loadParam(const QString &inifilepath){
     QSettings sysset(inifilepath,QSettings::IniFormat,this);
     sysconfigfilename = inifilepath;
-    int clothsetcount = sysset.value("run/clothSetCount").toInt();
-    int clothfinishcount = sysset.value("run/clothFinishCount").toInt();
+    sysset.beginGroup("run");
+    int clothsetcount = sysset.value("clothSetCount").toInt();
+    int clothfinishcount = sysset.value("clothFinishCount").toInt();
     setclothSetCount(clothsetcount,FALSE);
     setclothFinishCount(clothfinishcount,FALSE);
-    int stopperone = sysset.value("run/stopperone").toBool();
+    int stopperone = sysset.value("stopperone").toBool();
     setStopPerOne(stopperone,FALSE);
-    int linelock = sysset.value("run/linelock").toBool();
+    int linelock = sysset.value("linelock").toBool();
     setLineLock(linelock,FALSE);
-    xtrunorguiling = sysset.value("run/resetrun").toBool();
-    customerId = sysset.value("system/cd").toString().toInt(0);
-    patternVailable = sysset.value("pattern/vailable").toBool();
+    xtrunorguiling = sysset.value("resetrun").toBool();
+    stopTime = sysset.value("stoptime").toLongLong();
+    runTime = sysset.value("runtime").toLongLong();
+    sysset.endGroup();
+
+    sysset.beginGroup("history");
+    stopTimeHistory = sysset.value("stoptime").toLongLong();
+    runTimeHistory = sysset.value("runtime").toLongLong();
+    sysset.endGroup();
+
+    sysset.beginGroup("system");
+    udiskDirPath = sysset.value("udiskFilePath").toString();
+    sysLogFilePath = sysset.value("syslogfile").toString();
+    customerId = sysset.value("cd").toString().toInt(0);
+    sysset.endGroup();
+
     patternPath = sysset.value("pattern/path").toString();
-    loopFilePath = sysset.value("pattern/loopFileName").toString();
+
     spaFilePath = sysset.value("param/spafile").toString();
-    udiskDirPath = sysset.value("system/udiskFilePath").toString();
-    sysLogFilePath = sysset.value("system/syslogfile").toString();
-    stopTimeHistory = sysset.value("history/stoptime").toLongLong();
-    runTimeHistory = sysset.value("history/runtime").toLongLong();
-    stopTime = sysset.value("run/stoptime").toLongLong();
-    runTime = sysset.value("run/runtime").toLongLong();
+
 }
 
 int  QHMIData::errorCode(){
@@ -286,14 +295,24 @@ void QHMIData::timerEvent(QTimerEvent * event){
 
 void QHMIData::saveSysCfgFile(){
     QSettings sysset(sysconfigfilename,QSettings::IniFormat,this);
-    sysset.setValue("run/clothSetCount",QString::number(clothsetcount));
-    sysset.setValue("run/clothFinishCount",QString::number(clothfinishcount));
-    sysset.setValue("run/stopperone",QString::number(stopperone));
-    sysset.setValue("run/linelock",QString::number(linelock));
-    sysset.setValue("run/resetrun",QString::number(xtrunorguiling));
+
+    sysset.beginGroup("run");
+    sysset.setValue("clothFinishCount",QString::number(clothfinishcount));
+    sysset.setValue("clothSetCount",QString::number(clothsetcount));
+    sysset.setValue("linelock",QString::number(linelock));
+    sysset.setValue("resetrun",QString::number(xtrunorguiling));
+    sysset.setValue("stopperone",QString::number(stopperone));
+    sysset.setValue("runtime",QString::number(runTime));
+    sysset.setValue("stoptime",QString::number(stopTime));
+    sysset.endGroup();
+
     sysset.setValue("pattern/path",patternPath);
-    sysset.setValue("history/stoptime",stopTimeHistory);
-    sysset.setValue("history/runtime",runTimeHistory);
+
+    sysset.beginGroup("history");
+    sysset.setValue("runtime",QString::number(runTimeHistory));
+    sysset.setValue("stoptime",QString::number(stopTimeHistory));
+    sysset.endGroup();
+
     sysset.sync();
     system("cat sysconfig.conf >> /dev/null && sync");  //NOTICE: qsetting will lost filedata ,so call shell command
 }

@@ -80,12 +80,13 @@ void PatFileForm::jumpTo(int row,int column,QAbstractItemView::ScrollHint scroll
     QModelIndex index = model->index(pattern->tatalpatrow-row,column-1,QModelIndex());
     if(index.isValid()){
         tableView->scrollTo(index,scrollhint);
-        tableView->edit(index);
+        //NOTICE: tableView->edit(index);
     }
 }
 
 void PatFileForm::on_pushButton_jumpto_clicked()
 {
+
     jumpTo(pos.row,pos.column,QAbstractItemView::PositionAtCenter);
 }
 
@@ -160,17 +161,12 @@ void PatFileForm::on_pushButton_pagedown_clicked()
     QScrollBar *bar = tableView->verticalScrollBar();
     int i = bar->pageStep();
     pos.setData(qMax(pos.row-i,1),pos.column);
-    qDebug()<<"base:"<<QTime::currentTime().toString("ss-zzz");
     bar->setValue(bar->value()+i);
-    qDebug()<<"bar->setValue:"<<QTime::currentTime().toString("ss-zzz");
     QCoreApplication::processEvents(QEventLoop::AllEvents);
-    qDebug()<<"processEvents:"<<QTime::currentTime().toString("ss-zzz");
     //pushButton_pagedown->setDisabled((bar->value()+i)>=(pattern->tatalrow));
     //qDebug()<<"bar->value()"<<bar->value()<<"bar->value()"<<i<<"tatalrow"<<pattern->tatalrow;
    // pushButton_pageup->setEnabled(TRUE);
     jumpTo(pos.row,pos.column,QAbstractItemView::EnsureVisible);
-    qDebug()<<"jumpto:"<<QTime::currentTime().toString("ss-zzz");
-
 }
 
 void PatFileForm::on_pushButton_pageup_clicked()

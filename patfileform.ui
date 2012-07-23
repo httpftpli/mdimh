@@ -54,7 +54,7 @@ QHeaderView::section {
     <number>2</number>
    </property>
    <item>
-    <widget class="QMd1TableView" name="tableView">
+    <widget class="QTableView" name="tableView">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -74,10 +74,10 @@ QHeaderView::section {
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
      <property name="editTriggers">
-      <set>QAbstractItemView::CurrentChanged</set>
+      <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::NoSelection</enum>
+      <enum>QAbstractItemView::SingleSelection</enum>
      </property>
      <property name="showGrid">
       <bool>false</bool>
@@ -589,11 +589,6 @@ QHeaderView::section {
    <class>QMdPushButton</class>
    <extends>QPushButton</extends>
    <header>mdPushbutton/qmdpushbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QMd1TableView</class>
-   <extends>QTableView</extends>
-   <header>mdtableview/qmdtableview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -36,13 +36,13 @@ void QMyWebView::mouseMoveEvent ( QMouseEvent * event ){
     if((event->buttons()==Qt::LeftButton)&&(page()->mainFrame())){
         int  disx = event->globalX()-oldX1;
         int  disy = event->globalY()-oldY1;
-        //if((qAbs(disx)>10)/*&&(horizontalScrollBar()->isVisible())*/){
+        if((qAbs(disx)>10)/*&&(horizontalScrollBar()->isVisible())*/){
             QWebFrame  *frame = page()->mainFrame();
             frame->setScrollBarValue(Qt::Horizontal,oldhscrollval-disx);
             frame->setScrollBarValue(Qt::Vertical,oldvscrollval-disy);
             event->accept();
             return;
-        //}
+        }
     }
     QWebView::mouseMoveEvent(event);
 }
